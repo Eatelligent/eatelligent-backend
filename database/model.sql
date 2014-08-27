@@ -51,8 +51,14 @@ CREATE TABLE user_preferences (
 	/* More definitions of prefs */
 );
 
+CREATE TABLE roles (
+	id serial8 primary key,
+	name text
+);
+
 CREATE TABLE users (
 	id serial8 primary key,
+	role int8 references roles(id),
 	name text,
 	password text,	
 	city text,
