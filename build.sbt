@@ -1,12 +1,17 @@
-name := "Mealchooser Backend"
-version := "0.1"
-scalaVersion := "2.11.1"
-libraryDependencies += {
-    val akkaVersion = "2.3.4"
-    val sprayVersion = "1.3.1"
+organization in ThisBuild := "com.netaporter"
 
-    Seq(
-        "org.scalatest" % "scalatest_2.11" % "2.2.0" % "test",
-        
-    )
-}
+name := "spray-apr"
+
+version := "1.0"
+
+scalaVersion  := "2.10.0"
+
+scalacOptions := Seq("-feature", "-unchecked", "-deprecation", "-encoding", "utf8")
+
+resolvers += "spray repo" at "http://repo.spray.io"
+
+libraryDependencies ++= Seq(
+    "com.typesafe.akka" %% "akka-actor" % "2.1.4",
+    "io.spray" % "spray-can" % "1.1-M8",
+    "io.spray" % "spray-routing" % "1.1-M8",
+    "org.json4s" %% "json4s-native" % "3.2.4")

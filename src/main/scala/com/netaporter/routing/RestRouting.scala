@@ -24,6 +24,14 @@ class RestRouting extends HttpService with Actor with PerRequestCreator {
           }
         }
       }
+
+      path("meal") {
+        parameters('names) { names =>
+          petsWithOwner {
+            GetPetsWithOwners(names.split(',').toList)
+          }
+        }
+      }
     }
   }
 
