@@ -1,17 +1,15 @@
 package com.netaporter.core
 
 import akka.actor.{ActorRef, Actor}
-import com.netaporter.clients.{OwnerClient, PetClient}
+import com.netaporter.clients.{MealClient}
 import akka.actor.SupervisorStrategy.Escalate
 import com.netaporter._
-import PetClient.GetPets
-import PetClient.Pets
-import OwnerClient.GetOwnersForPets
+import MealClient.GetMeals
+import MealClient.Meals
+
+
 import scala.Some
-import OwnerClient.OwnersForPets
-import com.netaporter.Pet
-import com.netaporter.Owner
-import com.netaporter.GetPetsWithOwners
+import com.netaporter.Meal
 import akka.actor.OneForOneStrategy
 
 /**
@@ -22,39 +20,36 @@ import akka.actor.OneForOneStrategy
  *  - One requests for a list the pets by their names
  *  - A separate request for a list of owners by their pet names
  */
-class GetPetsWithOwnersActor(petService: ActorRef, ownerService: ActorRef) extends Actor {
+class GetMealsMessageActor(mealService: ActorRef) extends Actor {
 
-  var pets = Option.empty[Seq[Pet]]
-  var owners = Option.empty[Seq[Owner]]
+  var meals = Option.empty[Seq[Meal]]
 
   def receive = {
-    case GetPetsWithOwners(names) if names.size > 2 => throw PetOverflowException
-    case GetPetsWithOwners(names) => {
-      petService ! GetPets(names)
-      ownerService ! GetOwnersForPets(names)
+    case GetMealsMessage(names) if names.size > 2 => {
+      throw PetOverflowException
+    }
+    case GetMealsMessage(names) => {
+      mealService ! GetMeals(names)
       context.become(waitingResponses)
     }
   }
 
   def waitingResponses: Receive = {
-    case Pets(petSeq) => {
-      pets = Some(petSeq)
-      replyIfReady
-    }
-    case OwnersForPets(ownerSeq) => {
-      owners = Some(ownerSeq)
+    case Meals(mealSeq) => {
+      meals = Some(mealSeq)
       replyIfReady
     }
     case f: Validation => context.parent ! f
   }
 
   def replyIfReady =
-    if(pets.nonEmpty && owners.nonEmpty) {
-      val petSeq = pets.head
-      val ownerSeq = owners.head
+    if(meals.nonEmpty) {
+      val petSeq = meals.head
 
-      val enrichedPets = (petSeq zip ownerSeq).map { case (pet, owner) => pet.withOwner(owner) }
-      context.parent ! PetsWithOwners(enrichedPets)
+//      val enrichedMeals = petSeq.map{case (hei) => Meal("hei")}
+
+//      val enrichedPets = (petSeq zip ownerSeq).map { case (pet, owner) => pet.withOwner(owner) }
+      context.parent ! MealsMessage(petSeq)
     }
 
   override val supervisorStrategy =

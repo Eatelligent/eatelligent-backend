@@ -4,22 +4,14 @@ package com.netaporter
 
 trait RestMessage
 
-case class GetPetsWithOwners(petNames: List[String]) extends RestMessage
-case class PetsWithOwners(pets: Seq[EnrichedPet]) extends RestMessage
+case class GetMealsMessage(petNames: List[String]) extends RestMessage
 
-case class GetMeal(names: List[String]) extends RestMessage
+case class MealsMessage(meals: Seq[Meal]) extends RestMessage
+
 
 // Domain objects
 
 case class Meal(name: String)
-
-case class Pet(name: String) {
-  def withOwner(owner: Owner) = EnrichedPet(name, owner)
-}
-
-case class Owner(name: String)
-
-case class EnrichedPet(name: String, owner: Owner)
 
 case class Error(message: String)
 

@@ -3,8 +3,8 @@ package com.netaporter.routing
 import akka.actor.{Props, Actor}
 import com.netaporter._
 import spray.routing.{Route, HttpService}
-import com.netaporter.core.GetPetsWithOwnersActor
-import com.netaporter.clients.{OwnerClient, PetClient}
+import com.netaporter.core.GetMealsMessageActor
+import com.netaporter.clients.{MealClient}
 
 class RestRouting extends HttpService with Actor with PerRequestCreator {
 
@@ -12,29 +12,35 @@ class RestRouting extends HttpService with Actor with PerRequestCreator {
 
   def receive = runRoute(route)
 
-  val petService = context.actorOf(Props[PetClient])
-  val ownerService = context.actorOf(Props[OwnerClient])
+  val mealService = context.actorOf(Props[MealClient])
 
   val route = {
     get {
-      path("pets") {
+      path("meals") {
         parameters('names) { names =>
-          petsWithOwner {
-            GetPetsWithOwners(names.split(',').toList)
+          meal {
+            println("hei meals")
+            GetMealsMessage(names.split(',').toList)
           }
         }
       }
-
-      path("meal") {
+    }
+    post {
+      path("meals") {
         parameters('names) { names =>
-          petsWithOwner {
-            GetPetsWithOwners(names.split(',').toList)
+          meal {
+            println("post")
+            println(names)
+            GetMealsMessage(names.split(',').toList)
           }
         }
       }
     }
   }
 
-  def petsWithOwner(message : RestMessage): Route =
-    ctx => perRequest(ctx, Props(new GetPetsWithOwnersActor(petService, ownerService)), message)
+  def meal(message : RestMessage): Route = {
+    println("før")
+    ctx => perRequest(ctx, Props(new GetMealsMessageActor(mealService)), message)
+    println("etter")
+  }
 }
