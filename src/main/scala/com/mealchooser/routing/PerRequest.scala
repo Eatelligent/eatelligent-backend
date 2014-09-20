@@ -1,4 +1,4 @@
-package com.netaporter.routing
+package com.mealchooser.routing
 
 import akka.actor._
 import akka.actor.SupervisorStrategy.Stop
@@ -9,8 +9,8 @@ import spray.httpx.Json4sSupport
 import scala.concurrent.duration._
 import org.json4s.DefaultFormats
 import spray.http.StatusCode
-import com.netaporter._
-import com.netaporter.routing.PerRequest._
+import com.mealchooser._
+import com.mealchooser.routing.PerRequest._
 
 trait PerRequest extends Actor with Json4sSupport {
 

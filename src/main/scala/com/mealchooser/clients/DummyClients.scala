@@ -1,8 +1,8 @@
-package com.netaporter.clients
+package com.mealchooser.clients
 
 import akka.actor.Actor
-import com.netaporter._
-import com.netaporter.clients.MealClient._
+import com.mealchooser._
+import com.mealchooser.clients.MealClient._
 //import com.netaporter.clients.OwnerClient._
 
 

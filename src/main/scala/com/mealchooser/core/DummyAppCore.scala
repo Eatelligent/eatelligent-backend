@@ -1,15 +1,15 @@
-package com.netaporter.core
+package com.mealchooser.core
 
 import akka.actor.{ActorRef, Actor}
-import com.netaporter.clients.{MealClient}
+import com.mealchooser.clients.{MealClient}
 import akka.actor.SupervisorStrategy.Escalate
-import com.netaporter._
+import com.mealchooser._
 import MealClient.GetMeals
 import MealClient.Meals
 
 
 import scala.Some
-import com.netaporter.Meal
+import com.mealchooser.Meal
 import akka.actor.OneForOneStrategy
 
 /**

@@ -1,5 +1,19 @@
 BEGIN;
 
+DROP TABLE IF EXISTS user_yes_no_rate_ingredient CASCADE;
+DROP TABLE IF EXISTS user_yes_no_rate_recipe CASCADE;
+DROP TABLE IF EXISTS user_star_rate_recipe CASCADE;
+DROP TABLE IF EXISTS recipe_in_tag CASCADE;
+DROP TABLE IF EXISTS ingredient_in_recipe CASCADE;
+DROP TABLE IF EXISTS tags CASCADE;
+DROP TABLE IF EXISTS ingredient CASCADE;
+DROP TABLE IF EXISTS recipe CASCADE;
+DROP TABLE IF EXISTS unit CASCADE;
+DROP TABLE IF EXISTS user_preferences CASCADE;
+DROP TABLE IF EXISTS language CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+
 CREATE TABLE language (
 	id serial8 primary key,
 	locale text,
@@ -19,14 +33,14 @@ CREATE TABLE recipe (
 	/* Public rating (matirialized view) */
 );
 
-CREATE TABLE tag (
+CREATE TABLE tags (
 	id serial8 primary key,
 	name text
 );
 
 CREATE TABLE recipe_in_tag (
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
-	tag_id int8 references tag(id) ON DELETE CASCADE
+	tag_id int8 references tags(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ingredient (
@@ -67,10 +81,10 @@ CREATE TABLE users (
 	user_preferences int8 references user_preferences(id) ON DELETE CASCADE
 );
 
-CREATE TABLE user_star_rate_meal ( /* id references */
+CREATE TABLE user_star_rate_recipe ( /* id references */
 	user_id int8,
-	meal_id int8,
-	stars int
+	recipe_id int8,
+	stars real
 );
 
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */

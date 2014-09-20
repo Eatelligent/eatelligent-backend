@@ -1,10 +1,10 @@
-package com.netaporter.routing
+package com.mealchooser.routing
 
 import akka.actor.{Props, Actor}
-import com.netaporter._
+import com.mealchooser._
 import spray.routing.{Route, HttpService}
-import com.netaporter.core.GetMealsMessageActor
-import com.netaporter.clients.{MealClient}
+import com.mealchooser.core.GetMealsMessageActor
+import com.mealchooser.clients.{MealClient}
 
 class RestRouting extends HttpService with Actor with PerRequestCreator {
 
@@ -15,22 +15,11 @@ class RestRouting extends HttpService with Actor with PerRequestCreator {
   val mealService = context.actorOf(Props[MealClient])
 
   val route = {
-    get {
-      path("meals") {
+    path("meals") {
+      get {
         parameters('names) { names =>
           meal {
             println("hei meals")
-            GetMealsMessage(names.split(',').toList)
-          }
-        }
-      }
-    }
-    post {
-      path("meals") {
-        parameters('names) { names =>
-          meal {
-            println("post")
-            println(names)
             GetMealsMessage(names.split(',').toList)
           }
         }

@@ -1,4 +1,4 @@
-package com.netaporter
+package com.mealchooser
 
 // Messages
 
