@@ -13,6 +13,7 @@ resolvers += "spray repo" at "http://repo.spray.io"
 libraryDependencies ++= {
   val akkaV = "2.3.6"
   val sprayV = "1.3.1"
+  val slickpgV = "0.6.3"
   Seq(
     "io.spray"            %%  "spray-can"     % sprayV,
     "io.spray"            %%  "spray-routing" % sprayV,
@@ -24,14 +25,14 @@ libraryDependencies ++= {
     "com.typesafe.slick" %% "slick" % "2.1.0",
     "org.slf4j" % "slf4j-nop" % "1.6.4",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
-    "com.github.tminglei" %% "slick-pg" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_joda-time" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_jts" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_date2" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_threeten" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_json4s" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_spray-json" % "0.6.3",
-    "com.github.tminglei" %% "slick-pg_argonaut" % "0.6.3",
+    "com.github.tminglei" %% "slick-pg" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_joda-time" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_jts" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_date2" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_threeten" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_json4s" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_spray-json" % slickpgV,
+    "com.github.tminglei" %% "slick-pg_argonaut" % slickpgV,
     "org.scalatest" %% "scalatest" % "2.1.6" % "test"
 	)
 }
