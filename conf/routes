@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+POST    /insert                     controllers.Application.insert
+
+GET     /lasser                     controllers.Application.lasser
+
+GET     /users                     controllers.Application.users
+
+
+GET     /languages                  controllers.Application.listLanguages
+
+POST    /languages                  controllers.Application.saveLanguage
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
