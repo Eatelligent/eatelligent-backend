@@ -1,0 +1,155 @@
+/* GET - https://api.mealchooser.com/api/v0/recipes/:recipe_id */
+{
+  "ok": true,
+  "recipe": {
+    "title": "Lasagne",
+    "id": 12345678,
+    "description": "Text text text",
+    "procedure": "Text text text",
+    "created": "2014-12-11T03:10:00+02:00",
+    "modified": "2014-12-11T03:10:00+02:00",
+    "public_rating": 4,
+    "personal_rating": 5, /* optinal "yes" / "no" ? */ 
+    "language": "NO-nb",
+  },
+  "images": [
+    {
+      "url": "https://api.mealchooser.com/api/images/12345678/front.png"
+    },
+    {
+      "url": "https://api.mealchooser.com/api/images/12345678/2.png"
+    }
+    /* ... */
+  ],
+  "ingredients": [
+    {
+      "href": "https://api.mealchooser.com/api/ingredients/123",
+      "type": "ingredient",
+      "title": "Tomat",
+      "unit": "stk",
+      "amount": 3.2
+    }
+    /* ... */
+  ]
+}
+
+
+/* POST - https://api.mealchooser.com/api/v0/recipes */
+/* 
+
+  EXAMPLE
+  
+  curl -X POST https://us8.api.mailchimp.com/2.0/lists/batch-subscribe 
+  -d '{
+    "title": "Lasagne",
+    "description": "Text text text",
+    "procedure": "Text text text",
+    "language": "NO-nb",
+    "strength": 3,
+    "time_estimate": 1800,
+    "tags": ["abc", "bcd", "cde", "def"],
+    "author": 34567890,
+    "ingredients": [
+      {
+        "id": 123,
+        "amount": 0.3
+      },
+      {
+        "name": "Gurkemeie",
+        "amount": 0.1,        // ???
+        "unit": "grams"
+      }
+    ]
+  }'
+*/
+{
+  "ok": true,
+  "recipe": {
+    "title": "Lasagne",
+    "id": 12345678,
+    "description": "Text text text",
+    "procedure": "Text text text",
+    "created": "2014-12-11T03:10:00+02:00",
+    "modified": "2014-12-11T03:10:00+02:00",
+    "language": "NO-nb"
+  },
+  "ratings": {
+    "public": {
+      "stars": {
+        "min": 1,
+        "max": 5,
+        "value": 0
+      }
+    },
+    "private": {}
+  },
+  "ingredients": [
+    {
+      "href": "https://api.mealchooser.com/api/ingredients/123",
+      "type": "ingredient",
+      "title": "Tomat",
+      "unit": "stk",
+      "amount": 3.2
+    }
+    /* ... */
+  ]
+}
+
+
+/* PUT - https://api.mealchooser.com/api/v0/recipes */
+/* 
+
+  EXAMPLE
+  
+  curl -X PUT https://api.mealchooser.com/api/v0/recipes/:recipe_id 
+  -d '{
+    "title": "Lasagne",
+  }'
+*/
+{
+  "ok": true,
+  "recipe": {
+    /* ... */
+    "created": "2014-12-11T03:10:00+02:00",
+    "modified": "2014-12-11T03:14:00+02:00"
+  },
+  "images": [
+    {
+      "url": "https://api.mealchooser.com/api/images/12345678/front.png"
+    },
+    {
+      "url": "https://api.mealchooser.com/api/images/12345678/2.png"
+    }
+    /* ... */
+  ],
+  "ingredients": [/* */]
+}
+
+
+/* GET - https://api.mealchooser.com/api/v0/recipes/?tag=:tag
+       - https://api.mealchooser.com/api/v0/recipes/?q=:query
+       - https://api.mealchooser.com/api/v0/recipes/?ingredients[]=:ingredient1&ingredients[]=:ingredient2
+*/
+{
+  "ok": true,
+  "search_params": {
+    "tag": "stew",
+    "ingredients": ["tomato", "pasta"],
+    "q": "Lasagne"
+  },
+  "recipes": [
+    {
+      "id": 12345678,
+      "name": "Lasagne",
+      "thumbnail": "https://api.mealchooser.com/api/images/12345678/front.png",
+      "href": "https://api.mealchooser.com/api/v0/recipes/12345678"
+    }
+    /* ... */
+  ]
+}
+
+
+/* Delete - https://api.mealchooser.com/api/v0/recipes/:recipe_id */
+{
+  "ok": true
+}

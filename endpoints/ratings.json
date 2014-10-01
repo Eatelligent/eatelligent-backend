@@ -1,0 +1,87 @@
+/* GET - https://api.mealchooser.com/api/v0/recipes/:recipe_id/ratings */
+{
+  "ok": true,
+  "recipe": {/* */},
+  "ratings": [
+    {
+      "type": "user",
+      "id": 34567890,
+      "name": "Pelle Krogstad",
+      "rating": 0.8
+    },
+    {
+      "type": "user",
+      "id": 34567890,
+      "name": "Pelle Krogstad",
+      "rating": 0.6
+    }
+  ],
+  "aggregated_rating": {
+    "stars": {
+      "min": 1,
+      "max": 5,
+      "value": 3.5
+    },
+    "percent": {
+      "value": 70
+    }
+  }
+}
+
+
+/* POST - https://api.mealchooser.com/api/v0/recipes/:recipe_id/rate */
+/* 
+
+  EXAMPLE
+  
+  curl -X POST https://api.mealchooser.com/api/v0/recipes/:recipe_id/rate 
+  -d '{
+    "value": 4 // optinal "yes" / "no" ?
+  }'
+*/
+{
+  "ok": true,
+  "rating": {
+    "recipe_id": 12345678,
+    "value": 4 /* optinal "yes" / "no" ? */
+  },
+  "aggregated_recipe_rating": {
+    "stars": {
+      "min": 1,
+      "max": 5,
+      "value": 3.5
+    },
+    "percent": {
+      "value": 70
+    }
+  }
+}
+
+
+/* PUT - https://api.mealchooser.com/api/v0/recipes/:recipe_id/rate */
+/* 
+
+  EXAMPLE
+  
+  curl -X PUT https://api.mealchooser.com/api/v0/recipes/:recipe_id/rate 
+  -d '{
+    "value": 3 // optinal "yes" / "no" ?
+  }'
+*/
+{
+  "ok": true,
+  "rating": {
+    "recipe_id": 12345678,
+    "value": 3 /* optinal "yes" / "no" ? */
+  },
+  "aggregated_recipe_rating": {
+    "stars": {
+      "min": 1,
+      "max": 5,
+      "value": 3.3
+    },
+    "percent": {
+      "value": 66.6
+    }
+  }
+}
