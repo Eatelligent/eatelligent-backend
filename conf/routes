@@ -9,12 +9,24 @@ POST    /insert                     controllers.Application.insert
 
 GET     /lasser                     controllers.Application.lasser
 
-GET     /users                     controllers.Application.users
+GET     /users                      controllers.Application.users
 
+GET     /ingredients                controllers.IngredientController.listIngredients
 
-GET     /languages                  controllers.Application.listLanguages
+GET     /ingredient/:id             controllers.IngredientController.getIngredient(id: Long)
+
+POST    /ingredient                 controllers.IngredientController.saveIngredient
+
 
 POST    /languages                  controllers.Application.saveLanguage
+
+GET     /recipe                     controllers.RecipeController.getRecipe
+
+GET     /recipes                    controllers.RecipeController.listRecipes
+
+POST    /recipe                     controllers.RecipeController.saveRecipe
+
+GET     /pelle                      controllers.Application.pelle
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

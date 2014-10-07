@@ -4,17 +4,22 @@ import play.PlayImport.PlayKeys._
 
 object ApplicationBuild extends Build {
 
+  val playVersion = "2.3.4"
+  val slickPgVersion = "0.6.5.1"
+  val playSLickVersion = "0.8.0"
+
   lazy val appDependencies = Seq(
-    "com.typesafe.play" %% "play-jdbc" % "2.3.1",
-    "com.typesafe.play" %% "play-json" % "2.3.1",
-    "com.typesafe.play" %% "play-slick" % "0.8.0-RC2",
-    "com.github.tminglei" %% "slick-pg" % "0.6.0-M2",
-    "com.github.tminglei" %% "slick-pg_joda-time" % "0.6.0-M2",
-    "com.github.tminglei" %% "slick-pg_play-json" % "0.6.0-M2",
-    "com.github.tminglei" %% "slick-pg_jts" % "0.6.0-M2",
+    "com.typesafe.play" %% "play-jdbc" % playVersion,
+    "com.typesafe.play" %% "play-json" % playVersion,
+    "com.typesafe.play" %% "play-slick" % playSLickVersion,
+    "com.github.tminglei" %% "slick-pg" % slickPgVersion,
+    "com.github.tminglei" %% "slick-pg_joda-time" % slickPgVersion,
+    "com.github.tminglei" %% "slick-pg_play-json" % slickPgVersion,
+    "com.github.tminglei" %% "slick-pg_jts" % slickPgVersion,
     "org.postgresql" % "postgresql" % "9.3-1100-jdbc41",
-    "joda-time" % "joda-time" % "2.3",
-    "org.joda" % "joda-convert" % "1.5",
+    "joda-time" % "joda-time" % "2.4",
+    "org.joda" % "joda-convert" % "1.6",
+    "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
     "com.vividsolutions" % "jts" % "1.13"
   )
 

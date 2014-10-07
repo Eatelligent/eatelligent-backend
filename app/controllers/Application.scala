@@ -17,10 +17,11 @@ import models.current.dao.driver.simple._
 
 object Application extends Controller {
 
+
   implicit val languageWrites: Writes[Language] = (
-    (JsPath \ "id").write[Int] and
-    (JsPath \ "name").write[String] and
-    (JsPath \ "locale").write[String]
+    (JsPath \ "id").write[Option[Int]] and
+    (JsPath \ "locale").write[String] and
+    (JsPath \ "name").write[String]
   )(unlift(Language.unapply))
 
   def listLanguages = DBAction { implicit request =>
@@ -29,9 +30,9 @@ object Application extends Controller {
   }
 
   implicit val languageRead: Reads[Language] = (
-    (JsPath \ "id").read[Int] and
-      (JsPath \ "name").read[String] and
-      (JsPath \ "locale").read[String]
+    (JsPath \ "id").readNullable[Int] and
+      (JsPath \ "locale").read[String] and
+      (JsPath \ "name").read[String]
     )(Language.apply _)
 
   def saveLanguage = DBAction(BodyParsers.parse.json) { implicit request =>
@@ -45,16 +46,13 @@ object Application extends Controller {
         Ok(Json.obj("status" -> "OK", "message" -> ("Place '" + language.name + "' saved,")))
       }
     )
-
   }
-
-
 
   val languageForm: Form[Language] = Form {
       mapping(
-        "id" -> number,
-        "locale" -> text,
-        "name" -> text
+        "id" -> optional(number),
+        "locale" -> nonEmptyText,
+        "name" -> nonEmptyText
       )(Language.apply)(Language.unapply)
   }
 
@@ -63,8 +61,8 @@ object Application extends Controller {
   }
 
   def insert = DBAction { implicit rs =>
-    val language = languageForm.bindFromRequest.get
-    languages.insert(language)
+//    val language = languageForm.bindFromRequest.get
+//    languages.insert(language)
     Redirect(routes.Application.index)
   }
 
@@ -76,5 +74,8 @@ object Application extends Controller {
   }
 
   def users = TODO
+
+
+  def pelle = TODO
 
 }

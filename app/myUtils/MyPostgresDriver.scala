@@ -2,9 +2,11 @@ package myUtils
 
 import com.github.tminglei.slickpg._
 import slick.driver.PostgresDriver
+import com.github.tototoshi.slick.{GenericJodaSupport, PostgresJodaSupport}
 
 trait WithMyDriver {
   val driver: MyPostgresDriver
+//  val jodaSupport: GenericJodaSupport
 }
 
 ////////////////////////////////////////////////////////////
