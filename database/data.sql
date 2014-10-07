@@ -5,11 +5,11 @@ VALUES
  ('user'),
  ('admin');
 
-INSERT INTO users (name, password, role)
+INSERT INTO users (name, password, email, role)
 VALUES
-  ('bone', 'bone', 2),
-  ('gurr', 'gurr', 2),
-  ('garr', 'garr', 1);
+  ('bone', 'bone', 'tandeey@gmail.com', 2),
+  ('gurr', 'gurr', 'sigurd.l@gmail.com', 2),
+  ('garr', 'garr', 'pelle@pelle.com', 1);
 
 INSERT INTO ingredient(name)
 VALUES

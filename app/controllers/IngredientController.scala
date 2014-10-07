@@ -44,7 +44,7 @@ object IngredientController extends Controller {
   }
 
   def getIngredient(id: Long) = DBAction { implicit session =>
-    val json = Json.toJson(findById(id))
+    val json = Json.toJson(findIngredientById(id))
     Ok(Json.obj("ok" -> true, "ingredient" -> json))
   }
 

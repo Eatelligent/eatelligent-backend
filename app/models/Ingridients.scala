@@ -29,7 +29,7 @@ trait IngredientComponent extends WithMyDriver {
   def insert(ingredient: Ingredient)(implicit session: Session): Ingredient =
     ingredientsAutoInc.insert(ingredient)
 
-  def findById(id: Long)(implicit session: Session): Option[Ingredient] = {
+  def findIngredientById(id: Long)(implicit session: Session): Option[Ingredient] = {
     ingredients.filter(_.id === id).list.headOption
   }
 }

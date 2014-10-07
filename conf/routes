@@ -9,7 +9,11 @@ POST    /insert                     controllers.Application.insert
 
 GET     /lasser                     controllers.Application.lasser
 
-GET     /users                      controllers.Application.users
+GET     /users                      controllers.UserController.listUsers
+
+GET     /user/:id                   controllers.UserController.getUser(id: Long)
+
+POST    /user                       controllers.UserController.saveUser
 
 GET     /ingredients                controllers.IngredientController.listIngredients
 
