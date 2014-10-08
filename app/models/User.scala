@@ -12,10 +12,15 @@ case class User(
                 email: String,
                 image: Option[JsValue],
 //                birth: Date,
-                city: Option[String]
+                city: Option[String],
+                roleId: Long
 //                created: Option[Date],
 //                modified: Option[Date]
                  )
+case class Role (
+                  id: Long,
+                  name: String
+             )
 
 trait UserComponent extends WithMyDriver {
   import driver.simple._
@@ -30,9 +35,9 @@ trait UserComponent extends WithMyDriver {
     def city = column[Option[String]]("city")
     def created = column[Option[Date]]("created")
     def modified = column[Option[Date]]("modified")
-
-    def * = (id, name, password, email, image, city) <> (User.tupled, User.unapply)
-
+    def roleId = column[Long]("role")
+    def * = (id, name, password, email, image, city, roleId) <> (User.tupled, User.unapply)
+    def role = foreignKey("roles", roleId, roles)(_.id)
   }
 
   val users = TableQuery[Users]
@@ -47,5 +52,18 @@ trait UserComponent extends WithMyDriver {
   def findUserById(id: Long)(implicit session: Session): Option[User] = {
     users.filter(_.id === id).list.headOption
   }
+
+  def findRoleById(id: Long)(implicit session: Session): Option[Role] = {
+    roles.filter(_.id === id).list.headOption
+  }
+
+
+  class Roles(tag: Tag) extends Table[Role](tag, "roles") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def name = column[String]("name")
+    def * = (id, name) <> (Role.tupled, Role.unapply)
+  }
+
+  val roles = TableQuery[Roles]
 
 }
