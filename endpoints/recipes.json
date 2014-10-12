@@ -153,3 +153,10 @@
 {
   "ok": true
 }
+
+
+
+{"name":"Taccer","image":null,"description":"En optimal lasser","language":1,"calories":1000.0,"procedure":"Hvordan lager man en lasser? Jo.. Nå skal du høre..","created":1412632800000,"modified":1412632800000,"ingredients":[{"name":"Kjøttdeig","image":null,"amount":400.0},{"name":"Melk","image":null,"amount":300.0},{"name":"Vann","image":null,"amount":200.0},{"name":"Lasagne plater","image":null,"amount":1.0},{"name":"Lasagne krydder","image":null,"amount":1.0}]}
+
+
+{"id":3,"name":"PELLE","image":null,"description":"En optimal lasser","language":1,"calories":1000.0,"procedure":"Hvordan lager man en lasser? Jo.. Nå skal du høre..","created":1412632800000,"modified":1412632800000,"ingredients":[{"ingredientId":1,"name":"Kjøttdeig","image":null,"amount":400.0},{"ingredientId":2,"name":"Melk","image":null,"amount":300.0},{"ingredientId":3,"name":"Vann","image":null,"amount":200.0},{"ingredientId":4, "name":"Lasagne plater","image":null,"amount":1.0},{"ingredientId":5, "name":"Lasagne krydder","image":null,"amount":1.0}]}

@@ -24,8 +24,14 @@ object RecipeController extends MyController {
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
       },
       recipe => {
-        recipes.insert(recipe)
-        Ok(Json.obj("ok" -> true, "message" -> ("Recipe '" + recipe.name + "' saved,")))
+        saveRecipeToDb(recipe)
+//        recipes.insert(RecipeSchema(recipe.id, recipe.name, recipe.image, recipe.description, recipe.language,
+//          recipe.calories, recipe.procedure, recipe.created, recipe.modified))
+//        recipe.ingredients.foreach{
+//          i => ingredients.insert(IngredientSchema(Some(i.ingredientId), i.name, i.image))
+//               ingredientsInRecipe.insert(IngredientInRecipeSchema(i.recipeId, i.ingredientId, i.amount))
+//        }
+        Ok(Json.obj("ok" -> true, "message" -> (recipe)))
       }
     )
 
@@ -33,8 +39,9 @@ object RecipeController extends MyController {
 
   def getRecipe(id: Long) = DBAction { implicit session =>
     val recipe = findRecipeById(id)
-    val ingredients = findIngredientsForRecipe(id)
-    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe), "ingredients" -> Json.toJson(ingredients)))
+//    val ingredients = findIngredientsForRecipe(id)
+//    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe), "ingredients" -> Json.toJson(ingredients)))
+    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe)))
   }
 
 

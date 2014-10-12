@@ -1,6 +1,6 @@
 package controllers
 
-import models.{IngredientForRecipe, Ingredient}
+import models.{IngredientForRecipe, IngredientSchema}
 import play.api.db.slick.DBAction
 import controllers.MyController
 import play.api.libs.functional.syntax._
@@ -21,13 +21,14 @@ object IngredientController extends MyController {
   }
 
   def saveIngredient = DBAction(BodyParsers.parse.json) { implicit request =>
-    val ingredientResult = request.body.validate[Ingredient]
+    val ingredientResult = request.body.validate[IngredientSchema]
+
     ingredientResult.fold(
       errors => {
         BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
       },
       ingredient => {
-        ingredients.insert(ingredient)
+        ingredients.insert(IngredientSchema(ingredient.id, ingredient.name, ingredient.image))
         Ok(Json.obj("ok" -> true, "message" -> ("Ingredient '" + ingredient.name + "' saved,")))
       }
     )
@@ -39,7 +40,9 @@ object IngredientController extends MyController {
   }
 
   def getIngredientsForRecipe(recipeId: Long) = DBAction { implicit session =>
-    val json = Json.toJson(findIngredientsForRecipe(recipeId))
+    val json = Json.toJson(findIngredientsForRecipe(recipeId).map{
+      i => IngredientForRecipe(i.recipeId, i.ingredientId, i.name, i.image, i.amount)
+    })
     Ok(Json.obj("ok" -> true, "ingredients" -> json))
   }
 
