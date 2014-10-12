@@ -19,7 +19,7 @@ VALUES
   ('Lasagne plater'),
   ('Lasagne krydder');
 
-INSERT INTO tag(name)
+INSERT INTO tags(name)
 VALUES
   ('pasta'),
   ('italiensk');
