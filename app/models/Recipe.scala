@@ -8,7 +8,7 @@ import play.api.libs.json.{JsValue, Json}
 import org.joda.time.LocalDateTime
 
 case class Recipe(
-                  id: Option[Int],
+                  id: Option[Long],
                   name: String,
                   image: Option[JsValue],
                   description: String,
@@ -23,7 +23,7 @@ trait RecipeComponent extends WithMyDriver {
   import driver.simple._
 
   class Recipes(tag: Tag) extends Table[Recipe](tag, "recipe") {
-    def id = column[Option[Int]]("id", O.PrimaryKey, O.AutoInc)
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
     def image = column[Option[JsValue]]("image")
     def description = column[String]("description")
@@ -46,5 +46,8 @@ trait RecipeComponent extends WithMyDriver {
   def insert(recipe: Recipe)(implicit session: Session): Recipe =
     recipesAutoInc.insert(recipe)
 
+  def findRecipeById(id: Long)(implicit session: Session): Option[Recipe] = {
+    recipes.filter(_.id === id).list.headOption
+  }
 
 }

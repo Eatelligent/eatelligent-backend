@@ -1,8 +1,8 @@
 package controllers
 
-import models.Ingredient
+import models.{IngredientForRecipe, Ingredient}
 import play.api.db.slick.DBAction
-import play.api.mvc.Controller
+import controllers.MyController
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import models.current.dao._
@@ -10,21 +10,11 @@ import models.current.dao.driver.simple._
 import play.api.db.slick._
 import play.api.mvc._
 import play.api.Play.current
+import myUtils._
 
-object IngredientController extends Controller {
+object IngredientController extends MyController {
 
-  implicit val ingredientRead: Reads[Ingredient] = (
-    (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "name").read[String] and
-      (JsPath \ "image").readNullable[JsValue]
-    )(Ingredient.apply _)
-  
-  implicit val recipeWrites: Writes[Ingredient] = (
-    (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]]
-    )(unlift(Ingredient.unapply))
-  
+
   def listIngredients = DBAction { implicit request =>
     val json = Json.toJson(ingredients.list)
     Ok(Json.obj("ok" -> true, "ingredients" -> json))
@@ -46,6 +36,11 @@ object IngredientController extends Controller {
   def getIngredient(id: Long) = DBAction { implicit session =>
     val json = Json.toJson(findIngredientById(id))
     Ok(Json.obj("ok" -> true, "ingredient" -> json))
+  }
+
+  def getIngredientsForRecipe(recipeId: Long) = DBAction { implicit session =>
+    val json = Json.toJson(findIngredientsForRecipe(recipeId))
+    Ok(Json.obj("ok" -> true, "ingredients" -> json))
   }
 
 }

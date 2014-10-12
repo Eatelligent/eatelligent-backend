@@ -17,6 +17,8 @@ POST    /user                       controllers.UserController.saveUser
 
 GET     /ingredients                controllers.IngredientController.listIngredients
 
+GET     /ingredients/:recipeId      controllers.IngredientController.getIngredientsForRecipe(recipeId: Long)
+
 GET     /ingredient/:id             controllers.IngredientController.getIngredient(id: Long)
 
 POST    /ingredient                 controllers.IngredientController.saveIngredient
@@ -24,7 +26,7 @@ POST    /ingredient                 controllers.IngredientController.saveIngredi
 
 POST    /languages                  controllers.Application.saveLanguage
 
-GET     /recipe                     controllers.RecipeController.getRecipe
+GET     /recipe/:id                 controllers.RecipeController.getRecipe(id: Long)
 
 GET     /recipes                    controllers.RecipeController.listRecipes
 
