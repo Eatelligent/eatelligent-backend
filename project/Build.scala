@@ -16,7 +16,7 @@ object ApplicationBuild extends Build {
     "com.github.tminglei" %% "slick-pg_joda-time" % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_play-json" % slickPgVersion,
     "com.github.tminglei" %% "slick-pg_jts" % slickPgVersion,
-    "org.postgresql" % "postgresql" % "9.3-1100-jdbc4",
+    "org.postgresql" % "postgresql" % "9.3-1102-jdbc4",
     "joda-time" % "joda-time" % "2.4",
     "org.joda" % "joda-convert" % "1.6",
     "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
