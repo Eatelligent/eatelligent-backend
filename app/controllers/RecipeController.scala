@@ -44,6 +44,11 @@ object RecipeController extends MyController {
     Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe)))
   }
 
+  def getRecipesByQuery(q: String) = DBAction { implicit session =>
+    val recipes = findRecipesByName(q)
+    Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(recipes)))
+  }
+
 
 
 }

@@ -2,7 +2,7 @@ package controllers
 
 import java.sql.Date
 
-import models.{Recipe, IngredientForRecipe, RecipeSchema, IngredientSchema}
+import models._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsValue, JsPath, Reads}
 import play.api.mvc.Controller
@@ -123,4 +123,16 @@ class MyController extends Controller {
       (JsPath \ "created").write[Date] and
       (JsPath \ "modified").write[Date]
     )(unlift(RecipeSchema.unapply))
+
+  implicit val tinyRecipeRead: Reads[TinyRecipe] = (
+    (JsPath \ "id").read[Long] and
+      (JsPath \ "name").read[String] and
+      (JsPath \ "image").read[Option[JsValue]]
+    )(TinyRecipe.apply _)
+
+  implicit val tinyRecipeWrites: Writes[TinyRecipe] = (
+    (JsPath \ "id").write[Long] and
+      (JsPath \ "name").write[String] and
+      (JsPath \ "image").write[Option[JsValue]]
+    )(unlift(TinyRecipe.unapply))
 }

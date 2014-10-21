@@ -26,9 +26,11 @@ POST    /ingredient                 controllers.IngredientController.saveIngredi
 
 POST    /languages                  controllers.Application.saveLanguage
 
-GET     /recipe/:id                 controllers.RecipeController.getRecipe(id: Long)
+GET     /recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
 
-GET     /recipes                    controllers.RecipeController.listRecipes
+GET     /recipes/:q                 controllers.RecipeController.getRecipesByQuery(q: String)
+
+GET     /allrecipes                    controllers.RecipeController.listRecipes
 
 POST    /recipe                     controllers.RecipeController.saveRecipe
 

@@ -30,6 +30,12 @@ case class Recipe(
                    ingredients: Seq[IngredientForRecipe]
                    )
 
+case class TinyRecipe(
+                      id: Long,
+                      name: String,
+                      image: Option[JsValue]
+                       )
+
 trait RecipeComponent extends WithMyDriver with IngredientComponent {
   import driver.simple._
 
@@ -79,13 +85,41 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
   }
 
   def findRecipeById(id: Long)(implicit session: Session): Option[Recipe] = {
-    val recipe = recipes.filter(_.id === id).list.headOption
-    val i = findIngredientsForRecipe(id)
-    recipe match {
-      case Some(r) => Some(Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-        r.created,
-        r.modified, i))
+    val res = Option(recipes.filter(_.id === id).list)
+    res match {
+      case Some(r) =>
+        if (r.isEmpty) {
+          None
+        }
+        else
+          Some(transformRecipes(r).head)
       case None => None
+    }
+  }
+
+  def findRecipesByName(q: String)(implicit sessions: Session): Option[List[TinyRecipe]] = {
+    val res = Option(recipes.filter(_.name.toLowerCase like "%" + q.toLowerCase + "%").list)
+    res match {
+      case Some(r) => mapToTinyRecipe(Some(transformRecipes(r)))
+    }
+  }
+
+  def mapToTinyRecipe(recipes: Option[List[Recipe]]): Option[List[TinyRecipe]] = {
+    recipes match {
+      case Some(r) => Option(r.map{
+        x =>
+        TinyRecipe(x.id.toList.head, x.name, x.image)
+      })
+      case None => None
+    }
+  }
+
+  def transformRecipes(rawRecipes: List[RecipeSchema])(implicit sessions: Session): List[Recipe] = {
+    rawRecipes.map{
+      r =>
+        val i = findIngredientsForRecipe(r.id.last)
+        Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
+            r.created, r.modified, i)
     }
   }
 
