@@ -20,7 +20,8 @@ object ApplicationBuild extends Build {
     "joda-time" % "joda-time" % "2.4",
     "org.joda" % "joda-convert" % "1.6",
     "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
-    "com.vividsolutions" % "jts" % "1.13"
+    "com.vividsolutions" % "jts" % "1.13",
+    "com.cloudinary" %% "cloudinary-scala-play" % "0.9.4-SNAPSHOT"
   )
 
   lazy val main = Project(id = "play-slick-pg", base = file(".")).enablePlugins(play.PlayScala).settings(

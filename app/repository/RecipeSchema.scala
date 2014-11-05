@@ -8,7 +8,7 @@ import play.api.libs.json.{JsValue, Json}
 case class RecipeSchema(
                   id: Option[Long],
                   name: String,
-                  image: Option[JsValue],
+                  image: Option[String],
                   description: String,
                   language: Int,
                   calories: Double,
@@ -20,7 +20,7 @@ case class RecipeSchema(
 case class Recipe(
                    id: Option[Long],
                    name: String,
-                   image: Option[JsValue],
+                   image: Option[String],
                    description: String,
                    language: Int,
                    calories: Double,
@@ -33,7 +33,7 @@ case class Recipe(
 case class TinyRecipe(
                       id: Long,
                       name: String,
-                      image: Option[JsValue]
+                      image: Option[String]
                        )
 
 trait RecipeComponent extends WithMyDriver with IngredientComponent {
@@ -42,7 +42,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
   class Recipes(tag: Tag) extends Table[RecipeSchema](tag, "recipe") {
     def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
-    def image = column[Option[JsValue]]("image")
+    def image = column[Option[String]]("image")
     def description = column[String]("description")
     def language = column[Int]("language")
     def calories = column[Double]("calories")
@@ -122,5 +122,16 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
             r.created, r.modified, i)
     }
   }
+
+  def updateImage(recipeId: Long, image: String)(implicit sessions: Session) {
+    val q = for { r <- recipes if r.id === recipeId } yield r.image
+
+    val a = q.run
+//    if (a.head.nonEmpty)
+//      deleteImage
+    q.update(Some(image))
+  }
+
+//  def deleteImage = ???
 
 }

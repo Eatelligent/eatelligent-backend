@@ -23,7 +23,7 @@ CREATE TABLE language (
 CREATE TABLE recipe (
 	id serial8 primary key,
 	name text,
-	image json,
+	image text,
 	description text,
 	language int8 references language(id) ON DELETE CASCADE,
 	calories real,

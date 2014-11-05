@@ -77,7 +77,7 @@ class MyController extends Controller {
   implicit val recipeRead: Reads[Recipe] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[JsValue]] and
+      (JsPath \ "image").read[Option[String]] and
       (JsPath \ "description").read[String] and
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").read[Double] and
@@ -90,7 +90,7 @@ class MyController extends Controller {
   implicit val recipeWrites: Writes[Recipe] = (
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]] and
+      (JsPath \ "image").write[Option[String]] and
       (JsPath \ "description").write[String] and
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Double] and
@@ -103,7 +103,7 @@ class MyController extends Controller {
   implicit val recipeSchemaRead: Reads[RecipeSchema] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[JsValue]] and
+      (JsPath \ "image").read[Option[String]] and
       (JsPath \ "description").read[String] and
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").read[Double] and
@@ -115,7 +115,7 @@ class MyController extends Controller {
   implicit val recipeSchemaWrites: Writes[RecipeSchema] = (
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]] and
+      (JsPath \ "image").write[Option[String]] and
       (JsPath \ "description").write[String] and
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Double] and
@@ -127,12 +127,12 @@ class MyController extends Controller {
   implicit val tinyRecipeRead: Reads[TinyRecipe] = (
     (JsPath \ "id").read[Long] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[JsValue]]
+      (JsPath \ "image").read[Option[String]]
     )(TinyRecipe.apply _)
 
   implicit val tinyRecipeWrites: Writes[TinyRecipe] = (
     (JsPath \ "id").write[Long] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]]
+      (JsPath \ "image").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
 }

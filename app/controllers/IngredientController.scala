@@ -2,7 +2,6 @@ package controllers
 
 import models.{IngredientForRecipe, IngredientSchema}
 import play.api.db.slick.DBAction
-import controllers.MyController
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import models.current.dao._
