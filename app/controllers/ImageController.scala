@@ -5,7 +5,7 @@ import repository.{Photo}
 
 import scala.concurrent._
 import play.api.mvc.Action
-import models.current.dao._
+import repository.current.dao._
 import play.api.data._
 import play.api.data.Forms._
 import cloudinary.model.CloudinaryResource

@@ -1,12 +1,12 @@
 package controllers
 
-import models.{Role, User}
+import repository.{Role, User}
 import play.api.db.slick.DBAction
 import play.api.mvc.Controller
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import models.current.dao._
-import models.current.dao.driver.simple._
+import repository.current.dao._
+import repository.current.dao.driver.simple._
 import play.api.db.slick._
 import play.api.mvc._
 import play.api.Play.current

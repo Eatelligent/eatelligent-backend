@@ -40,5 +40,7 @@ GET     /imageform                  controllers.ImageController.imageForm
 
 POST    /                           controllers.ImageController.create
 
+GET     /tags/:id                   controllers.RecipeController.getTag(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

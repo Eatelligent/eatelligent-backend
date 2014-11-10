@@ -1,17 +1,12 @@
-package models
+package repository
 
 import play.api.db.slick.DB
 import myUtils.MyPostgresDriver
 
+
 class DAO(override val driver: MyPostgresDriver) extends LanguageComponent with RecipeComponent with
-                                                          IngredientComponent with UserComponent {
-  import driver.simple._
+                                                          IngredientComponent with UserComponent with TagComponent {
 
-//  val osmWays = TableQuery(new Language(_))
-
-//  val languages = TableQuery(new Languages(_))
-//
-//  val recipes = TableQuery(new Recipes(_))
 
 }
 

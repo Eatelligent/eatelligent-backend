@@ -1,4 +1,4 @@
-package models
+package repository
 
 import java.sql.Date
 
@@ -14,7 +14,8 @@ case class RecipeSchema(
                   calories: Double,
                   procedure: String,
                   created: Date,
-                  modified: Date
+                  modified: Date,
+                  createdById: Long
                   )
 
 case class Recipe(
@@ -27,7 +28,9 @@ case class Recipe(
                    procedure: String,
                    created: Date,
                    modified: Date,
-                   ingredients: Seq[IngredientForRecipe]
+                   ingredients: Seq[IngredientForRecipe],
+                   tags: Seq[TagSchema],
+                   createdBy: TinyUser
                    )
 
 case class TinyRecipe(
@@ -36,7 +39,7 @@ case class TinyRecipe(
                       image: Option[String]
                        )
 
-trait RecipeComponent extends WithMyDriver with IngredientComponent {
+trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComponent with UserComponent {
   import driver.simple._
 
   class Recipes(tag: Tag) extends Table[RecipeSchema](tag, "recipe") {
@@ -49,12 +52,14 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
     def procedure = column[String]("procedure")
     def created = column[Date]("created")
     def modified = column[Date]("modified")
+    def createdById = column[Long]("created_by")
 
-    def * = (id, name, image, description, language, calories, procedure, created, modified) <> (RecipeSchema.tupled,
+    def * = (id, name, image, description, language, calories, procedure, created, modified,
+      createdById) <> (RecipeSchema.tupled,
       RecipeSchema.unapply)
   }
 
-  val recipes = TableQuery[Recipes]
+  def recipes = TableQuery[Recipes]
 
   private val recipesAutoInc = recipes returning recipes.map(_.id) into {
     case (r, id) => r.copy(id = id)
@@ -70,7 +75,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
   def saveRecipeToDb(r: Recipe)(implicit session: Session): Recipe = {
     session.withTransaction{
       val rid = ins(RecipeSchema(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-        r.created, r.modified))
+        r.created, r.modified, r.createdBy.id))
       r.ingredients.foreach{
         i =>
           if (i.ingredientId == None) {
@@ -101,6 +106,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
     val res = Option(recipes.filter(_.name.toLowerCase like "%" + q.toLowerCase + "%").list)
     res match {
       case Some(r) => mapToTinyRecipe(Some(transformRecipes(r)))
+      case None => None
     }
   }
 
@@ -118,8 +124,12 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent {
     rawRecipes.map{
       r =>
         val i = findIngredientsForRecipe(r.id.last)
-        Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-            r.created, r.modified, i)
+        val t = findTagsForRecipe(r.id.last)
+        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+
+        val rec = Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
+            r.created, r.modified, i, t, u.get)
+        rec
     }
   }
 

@@ -1,12 +1,12 @@
 package controllers
 
-import models._
+import repository._
 import play.api.db.slick._
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play.current
-import models.current.dao._
-import models.current.dao.driver.simple._
+import repository.current.dao._
+import repository.current.dao.driver.simple._
 
 
 
@@ -41,12 +41,20 @@ object RecipeController extends MyController {
     val recipe = findRecipeById(id)
 //    val ingredients = findIngredientsForRecipe(id)
 //    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe), "ingredients" -> Json.toJson(ingredients)))
+    println("recipe: " + recipe)
+    val a = Json.toJson(recipe)
+    println("Recipe as Json: " + a)
     Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe)))
   }
 
   def getRecipesByQuery(q: String) = DBAction { implicit session =>
     val recipes = findRecipesByName(q)
     Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(recipes)))
+  }
+
+  def getTag(id: Long) = DBAction { implicit session =>
+    val tag = findTagById(id)
+    Ok(Json.obj("ok" -> true, "tag" -> Json.toJson(tag)))
   }
 
 

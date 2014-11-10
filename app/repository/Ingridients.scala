@@ -1,4 +1,4 @@
-package models
+package repository
 
 import myUtils.WithMyDriver
 import play.api.libs.json.JsValue
@@ -60,7 +60,6 @@ trait IngredientComponent extends WithMyDriver {
 
   def findIngredientsForRecipe(recipeId: Long)(implicit session: Session) : Seq[IngredientForRecipe]
   = {
-    var list: Seq[IngredientForRecipe] = List()
     val join = for {
       (iir, i) <- ingredientsInRecipe innerJoin ingredients on (_.ingredientId === _.id) if iir.recipeId === recipeId
     } yield (iir.ingredientId, iir.recipeId, i.name, i.image, iir.amount)

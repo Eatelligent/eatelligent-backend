@@ -9,11 +9,11 @@ import play.api.mvc._
 import play.api.db.slick._
 import play.api.Play.current
 import myUtils._
-import models._
+import repository._
 import play.api.libs.functional.syntax._
 
-import models.current.dao._
-import models.current.dao.driver.simple._
+import repository.current.dao._
+import repository.current.dao.driver.simple._
 
 object Application extends Controller {
 
@@ -48,16 +48,16 @@ object Application extends Controller {
     )
   }
 
-  val languageForm: Form[Language] = Form {
-      mapping(
-        "id" -> optional(number),
-        "locale" -> nonEmptyText,
-        "name" -> nonEmptyText
-      )(Language.apply)(Language.unapply)
-  }
+//  val languageForm: Form[Language] = Form {
+//      mapping(
+//        "id" -> optional(number),
+//        "locale" -> nonEmptyText,
+//        "name" -> nonEmptyText
+//      )(Language.apply)(Language.unapply)
+//  }
 
   def index = DBAction { implicit request =>
-    Ok(views.html.index(languages.list))
+    Ok(views.html.index())
   }
 
   def insert = DBAction { implicit rs =>

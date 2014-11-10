@@ -20,39 +20,15 @@ CREATE TABLE language (
 	name text
 );
 
-CREATE TABLE recipe (
-	id serial8 primary key,
-	name text,
-	image text,
-	description text,
-	language int8 references language(id) ON DELETE CASCADE,
-	calories real,
-	procedure text,
-	created timestamptz,
-	modified timestamptz
-	/* Public rating (matirialized view) */
-);
-
 CREATE TABLE tags (
 	id serial8 primary key,
 	name text
-);
-
-CREATE TABLE recipe_in_tag (
-	recipe_id int8 references recipe(id) ON DELETE CASCADE,
-	tag_id int8 references tags(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ingredient (
 	id serial8 primary key,
 	name text,
 	image json
-);
-
-CREATE TABLE ingredient_in_recipe (
-	recipe_id int8 references recipe(id),
-	ingredient_id int8 references ingredient(id),
-	amount real
 );
 
 CREATE TABLE unit (
@@ -80,6 +56,31 @@ CREATE TABLE users (
 	age int,
 	image text,
 	user_preferences int8 references user_preferences(id) ON DELETE CASCADE
+);
+
+CREATE TABLE recipe (
+	id serial8 primary key,
+	name text,
+	image text,
+	description text,
+	language int8 references language(id) ON DELETE CASCADE,
+	calories real,
+	procedure text,
+	created timestamptz,
+	modified timestamptz,
+	created_by int8 references users(id) ON DELETE CASCADE
+	/* Public rating (matirialized view) */
+);
+
+CREATE TABLE recipe_in_tag (
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
+	tag_id int8 references tags(id) ON DELETE CASCADE
+);
+
+CREATE TABLE ingredient_in_recipe (
+	recipe_id int8 references recipe(id),
+	ingredient_id int8 references ingredient(id),
+	amount real
 );
 
 CREATE TABLE user_star_rate_recipe ( /* id references */

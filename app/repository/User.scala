@@ -1,4 +1,4 @@
-package models
+package repository
 
 import java.sql.Date
 
@@ -17,6 +17,11 @@ case class User(
 //                created: Option[Date],
 //                modified: Option[Date]
                  )
+
+case class TinyUser(
+                    id: Long,
+                    name: String
+                     )
 case class Role (
                   id: Long,
                   name: String
