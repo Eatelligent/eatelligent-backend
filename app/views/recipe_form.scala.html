@@ -3,10 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Recipe builder</title>
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/styles.css")">
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")">
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   </head>
   <body>
     <div id="main">
@@ -39,8 +37,8 @@
           <label for="language">
             Språk
             <select id="language">
-              <option value="5">Norsk</option>
-              <option value="6">Engelsk</option>
+              <option value="nb-NO">Norsk</option>
+              <option value="en-US">Engelsk</option>
             </select>
           </label>
         </div>
@@ -123,30 +121,30 @@
               </div>
             </div>
           </div>
-
+            
           <button data-js-new-ingredient>Legg til ny ingrediens</button>
         </div>
 
         <!-- Author -->
         <label for="author">Forfatter</label>
-        <div class="span1of2">
+        <div class="span1of3">
           <label for="first-name">
             Fornavn
             <input type="text" id="first-name" placeholder="Even">
           </label>
         </div>
-        <div class="span1of2 last">
+        <div class="span1of3">
           <label for="last-name">
             Etternavn
             <input type="text" id="last-name" placeholder="Lislebø">
           </label>
         </div>
-        <!-- <div class="span1of3 last">
+        <div class="span1of3 last">
           <label for="email">
             E-mail
-            <input type="text" id="email" placeholder="">
+            <input type="text" id="email" placeholder="gurr@gurr.gurr">
           </label>
-        </div> -->
+        </div>
 
         <!-- Submit -->
         <div class="span1of1">
@@ -157,6 +155,131 @@
 
     <pre id="result"></pre>
 
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/recipe.form.js")"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function() {
+        var minutes = function(i) {
+          var min = 10;
+          return min + i * 10;
+        }
+
+        var hours = function(minutes) {
+          if (minutes < 60) return minutes+"m";
+          var h = parseInt(minutes / 60);
+          return h +"t "+ (minutes - h * 60)+"m"
+        }
+
+        for (var i = 0; i < 14; i++) {
+          $('.time').append('<label>'+
+          '  <input type="radio" name="button-group-time" value="'+minutes(i)+'">'+
+          '  <span class="button-group-item">'+hours(minutes(i))+'</span>'+
+          '</label>');
+        }
+      });
+
+      function readURL(input) {
+
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#preview').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      $("[type=file]").change(function(){
+          readURL(this);
+      });
+
+      $('[data-js-new-ingredient]').click(function() {
+        $('.ingredients-wrapper').append('<div class="ingredient"><div class="span1of3">'+
+           '   <input type="text" class="ingredient-name" placeholder="Plomme">'+
+           ' </div>'+
+           ' <div class="span1of3">'+
+           '   <input type="number" class="ingredient-amount" min="0" placeholder="Antall/mengde">'+
+           ' </div>'+
+           ' <div class="span1of3 last">'+
+           '   <select class="ingredient-unit">'+
+           '     <option value="gram">Gram</option>'+
+           '     <option value="cup">Kopp</option>'+
+           '     <option value="liter">Liter</option>'+
+           '     <option value="stk">Stk</option>'+
+           '     <option value="pinch">Klype</option>'+
+           '     <option value="basket">Kurv</option>'+
+           '   </select>'+
+           ' </div></div>');
+      });
+
+      $('input[type=submit]').click(function() {
+        var name = $('#name').val();
+        var tags = $('#tags').val();
+        if (tags !== "") { tags = tags.split(','); } else { tags = []; }
+        var time = parseInt($('[name=button-group-time]:checked').val());
+        var language = $('#language option:selected').val();
+
+        // picture
+
+        var description = $('#description').val();
+        var procedure = $('#procedure').val();
+        var strength = parseInt($('[name=button-group-strength]:checked').val());
+        var ingredients = [];
+
+        var $ing = $('.ingredient');
+        $ing.each(function(index, $ingredient) {
+          var ingredientname = $('.ingredient-name', $ingredient).val();
+          var amount = $('.ingredient-amount', $ingredient).val();
+          var unit = $('.ingredient-unit option:selected', $ingredient).val();
+
+          ingredients.push({
+            name: ingredientname,
+            amount: amount,
+            unit: unit
+          });
+        });
+
+        var firstName = $('#first-name').val();
+        var lastName = $('#last-name').val();
+        var email = $('#email').val();
+
+        var postObject = {
+          name: name,
+          tags: tags,
+          time: time,
+          language: language,
+          description: description,
+          procedure: procedure,
+          strength: strength,
+          ingredients: ingredients,
+          author: {
+            first_name: firstName,
+            last_name: lastName,
+            email: email
+          }
+        };
+
+        window.postObject = postObject;
+
+        $('#result').html('<b>The following is going to be posted</b>\n' + 
+          JSON.stringify(postObject, null, '\t') + 
+          '\n\n<button class="send">Send inn oppskrift</button>');
+
+        $('.send').click(function() {
+          console.log(arguments);
+
+          var xhr = $.post('http://mealchooser-backend.herokuapp.com/api/recipes', postObject);
+          xhr.done(function(response) {
+            alert('done', JSON.stringify(response));
+            location.reload();
+          });
+
+          xhr.fail(function() {
+            alert('Noe gæli, check console');
+            console.log(arguments);
+          });
+        });
+
+      })
+    </script>
   </body>
 </html>
