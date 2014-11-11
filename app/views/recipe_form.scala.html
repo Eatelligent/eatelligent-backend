@@ -267,7 +267,7 @@
         $('.send').click(function() {
           console.log(arguments);
 
-          var xhr = $.post('http://mealchooser-backend.herokuapp.com/api/recipes', postObject);
+          var xhr = $.post('api/recipes', JSON.stringify(postObject));
           xhr.done(function(response) {
             alert('done', JSON.stringify(response));
             location.reload();
