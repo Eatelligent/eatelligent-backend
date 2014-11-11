@@ -9,30 +9,28 @@ POST    /insert                     controllers.Application.insert
 
 GET     /lasser                     controllers.Application.lasser
 
-GET     /users                      controllers.UserController.listUsers
+GET     /api/users                      controllers.UserController.listUsers
 
-GET     /user/:id                   controllers.UserController.getUser(id: Long)
+GET     /api/users/:id                   controllers.UserController.getUser(id: Long)
 
-POST    /user                       controllers.UserController.saveUser
+POST    /api/users                       controllers.UserController.saveUser
 
-GET     /ingredients                controllers.IngredientController.listIngredients
+GET     /api/ingredients                controllers.IngredientController.listIngredients
 
-GET     /ingredients/:recipeId      controllers.IngredientController.getIngredientsForRecipe(recipeId: Long)
+GET     /api/ingredients/:id             controllers.IngredientController.getIngredient(id: Long)
 
-GET     /ingredient/:id             controllers.IngredientController.getIngredient(id: Long)
-
-POST    /ingredient                 controllers.IngredientController.saveIngredient
+POST    /api/ingredients                 controllers.IngredientController.saveIngredient
 
 
-POST    /languages                  controllers.Application.saveLanguage
+POST    /api/languages                  controllers.Application.saveLanguage
 
-GET     /recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
+GET     /api/recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
 
-GET     /recipes/:q                 controllers.RecipeController.getRecipesByQuery(q: String)
+GET     /api/recipes/:q                 controllers.RecipeController.getRecipesByQuery(q: String)
 
-GET     /allrecipes                    controllers.RecipeController.listRecipes
+GET     /api/allrecipes                    controllers.RecipeController.listRecipes
 
-POST    /recipe                     controllers.RecipeController.saveRecipe
+POST    /api/recipes                     controllers.RecipeController.saveRecipe
 
 GET     /pelle                      controllers.Application.pelle
 
@@ -40,7 +38,7 @@ GET     /imageform                  controllers.ImageController.imageForm
 
 POST    /                           controllers.ImageController.create
 
-GET     /tags/:id                   controllers.RecipeController.getTag(id: Long)
+GET     /api/tags/:id                   controllers.RecipeController.getTag(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
