@@ -60,6 +60,10 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
+  def recipeForm = DBAction { implicit request =>
+    Ok(views.html.recipe_form())
+  }
+
   def insert = DBAction { implicit rs =>
 //    val language = languageForm.bindFromRequest.get
 //    languages.insert(language)

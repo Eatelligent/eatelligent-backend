@@ -24,6 +24,8 @@ POST    /api/ingredients                 controllers.IngredientController.saveIn
 
 POST    /api/languages                  controllers.Application.saveLanguage
 
+GET     /recipe_form                    controllers.Application.recipeForm
+
 GET     /api/recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
 
 GET     /api/recipes/:q                 controllers.RecipeController.getRecipesByQuery(q: String)
