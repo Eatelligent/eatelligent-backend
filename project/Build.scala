@@ -28,11 +28,12 @@ object ApplicationBuild extends Build {
     libraryDependencies ++= appDependencies,
     resolvers += Resolver.mavenLocal,
     resolvers += Resolver.sonatypeRepo("snapshots"),
+    resolvers += Resolver.file("Local Ivy", file(Path.userHome + "/.ivy2/local"))(Resolver.ivyStylePatterns),
     scalacOptions ++= Seq("-deprecation", "-feature",
       "-language:implicitConversions",
       "-language:reflectiveCalls",
       "-language:higherKinds",
       "-language:postfixOps"
     )
-  )
+  ).enablePlugins(play.PlayScala)
 }
