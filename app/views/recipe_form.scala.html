@@ -3,8 +3,13 @@
   <head>
     <meta charset="utf-8">
     <title>Recipe builder</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/styles.css")">
     <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.js")"></script>
+=======
+    <link rel="stylesheet" href="styles/styles.css">
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+>>>>>>> moving the shit
   </head>
   <body>
     <div id="main">
@@ -142,7 +147,7 @@
         <div class="span1of3 last">
           <label for="email">
             E-mail
-            <input type="text" id="email" placeholder="">
+            <input type="text" id="email" placeholder="gurr@gurr.gurr">
           </label>
         </div>
 
@@ -268,6 +273,7 @@
           console.log(arguments);
 
           var xhr = $.post('api/recipes', JSON.stringify(postObject));
+
           xhr.done(function(response) {
             alert('done', JSON.stringify(response));
             location.reload();
