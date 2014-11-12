@@ -80,10 +80,10 @@ class MyController extends Controller {
   implicit val recipeRead: Reads[Recipe] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[String]] and
+      (JsPath \ "image").readNullable[String] and
       (JsPath \ "description").read[String] and
       (JsPath \ "language").read[Int] and
-      (JsPath \ "calories").read[Double] and
+      (JsPath \ "calories").readNullable[Double] and
       (JsPath \ "procedure").read[String] and
       (JsPath \ "created").readNullable[DateTime] and
       (JsPath \ "modified").readNullable[DateTime] and
@@ -98,7 +98,7 @@ class MyController extends Controller {
       (JsPath \ "image").write[Option[String]] and
       (JsPath \ "description").write[String] and
       (JsPath \ "language").write[Int] and
-      (JsPath \ "calories").write[Double] and
+      (JsPath \ "calories").write[Option[Double]] and
       (JsPath \ "procedure").write[String] and
       (JsPath \ "created").write[Option[DateTime]] and
       (JsPath \ "modified").write[Option[DateTime]] and

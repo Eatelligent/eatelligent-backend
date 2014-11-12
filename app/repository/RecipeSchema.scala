@@ -25,7 +25,7 @@ case class Recipe(
                    image: Option[String],
                    description: String,
                    language: Int,
-                   calories: Double,
+                   calories: Option[Double],
                    procedure: String,
                    created: Option[DateTime],
                    modified: Option[DateTime],
@@ -75,7 +75,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
 
   def saveRecipeToDb(r: Recipe)(implicit session: Session): Recipe = {
     session.withTransaction{
-      val rid = ins(RecipeSchema(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
+      val rid = ins(RecipeSchema(r.id, r.name, r.image, r.description, r.language, 0, r.procedure,
         new DateTime(), new DateTime(), r.createdBy.id))
       r.ingredients.foreach{
         i =>
@@ -139,7 +139,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
         val t = findTagsForRecipe(r.id.last)
         val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
 
-        val rec = Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
+        val rec = Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
             Some(r.created), Some(r.modified), i, t, u.get)
         rec
     }
