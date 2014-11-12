@@ -3,6 +3,7 @@ package repository
 import java.sql.Date
 
 import myUtils.WithMyDriver
+import org.joda.time.DateTime
 import play.api.libs.json.{JsValue, Json}
 
 case class RecipeSchema(
@@ -13,8 +14,8 @@ case class RecipeSchema(
                   language: Int,
                   calories: Double,
                   procedure: String,
-                  created: Date,
-                  modified: Date,
+                  created: DateTime,
+                  modified: DateTime,
                   createdById: Long
                   )
 
@@ -26,8 +27,8 @@ case class Recipe(
                    language: Int,
                    calories: Double,
                    procedure: String,
-                   created: Date,
-                   modified: Date,
+                   created: Option[DateTime],
+                   modified: Option[DateTime],
                    ingredients: Seq[IngredientForRecipe],
                    tags: Seq[TagSchema],
                    createdBy: TinyUser
@@ -50,8 +51,8 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
     def language = column[Int]("language")
     def calories = column[Double]("calories")
     def procedure = column[String]("procedure")
-    def created = column[Date]("created")
-    def modified = column[Date]("modified")
+    def created = column[DateTime]("created")
+    def modified = column[DateTime]("modified")
     def createdById = column[Long]("created_by")
 
     def * = (id, name, image, description, language, calories, procedure, created, modified,
@@ -75,7 +76,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
   def saveRecipeToDb(r: Recipe)(implicit session: Session): Recipe = {
     session.withTransaction{
       val rid = ins(RecipeSchema(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-        r.created, r.modified, r.createdBy.id))
+        new DateTime(), new DateTime(), r.createdBy.id))
       r.ingredients.foreach{
         i =>
           if (i.ingredientId == None) {
@@ -83,6 +84,17 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
             ingredientsInRecipe.insert(IngredientInRecipeSchema(rid, iid, i.amount))
           } else {
             ingredientsInRecipe.insert(IngredientInRecipeSchema(rid, i.ingredientId.toList.head, i.amount))
+          }
+      }
+      r.tags.foreach{
+        t =>
+          println("TAGGER: " + t)
+          if (t.id == None) {
+            val tagId = insertTag(t)
+            println("NYID: " + tagId)
+            tagsInRecipes.insert(TagForRecipe(rid, tagId))
+          } else {
+            tagsInRecipes.insert(TagForRecipe(rid, t.id.get))
           }
       }
     }
@@ -128,7 +140,7 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
         val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
 
         val rec = Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-            r.created, r.modified, i, t, u.get)
+            Some(r.created), Some(r.modified), i, t, u.get)
         rec
     }
   }

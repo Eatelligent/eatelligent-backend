@@ -2,6 +2,7 @@ package controllers
 
 import java.sql.Date
 
+import org.joda.time.DateTime
 import repository._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsValue, JsPath, Reads}
@@ -84,8 +85,8 @@ class MyController extends Controller {
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").read[Double] and
       (JsPath \ "procedure").read[String] and
-      (JsPath \ "created").read[Date] and
-      (JsPath \ "modified").read[Date] and
+      (JsPath \ "created").readNullable[DateTime] and
+      (JsPath \ "modified").readNullable[DateTime] and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").read[Seq[TagSchema]] and
       (JsPath \ "createdBy").read[TinyUser]
@@ -99,8 +100,8 @@ class MyController extends Controller {
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Double] and
       (JsPath \ "procedure").write[String] and
-      (JsPath \ "created").write[Date] and
-      (JsPath \ "modified").write[Date] and
+      (JsPath \ "created").write[Option[DateTime]] and
+      (JsPath \ "modified").write[Option[DateTime]] and
       (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").write[Seq[TagSchema]] and
       (JsPath \ "createdBy").write[TinyUser]
@@ -114,8 +115,8 @@ class MyController extends Controller {
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").read[Double] and
       (JsPath \ "procedure").read[String] and
-      (JsPath \ "created").read[Date] and
-      (JsPath \ "modified").read[Date] and
+      (JsPath \ "created").read[DateTime] and
+      (JsPath \ "modified").read[DateTime] and
       (JsPath \ "createdById").read[Long]
     )(RecipeSchema.apply _)
 
@@ -127,8 +128,8 @@ class MyController extends Controller {
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Double] and
       (JsPath \ "procedure").write[String] and
-      (JsPath \ "created").write[Date] and
-      (JsPath \ "modified").write[Date] and
+      (JsPath \ "created").write[DateTime] and
+      (JsPath \ "modified").write[DateTime] and
       (JsPath \ "createdById").write[Long]
     )(unlift(RecipeSchema.unapply))
 

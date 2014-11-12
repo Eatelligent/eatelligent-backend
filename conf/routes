@@ -21,6 +21,7 @@ GET     /api/ingredients/:id             controllers.IngredientController.getIng
 
 POST    /api/ingredients                 controllers.IngredientController.saveIngredient
 
+GET     /api/languages                  controllers.Application.listLanguages
 
 POST    /api/languages                  controllers.Application.saveLanguage
 
@@ -39,6 +40,8 @@ GET     /pelle                      controllers.Application.pelle
 GET     /imageform                  controllers.ImageController.imageForm
 
 POST    /                           controllers.ImageController.create
+
+GET     /api/tags                   controllers.TagsController.listTags
 
 GET     /api/tags/:id                   controllers.RecipeController.getTag(id: Long)
 
