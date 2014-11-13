@@ -177,7 +177,7 @@ $('input[type=submit]').click(function() {
     strength: strength,
     ingredients: ingredients,
     createdBy: {
-      id: 1,
+      id: 9,
       name: firstName + ' ' + lastName
     }
   };
