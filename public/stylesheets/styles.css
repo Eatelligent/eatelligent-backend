@@ -3521,6 +3521,14 @@ textarea {
   .span1of3:last-child {
     margin-right: 0; }
 
+.span1of2 {
+  float: left;
+  display: block;
+  margin-right: 2.35765%;
+  width: 48.76157%; }
+  .span1of2:last-child {
+    margin-right: 0; }
+
 .last {
   margin-right: 0; }
 
