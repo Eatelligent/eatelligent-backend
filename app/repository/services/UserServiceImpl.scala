@@ -25,6 +25,8 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    */
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.find(loginInfo)
 
+  def findUserByUID(uid: UUID): Future[Option[User]] = userDAO.find(uid)
+
   /**
    * Saves a user.
    *

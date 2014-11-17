@@ -1,4 +1,5 @@
 import play.api.i18n.{Messages, Lang}
+import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.GlobalSettings
 import play.api.mvc.{Result, RequestHeader}
@@ -44,7 +45,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    * @return The result to send to the client.
    */
   override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn)))
+    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Access Denied"))))
   }
 
   /**
@@ -57,6 +58,6 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    * @return The result to send to the client.
    */
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))))
+    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Access Denied"))))
   }
 }

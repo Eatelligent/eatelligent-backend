@@ -1,5 +1,6 @@
 package controllers
 
+import models.User
 import repository.{Role, MyUser}
 import play.api.db.slick.DBAction
 import play.api.mvc.Controller
@@ -43,33 +44,21 @@ object UserController extends Controller {
       (JsPath \ "name").write[String]
     )(unlift(Role.unapply))
 
-  def listUsers = DBAction { implicit request =>
-    val json = Json.toJson(users.list)
-    Ok(Json.obj("ok" -> true, "users" -> json))
-  }
-
-  def saveUser = DBAction(BodyParsers.parse.json) { implicit request =>
-    val userResult = request.body.validate[MyUser]
-    userResult.fold(
-      errors => {
-        BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
-      },
-      user => {
-        users.insert(user)
-        Ok(Json.obj("ok" -> true, "message" -> ("User '" + user.name + "' saved,")))
-      }
-    )
-  }
-
-  def getUser(id: Long) = DBAction { implicit session =>
-    val user = findUserById(id)
-    val role = user match {
-      case Some(u) => findRoleById(u.roleId)
-      case None => None
-    }
-    val userJson = Json.toJson(user)
-    val roleJson = Json.toJson(role)
-    Ok(Json.obj("ok" -> true, "user" -> userJson, "role" -> role))
-  }
+//  def listUsers = DBAction { implicit request =>
+//    val json = Json.toJson(users.list)
+//    Ok(Json.obj("ok" -> true, "users" -> json))
+//  }
+//
+//
+//  def getUser(id: Long) = DBAction { implicit session =>
+//    val user = findUserById(id)
+//    val role = user match {
+//      case Some(u) => findRoleById(u.roleId)
+//      case None => None
+//    }
+//    val userJson = Json.toJson(user)
+//    val roleJson = Json.toJson(role)
+//    Ok(Json.obj("ok" -> true, "user" -> userJson, "role" -> role))
+//  }
 
 }

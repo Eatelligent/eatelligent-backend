@@ -12,11 +12,13 @@ POST        /authenticate/credentials        @controllers.CredentialsAuthControl
 POST        /signUp                          @controllers.SignUpController.signUp
 
 
-GET     /api/users                      controllers.UserController.listUsers
+#GET     /api/users                      controllers.UserController.listUsers
 
-GET     /api/users/:id                   controllers.UserController.getUser(id: Long)
+#GET     /api/users/:id                   controllers.UserController.getUser(id: Long)
 
-POST    /api/users                       controllers.UserController.saveUser
+POST    /api/users                       @controllers.SignUpController.signUpJson
+
+POST    /api/authenticate                @controllers.CredentialsAuthController.authenticateJson
 
 GET     /api/ingredients                controllers.IngredientController.listIngredients
 

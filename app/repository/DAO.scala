@@ -5,7 +5,7 @@ import myUtils.MyPostgresDriver
 
 
 class DAO(override val driver: MyPostgresDriver) extends LanguageComponent with RecipeComponent with
-                                                          IngredientComponent with UserComponent with TagComponent {
+                                                          IngredientComponent with TagComponent {
 
 
 }

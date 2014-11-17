@@ -40,7 +40,7 @@ case class TinyRecipe(
                       image: Option[String]
                        )
 
-trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComponent with UserComponent {
+trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComponent {
   import driver.simple._
 
   class Recipes(tag: Tag) extends Table[RecipeSchema](tag, "recipe") {
@@ -137,10 +137,10 @@ trait RecipeComponent extends WithMyDriver with IngredientComponent with TagComp
       r =>
         val i = findIngredientsForRecipe(r.id.last)
         val t = findTagsForRecipe(r.id.last)
-        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+//        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
 
         val rec = Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
-            Some(r.created), Some(r.modified), i, t, u.get)
+            Some(r.created), Some(r.modified), i, t, TinyUser(0, "dummy"))
         rec
     }
   }

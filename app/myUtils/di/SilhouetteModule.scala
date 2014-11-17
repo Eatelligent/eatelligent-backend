@@ -65,8 +65,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     eventBus: EventBus,
     credentialsProvider: CredentialsProvider,
     facebookProvider: FacebookProvider,
-    googleProvider: GoogleProvider,
-    twitterProvider: TwitterProvider): Environment[User, CachedCookieAuthenticator] = {
+    googleProvider: GoogleProvider): Environment[User, CachedCookieAuthenticator] = {
 
     Environment[User, CachedCookieAuthenticator](
       userService,
@@ -74,8 +73,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       Map(
         credentialsProvider.id -> credentialsProvider,
         facebookProvider.id -> facebookProvider,
-        googleProvider.id -> googleProvider,
-        twitterProvider.id -> twitterProvider
+        googleProvider.id -> googleProvider
       ),
       eventBus
     )
@@ -182,23 +180,4 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       scope = Play.configuration.getString("silhouette.google.scope")))
   }
 
-  /**
-   * Provides the Twitter provider.
-   *
-   * @param cacheLayer The cache layer implementation.
-   * @param httpLayer The HTTP layer implementation.
-   * @return The Twitter provider.
-   */
-  @Provides
-  def provideTwitterProvider(cacheLayer: CacheLayer, httpLayer: HTTPLayer): TwitterProvider = {
-    val settings = OAuth1Settings(
-      requestTokenURL = Play.configuration.getString("silhouette.twitter.requestTokenURL").get,
-      accessTokenURL = Play.configuration.getString("silhouette.twitter.accessTokenURL").get,
-      authorizationURL = Play.configuration.getString("silhouette.twitter.authorizationURL").get,
-      callbackURL = Play.configuration.getString("silhouette.twitter.callbackURL").get,
-      consumerKey = Play.configuration.getString("silhouette.twitter.consumerKey").get,
-      consumerSecret = Play.configuration.getString("silhouette.twitter.consumerSecret").get)
-
-    TwitterProvider(cacheLayer, httpLayer, new PlayOAuth1Service(settings), settings)
-  }
 }

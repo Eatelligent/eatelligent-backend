@@ -21,3 +21,13 @@ case class User(
   email: Option[String],
   image: Option[String]
 ) extends Identity
+
+case class UserSignUp(
+  userId: Option[UUID],
+  firstName: String,
+  lastName: String,
+  email: String,
+  password: String
+                       )
+
+
