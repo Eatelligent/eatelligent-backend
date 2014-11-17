@@ -13,6 +13,11 @@ DROP TABLE IF EXISTS user_preferences CASCADE;
 DROP TABLE IF EXISTS language CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS oauth2info CASCADE;
+DROP TABLE IF EXISTS oauth1info CASCADE;
+DROP TABLE IF EXISTS passwordinfo CASCADE;
+DROP TABLE IF EXISTS userlogininfo CASCADE;
+DROP TABLE IF EXISTS logininfo;
 
 CREATE TABLE language (
 	id serial8 primary key,
@@ -47,15 +52,16 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE users (
-	id serial8 primary key,
+	id text primary key,
 	role int8 references roles(id),
-	name text,
-	password text,
+	first_name text,
+	last_name text,
+	/*password text,*/
 	email text,	
-	city text,
-	age int,
-	image text,
-	user_preferences int8 references user_preferences(id) ON DELETE CASCADE
+	/*city text,*/
+	/*age int,*/
+	image text
+	/* user_preferences int8 references user_preferences(id) ON DELETE CASCADE*/
 );
 
 CREATE TABLE recipe (
@@ -68,7 +74,7 @@ CREATE TABLE recipe (
 	procedure text,
 	created timestamptz,
 	modified timestamptz,
-	created_by int8 references users(id) ON DELETE CASCADE
+	created_by text references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
 
@@ -84,21 +90,55 @@ CREATE TABLE ingredient_in_recipe (
 );
 
 CREATE TABLE user_star_rate_recipe ( /* id references */
-	user_id int8,
+	user_id text,
 	recipe_id int8,
 	stars real
 );
 
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */
-	user_id int8,
+	user_id text,
 	recipe_id int8,
 	rating boolean
 );
 
 CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
-	user_id int8,
+	user_id text,
 	ingredient_id int8,
 	rating boolean
+);
+
+CREATE TABLE logininfo (
+	id serial8 primary key,
+	provider_id text,
+	provider_key text
+);
+
+CREATE TABLE userlogininfo (
+	user_id text NOT NULL,
+	login_info_id int8 NOT NULL
+);
+
+CREATE TABLE passwordinfo (
+	hasher text,
+	password text,
+	salt text,
+	login_info_id int8
+);
+
+CREATE TABLE oauth1info (
+	id serial8 primary key,
+	token text,
+	secret text,
+	login_info_id int8
+);
+
+CREATE TABLE oauth2info (
+	id serial8 primary key,
+	accesstoken text,
+	tokentype text,
+	expiresin int8,
+	refreshtoken text,
+	login_info_id int8
 );
 
 END;

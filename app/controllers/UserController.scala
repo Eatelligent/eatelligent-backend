@@ -1,6 +1,6 @@
 package controllers
 
-import repository.{Role, User}
+import repository.{Role, MyUser}
 import play.api.db.slick.DBAction
 import play.api.mvc.Controller
 import play.api.libs.functional.syntax._
@@ -13,7 +13,7 @@ import play.api.Play.current
 
 object UserController extends Controller {
   
-  implicit val userRead: Reads[User] = (
+  implicit val userRead: Reads[MyUser] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
       (JsPath \ "password").read[String] and
@@ -21,9 +21,9 @@ object UserController extends Controller {
       (JsPath \ "image").readNullable[JsValue] and
       (JsPath \ "city").readNullable[String] and
         (JsPath \ "role").read[Long]
-    )(User.apply _)
+    )(MyUser.apply _)
 
-  implicit val userWrites: Writes[User] = (
+  implicit val userWrites: Writes[MyUser] = (
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "password").write[String] and
@@ -31,7 +31,7 @@ object UserController extends Controller {
       (JsPath \"image").write[Option[JsValue]] and
       (JsPath \ "city").write[Option[String]] and
         (JsPath \ "role").write[Long]
-    )(unlift(User.unapply))
+    )(unlift(MyUser.unapply))
 
   implicit val roleRead: Reads[Role] = (
     (JsPath \ "id").read[Long] and
@@ -49,7 +49,7 @@ object UserController extends Controller {
   }
 
   def saveUser = DBAction(BodyParsers.parse.json) { implicit request =>
-    val userResult = request.body.validate[User]
+    val userResult = request.body.validate[MyUser]
     userResult.fold(
       errors => {
         BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))

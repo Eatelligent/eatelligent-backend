@@ -5,11 +5,11 @@ VALUES
  ('user'),
  ('admin');
 
-INSERT INTO users (name, password, email, role)
+INSERT INTO users (id, first_name, last_name, email, role)
 VALUES
-  ('bone', 'bone', 'tandeey@gmail.com', (SELECT id from roles WHERE name = 'admin')),
-  ('gurr', 'gurr', 'sigurd.l@gmail.com', (SELECT id from roles WHERE name = 'admin')),
-  ('garr', 'garr', 'pelle@pelle.com', (SELECT id from roles WHERE name = 'user'));
+  ('1','bone', 'bone', 'tandeey@gmail.com', (SELECT id from roles WHERE name = 'admin')),
+  ('2','gurr', 'gurr', 'sigurd.l@gmail.com', (SELECT id from roles WHERE name = 'admin')),
+  ('3','garr', 'garr', 'pelle@pelle.com', (SELECT id from roles WHERE name = 'user'));
 
 INSERT INTO ingredient(name)
 VALUES
@@ -32,9 +32,9 @@ VALUES
 INSERT INTO recipe(name, description, language, calories, procedure, created, modified, created_by)
 VALUES
   ('Lasser', 'En optimal lasser', (SELECT id from language WHERE name = 'Norwegian'), 
-    1000, 'Hvordan lager man en lasser? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE name = 'garr')),
+    1000, 'Hvordan lager man en lasser? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE first_name = 'garr')),
   ('Taccer', 'En optimal taccer', (SELECT id from language WHERE name = 'Norwegian'), 
-    1000, 'Hvordan lager man en taccer? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE name = 'garr'));
+    1000, 'Hvordan lager man en taccer? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE first_name = 'garr'));
 
 INSERT INTO recipe_in_tag (recipe_id, tag_id)
 VALUES
@@ -51,11 +51,11 @@ VALUES
 
 INSERT INTO user_star_rate_recipe(user_id, recipe_id, stars)
 VALUES
-  ((SELECT id from users WHERE name = 'garr'), (SELECT id from recipe WHERE name = 'Lasser'), 5.0);
+  ((SELECT id from users WHERE first_name = 'garr'), (SELECT id from recipe WHERE name = 'Lasser'), 5.0);
 
 INSERT INTO user_yes_no_rate_ingredient(user_id, ingredient_id, rating)
 VALUES
-  ((SELECT id from users WHERE name = 'garr'), (SELECT id from recipe WHERE name = 'Lasser'), true);
+  ((SELECT id from users WHERE first_name = 'garr'), (SELECT id from recipe WHERE name = 'Lasser'), true);
 
 
 

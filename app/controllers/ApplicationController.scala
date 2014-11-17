@@ -1,5 +1,6 @@
 package controllers
 
+import models.User
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
@@ -11,11 +12,16 @@ import play.api.Play.current
 import myUtils._
 import repository._
 import play.api.libs.functional.syntax._
-
+import com.mohiva.play.silhouette.core.{LogoutEvent, Environment, Silhouette}
+import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
+import scala.concurrent.Future
+import javax.inject.Inject
+import forms._
 import repository.current.dao._
 import repository.current.dao.driver.simple._
 
-object Application extends Controller {
+class ApplicationController @Inject() (implicit val env: Environment[User, CachedCookieAuthenticator])
+  extends Silhouette[User, CachedCookieAuthenticator] {
 
 
   implicit val languageWrites: Writes[Language] = (
@@ -56,30 +62,46 @@ object Application extends Controller {
 //      )(Language.apply)(Language.unapply)
 //  }
 
-  def index = DBAction { implicit request =>
-    Ok(views.html.index())
+  def index = SecuredAction.async { implicit request =>
+    Future.successful(Ok(views.html.index(request.identity)))
+  }
+
+  /**
+   * Handles the Sign In action.
+   *
+   * @return The result to display.
+   */
+  def signIn = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+      case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
+    }
+  }
+
+  /**
+   * Handles the Sign Up action.
+   *
+   * @return The result to display.
+   */
+  def signUp = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+      case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
+    }
+  }
+
+  /**
+   * Handles the Sign Out action.
+   *
+   * @return The result to display.
+   */
+  def signOut = SecuredAction.async { implicit request =>
+    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
+    Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))
   }
 
   def recipeForm = DBAction { implicit request =>
     Ok(views.html.recipe_form())
   }
-
-  def insert = DBAction { implicit rs =>
-//    val language = languageForm.bindFromRequest.get
-//    languages.insert(language)
-    Redirect(routes.Application.index)
-  }
-
-  def lasser = Action {
-    Result(
-      header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/json")),
-      body = Enumerator("Hello lasser!".getBytes)
-    )
-  }
-
-  def users = TODO
-
-
-  def pelle = TODO
 
 }
