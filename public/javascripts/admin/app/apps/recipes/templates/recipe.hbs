@@ -1,0 +1,34 @@
+<h1>{{name}}</h1>
+
+<ul class="list-group">
+  <li class="list-group-item">Recipe id: {{id}}</li>
+  <li class="list-group-item">Created: {{time created}}</li>
+  <li class="list-group-item">Modified: {{time created}}</li>
+  <li class="list-group-item">Calories: {{calories}}</li>
+  <li class="list-group-item">Language id: {{language}}</li>
+  <li class="list-group-item">Created By: {{createdBy.name}} (id: {{createdBy.id}})</li>
+</ul>
+
+<h4>Description</h4>
+<p>{{description}}</p>
+
+<h4>Procedure</h4>
+<p>{{procedure}}</p>
+
+<h4>Tags</h4>
+<div class="well">
+  {{concat tags}}
+</div>
+
+<h4>Ingredients</h4>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Amount</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody data-js-ingredients></tbody>
+</table>
