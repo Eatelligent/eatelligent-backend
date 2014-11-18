@@ -31,6 +31,7 @@ GET     /api/languages                  @controllers.ApplicationController.listL
 POST    /api/languages                  @controllers.ApplicationController.saveLanguage
 
 GET     /recipe_form                    @controllers.ApplicationController.recipeForm
+GET     /admin                          @controllers.ApplicationController.adminPanel
 
 GET     /api/recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
 
