@@ -1,0 +1,10 @@
+<label>
+  Styrke
+</label>
+<div class="row">
+  <div class="btn-group btn-group-lg col-md-12" role="group">
+    {{#each levels}}
+      <button type="button" class="btn btn-default" value="{{this}}" data-js-strength>{{this}}</button>
+    {{/each}}
+  </div>
+</div>

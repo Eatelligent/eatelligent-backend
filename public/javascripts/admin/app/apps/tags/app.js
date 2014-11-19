@@ -4,7 +4,7 @@ define(function(require) {
   var channel = require('backbone.radio').channel('app');
   var Controller = require('./controller');
 
-  channel.comply('module:tags', function(region) {
-    var controller = new Controller();
+  channel.comply('module:tags', function(query) {
+    var controller = new Controller({q: query});
   });
 });

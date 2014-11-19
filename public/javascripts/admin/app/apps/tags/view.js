@@ -8,9 +8,6 @@ define(function(require) {
   var resultItemTemplate = require('hbs!./templates/result_item');
 
   var ResultEmpty = Marionette.ItemView.extend({
-    initialize: function() {
-      console.log('emp', this);
-    },
     template: _.template('<td colspan="2" class="text-center">No results</td>'),
     tagName: 'tr'
   });
@@ -33,8 +30,18 @@ define(function(require) {
       searchInput: '[data-js-search]'
     },
 
-    triggers: {
-      'keyup [data-js-search]': 'search'
+    events: {
+      'keyup [data-js-search]': 'onChangeQuery'
+    },
+
+    onChangeQuery: function(e) {
+      this.model.set({q: this.ui.searchInput.val()});
+    },
+
+    onRender: function() {
+      if (this.model.get('q')) {
+        this.model.trigger('change');
+      }
     }
   });
 
@@ -42,10 +49,11 @@ define(function(require) {
     template: template,
 
     initialize: function() {
-      this.searchView = new SearchView();
-      this.searchView.on('search', _.bind(function(obj) {
-        this.trigger('search', obj.view.ui.searchInput.val());
+      this.model.on('change', _.bind(function() {
+        this.trigger('search');
       }, this));
+
+      this.searchView = new SearchView({model: this.model});
     },
 
     regions: {

@@ -6,8 +6,10 @@ define(function(require) {
   var channel = require('backbone.radio').channel('app');
 
   var Controller = Ctrl.extend({
-    initialize: function() {
+    initialize: function(options) {
       var ingredients = channel.request('entities:collection:ingredients');
+
+      // TODO: show single ingredient
 
       this.view = this.getView(ingredients);
       this.region.show(this.view);

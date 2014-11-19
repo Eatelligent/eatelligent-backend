@@ -9,35 +9,14 @@ define(function(require) {
   var appTemplate = require('hbs!./app');
   var channel = require('backbone.radio').channel('app');
 
-  (function(Backbone) {
-
-    var _sync = Backbone.sync;
-    Backbone.sync = function(method, entity, options) {
-      var sync = _sync(method, entity, options);
-      if (!entity._fetch && method === "read") {
-        entity._fetch = sync;
-      }
-    };
-  })(Backbone);
-
-  var Handlebars = require('handlebars');
-  var moment = require('moment');
-
-  Handlebars.registerHelper('time', function(unix) {
-    var str = moment(unix).format('DD. MMM YYYY');
-    return new Handlebars.SafeString(str);
-  });
-
-  Handlebars.registerHelper('concat', function(array) {
-    var array = _.map(array, function(el) { return el.name });
-    return new Handlebars.SafeString(array.join(', '));
-  });
-
   // Load utils
+  require('utils/sync');
   require('utils/fetch');
+  require('utils/templateHelpers');
 
   // Load entities
   require('entities/recipes');
+  require('entities/languages');
   require('entities/ingredients');
   require('entities/tags');
 
@@ -51,12 +30,11 @@ define(function(require) {
   var Router = Backbone.Router.extend({
     routes: {
       '(/)': 'panel',
-      '(/)recipes': 'recipes',
-      '(/)recipes/:id': 'recipes',
-      '(/)tags': 'tags',
-      '(/)ingredients': 'ingredients',
-      '(/)ingredients/:id': 'ingredients',
-    }, // TODO: Funker det med x/:id og x(/:id) på samma linje?
+      '(/)recipes/new': 'new:recipe',
+      '(/)recipes(/:id)': 'recipes',
+      '(/)tags(/:tag)': 'tags',
+      '(/)ingredients(/:id)': 'ingredients',
+    },
 
     initialize: function() {
       this.on('route', function(route, params) {

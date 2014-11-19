@@ -4,6 +4,7 @@ require.config({
     'backbone.babysitter': '../bower_components/backbone.babysitter/lib/backbone.babysitter',
     'backbone.wreqr': '../bower_components/backbone.wreqr/lib/backbone.wreqr',
     'backbone.radio': '../bower_components/backbone.radio/build/backbone.radio',
+    'backbone.stickit': '../bower_components/backbone.stickit/backbone.stickit',
     'jquery': '../bower_components/jquery/dist/jquery',
     'lodash': '../bower_components/lodash/dist/lodash.compat',
     'marionette': '../bower_components/marionette/lib/core/backbone.marionette',
@@ -12,6 +13,8 @@ require.config({
     'handlebars': '../bower_components/handlebars/handlebars',
     'handlebars-compiler': '../bower_components/handlebars/handlebars',
     'text': '../bower_components/requirejs-text/text',
+    'bloodhound': '../bower_components/typeahead.js/dist/bloodhound',
+    'typeahead': '../bower_components/typeahead.js/dist/typeahead.jquery'
   },
 
   waitSeconds: 30,
@@ -36,6 +39,10 @@ require.config({
 
     'handlebars': {
       exports: 'Handlebars'
+    },
+
+    'bloodhound': {
+      exports: 'Bloodhound'
     }
   },
 
