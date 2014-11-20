@@ -16,6 +16,8 @@ require.config({
     'handlebars-compiler': '../bower_components/handlebars/handlebars',
     'text': '../bower_components/requirejs-text/text',
     'bloodhound': '../bower_components/typeahead.js/dist/bloodhound',
+    'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap',
+    'summernote': '../bower_components/summernote/dist/summernote',
     'typeahead': '../bower_components/typeahead.js/dist/typeahead.jquery'
   },
 
@@ -49,6 +51,10 @@ require.config({
 
     'metrics-graphics': {
       exports: 'data_graphic'
+    },
+
+    'summernote': {
+      deps: ['bootstrap']
     }
   },
 

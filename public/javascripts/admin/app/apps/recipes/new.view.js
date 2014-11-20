@@ -21,6 +21,7 @@ define(function(require) {
   var Typeahead = require('typeahead');
 
   require('backbone.stickit');
+  require('summernote');
 
   var NameView = Marionette.ItemView.extend({
     template: nameTemplate,
@@ -111,12 +112,15 @@ define(function(require) {
     template: descriptionTemplate,
     className: 'col-md-12 recipe-parameter',
 
-    bindings: {
-      '[data-js-description]': 'description'
-    },
-
-    onRender: function() {
-      this.stickit();
+    onShow: function() {
+      var self = this;
+      $('[data-js-description]', this.$el).summernote({
+        onChange: function() {
+          var description = $('[data-js-description]', self.$el).code();
+          self.model.set('description', description);
+        },
+        height: 150
+      });
     }
   });
 
@@ -124,12 +128,15 @@ define(function(require) {
     template: procedureTemplate,
     className: 'col-md-12 recipe-parameter',
 
-    bindings: {
-      '[data-js-procedure]': 'procedure'
-    },
-
-    onRender: function() {
-      this.stickit();
+    onShow: function() {
+      var self = this;
+      $('[data-js-procedure]', this.$el).summernote({
+        onChange: function() {
+          var procedure = $('[data-js-procedure]', self.$el).code();
+          self.model.set('procedure', procedure);
+        },
+        height: 200
+      });
     }
   });
   

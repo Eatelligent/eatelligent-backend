@@ -22,7 +22,7 @@ define(function(require) {
         });
       }
       data = convert_dates(data, 'date');
-      var fake_baselines = [{value:d3.mean(data, function(d) {
+      var baseline = [{value:d3.mean(data, function(d) {
         return d.value;
       }), label:'Average last 30 days'}];
 
@@ -32,7 +32,7 @@ define(function(require) {
         width: 500,
         area: false,
         show_years: false,
-        baselines: fake_baselines,
+        baselines: baseline,
         target: '.data-js-last-ratings',
         x_accessor: 'date',
         y_accessor: 'value'
@@ -53,14 +53,14 @@ define(function(require) {
         });
       }
       data = convert_dates(data, 'date');
-      var fake_baselines = [{value:d3.mean(data, function(d) {
+      var baseline = [{value:d3.mean(data, function(d) {
         return d.value;
       }), label:'Average last 30 days'}];
 
       data_graphic({
-        title: "Number of users last 30 days",
+        title: "Number of new users last 30 days",
         data: data,
-        baselines: fake_baselines,
+        baselines: baseline,
         width: 500,
         area: false,
         show_years: false,

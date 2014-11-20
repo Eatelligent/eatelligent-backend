@@ -7,6 +7,8 @@ define(function(require) {
   var resultTemplate = require('hbs!./templates/results');
   var resultItemTemplate = require('hbs!./templates/result_item');
 
+  require('backbone.stickit');
+
   var ResultEmpty = Marionette.ItemView.extend({
     template: _.template('<td colspan="2" class="text-center">No results</td>'),
     tagName: 'tr'
@@ -62,7 +64,7 @@ define(function(require) {
     },
 
     showResults: function(collection) {
-      this.resultRegion.show(new ResultView({collection: collection}));
+      this.resultRegion.show(new ResultView({model: this.model, collection: collection}));
     },
 
     onShow: function() {

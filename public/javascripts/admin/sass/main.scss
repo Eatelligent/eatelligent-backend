@@ -1,6 +1,9 @@
 @import "../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap";
 
 @import "../bower_components/metrics-graphics/css/metricsgraphics.css";
+@import "../bower_components/fontawesome/scss/font-awesome";
+@import "../bower_components/summernote/dist/summernote.css";
+@import "../bower_components/summernote/dist/summernote-bs3.css";
 
 table {
   tbody {
@@ -26,6 +29,13 @@ h1, h2, h3, h4, h5, h6 {
 
 .recipe-parameter {
   margin-bottom: 20px;
+}
+
+// fixup
+.note-editor {
+  .btn-toolbar {
+    margin-left: 0px;
+  }
 }
 
 

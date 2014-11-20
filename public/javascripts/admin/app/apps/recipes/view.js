@@ -14,7 +14,10 @@ define(function(require) {
 
   var RecipeIngredient = Marionette.ItemView.extend({
     tagName: 'tr',
-    template: recipeIngredientTemplate
+    template: recipeIngredientTemplate,
+    triggers: {
+      'click [data-js-delete]': 'destroy'
+    }
   });
 
   var RecipeView = Marionette.CompositeView.extend({
