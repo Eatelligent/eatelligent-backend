@@ -11,6 +11,8 @@ require.config({
     'moment': '../bower_components/moment/moment',
     'requireLib': '../bower_components/requirejs/require',
     'handlebars': '../bower_components/handlebars/handlebars',
+    'metrics-graphics': '../bower_components/metrics-graphics/js/metricsgraphics.min',
+    'd3': '../bower_components/d3/d3',
     'handlebars-compiler': '../bower_components/handlebars/handlebars',
     'text': '../bower_components/requirejs-text/text',
     'bloodhound': '../bower_components/typeahead.js/dist/bloodhound',
@@ -43,6 +45,10 @@ require.config({
 
     'bloodhound': {
       exports: 'Bloodhound'
+    },
+
+    'metrics-graphics': {
+      exports: 'data_graphic'
     }
   },
 

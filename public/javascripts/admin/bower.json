@@ -19,6 +19,7 @@
     "requirejs-hbs": "~0.1.1",
     "moment": "~2.8.3",
     "typeahead.js": "~0.10.5",
-    "backbone.stickit": "~0.8.0"
+    "backbone.stickit": "~0.8.0",
+    "metrics-graphics": "git@github.com:mozilla/metrics-graphics.git"
   }
 }
