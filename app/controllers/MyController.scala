@@ -20,13 +20,15 @@ class MyController extends Controller {
 
 
   implicit val tinyUserRead: Reads[TinyUser] = (
-    (JsPath \ "id").read[Long] and
-      (JsPath \ "name").read[String]
+    (JsPath \ "id").read[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String]
     )(TinyUser.apply _)
 
   implicit val tinyUserWrite: Writes[TinyUser] = (
-    (JsPath \ "id").write[Long] and
-      (JsPath \ "name").write[String]
+    (JsPath \ "id").write[String] and
+      (JsPath \ "firstName").write[Option[String]] and
+      (JsPath \ "lastName").write[Option[String]]
     )(unlift(TinyUser.unapply))
 
   implicit val ingredientSchemaRead: Reads[Ingredient] = (
