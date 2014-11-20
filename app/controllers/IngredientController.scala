@@ -1,48 +1,69 @@
 package controllers
 
-import repository.{IngredientForRecipe, IngredientSchema}
-import play.api.db.slick.DBAction
+import scala.util.{Success, Failure}
+import com.google.inject.Inject
+import repository.services.IngredientService
+import repository.{Ingredient}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import repository.current.dao._
-import repository.current.dao.driver.simple._
-import play.api.db.slick._
 import play.api.mvc._
-import play.api.Play.current
-import myUtils._
+import play.api.mvc.Controller
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
-object IngredientController extends MyController {
+import scala.concurrent.duration.Duration
+
+class IngredientController @Inject() (
+  ingredientService: IngredientService
+                                       ) extends Controller {
 
 
-  def listIngredients = DBAction { implicit request =>
-    val json = Json.toJson(ingredients.list)
-    Ok(Json.obj("ok" -> true, "ingredients" -> json))
-  }
+  implicit val ingredientSchemaRead: Reads[Ingredient] = (
+    (JsPath \ "id").readNullable[Long] and
+      (JsPath \ "name").read[String] and
+      (JsPath \ "image").readNullable[JsValue]
+    )(Ingredient.apply _)
 
-  def saveIngredient = DBAction(BodyParsers.parse.json) { implicit request =>
-    val ingredientResult = request.body.validate[IngredientSchema]
+  implicit val ingredientSchemaWrites: Writes[Ingredient] = (
+    (JsPath \ "id").write[Option[Long]] and
+      (JsPath \ "name").write[String] and
+      (JsPath \ "image").write[Option[JsValue]]
+    )(unlift(Ingredient.unapply))
+
+
+//  def listIngredients = Action { implicit request =>
+//    val json = Json.toJson(ingredientService.getAll)
+//    Ok(Json.obj("ok" -> true, "ingredients" -> json))
+//  }
+
+  def saveIngredient = Action(BodyParsers.parse.json) { implicit request =>
+    val ingredientResult = request.body.validate[Ingredient]
 
     ingredientResult.fold(
       errors => {
         BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
       },
       ingredient => {
-        ingredients.insert(IngredientSchema(ingredient.id, ingredient.name, ingredient.image))
-        Ok(Json.obj("ok" -> true, "message" -> ("Ingredient '" + ingredient.name + "' saved,")))
+        ingredientService.save(ingredient)
+        Ok(Json.obj("ok" -> true, "message" -> Json.toJson(ingredient)))
       }
     )
   }
 
-  def getIngredient(id: Long) = DBAction { implicit session =>
-    val json = Json.toJson(findIngredientById(id))
-    Ok(Json.obj("ok" -> true, "ingredient" -> json))
+  def getIngredient(id: Long) = Action.async { implicit session =>
+    val ingredient =  ingredientService.find(id)
+//    ingredient onComplete  {
+//      case Success(i) => Ok(Json.obj("ok" -> true, "ingredient" -> Json.toJson(i)))
+//      case Failure(f) => Ok(Json.obj("ok" -> false, "message" -> Json.toJson(f)))
+//    }
+    ingredient.map(i => Ok(Json.obj("ok" -> true, "ingredient" -> Json.toJson(i))))
   }
 
-  def getIngredientsForRecipe(recipeId: Long) = DBAction { implicit session =>
-    val json = Json.toJson(findIngredientsForRecipe(recipeId).map{
-      i => IngredientForRecipe(i.recipeId, i.ingredientId, i.name, i.image, i.amount)
-    })
-    Ok(Json.obj("ok" -> true, "ingredients" -> json))
-  }
+//  def getIngredientsForRecipe(recipeId: Long) = Action { implicit session =>
+//    val json = Json.toJson(findIngredientsForRecipe(recipeId).map{
+//      i => IngredientForRecipe(i.recipeId, i.ingredientId, i.name, i.image, i.amount)
+//    })
+//    Ok(Json.obj("ok" -> true, "ingredients" -> json))
+//  }
 
 }

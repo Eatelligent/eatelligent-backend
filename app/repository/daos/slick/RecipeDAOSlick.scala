@@ -1,0 +1,202 @@
+package repository.daos.slick
+
+import org.joda.time.DateTime
+import play.api.Logger
+import play.api.db.slick._
+import play.api.db.slick.Config.driver.simple._
+import models.daos.slick.DBTableDefinitions._
+import play.api.libs.concurrent.Promise
+import play.api.libs.json.JsValue
+import repository._
+import repository.daos.RecipeDAO
+import scala.concurrent._
+import scala.util.{Try, Failure, Success}
+import play.api.libs.concurrent.Execution.Implicits._
+
+class RecipeDAOSlick extends RecipeDAO {
+  import play.api.Play.current
+
+
+  def find(id: Long): Future[Option[Recipe]] = {
+    DB withSession { implicit session =>
+        slickRecipes.filter(
+          r => r.id === id
+        ).firstOption match {
+          case Some(recipe) => transformRecipe(recipe).map(x => Some(x))
+          case None => Future { None }
+      }
+    }
+  }
+
+  def transformRecipe(r: DBRecipe): Future[Recipe] = {
+
+      val futures = for {
+        iF <- findIngredientsForRecipe(r.id.get)
+        tF <- findTagsForRecipe(r.id.get)
+      } yield (iF, tF)
+
+      futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
+        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, TinyUser(0, "dummy")))
+
+      //        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+
+  }
+
+  def find(q: String): Future[List[TinyRecipe]] = {
+    DB withSession { implicit session =>
+      Future.successful( {
+        val res = Option(slickRecipes.filter(_.name.toLowerCase like "%" + q.toLowerCase + "%").list)
+        res match {
+          case Some(r) => r.map(x => TinyRecipe(x.id.get, x.name, x.image))
+          case None => List()
+        }
+      })
+    }
+  }
+
+  def findIngredientsForRecipe(recipeId: Long) : Future[Seq[IngredientForRecipe]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        val join = for {
+          (iir, i) <- slickIngredientsInRecipe innerJoin slickIngredients on (_.ingredientId === _.id) if iir.recipeId === recipeId
+        } yield (iir.ingredientId, iir.recipeId, i.name, i.image, iir.amount)
+
+        val l: Seq[(Long, Long, String, Option[JsValue], Double)] = join.buildColl[List]
+        l.map{
+          case (iid, rid, name, image, amount) => IngredientForRecipe(Some(iid), Some(rid), name, image, amount)
+        }
+      }
+    }
+  }
+
+  def findTagsForRecipe(recipeId: Long): Future[Seq[RecipeTag]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        val join = for {
+          (tfr, t) <- slickTagsForRecipe innerJoin slickTags on (_.tagId === _.id) if tfr.recipeId === recipeId
+        } yield (t.id, t.name)
+
+        val l = join.buildColl[List]
+        val res = l.map {
+          case (id, name) => RecipeTag(id, name)
+        }
+        res
+      }
+    }
+  }
+
+  def mapToTinyRecipe(recipes: Option[List[Recipe]]): Option[List[TinyRecipe]] = {
+    recipes match {
+      case Some(r) => Option(r.map{
+        x =>
+          TinyRecipe(x.id.toList.head, x.name, x.image)
+      })
+      case None => None
+    }
+  }
+
+  def transformRecipes(rawRecipes: List[DBRecipe]): Future[List[Recipe]] = {
+
+    val res = rawRecipes.map{
+
+      r =>
+        val futures = for {
+          iF <- findIngredientsForRecipe(r.id.last)
+          tF <- findTagsForRecipe(r.id.last)
+        } yield (iF, tF)
+
+
+        futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r
+          .procedure, r.spicy,
+          Some(r.created), Some(r.modified), x._1, x._2, TinyUser(0, "dummy")))
+
+
+        //        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+    }
+
+    val listOfTrys = res.map(futureToFutureTry(_))
+    val futureListOftrys = Future.sequence(listOfTrys)
+    futureListOftrys.map(_.collect{ case Success(x) => x})
+  }
+
+  def futureToFutureTry[T](f: Future[T]): Future[Try[T]] =
+    f.map(Success(_)).recover({case x => Failure(x)})
+
+//  def updateImage(recipeId: Long, image: String) {
+//    val q = for { r <- slickRecipes if r.id === recipeId } yield r.image
+//
+//    val a = q.run
+//    //    if (a.head.nonEmpty)
+//    //      deleteImage
+//    q.update(Some(image))
+//  }
+
+  //  def deleteImage = ???
+
+  def save(r: Recipe): Future[Recipe] = {
+    DB withTransaction { implicit session =>
+      Future.successful {
+        val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
+          new DateTime(), new DateTime(), r.createdBy.id))
+        r.ingredients.distinct.foreach {
+          i =>
+            val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
+            slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, i.amount))
+        }
+        val names = r.tags.map(_.name)
+        r.tags.distinct.foreach {
+          t =>
+            val tag = save(t)
+            slickTagsForRecipe.insert(DBTagForRecipe(rid, tag.id.get))
+        }
+        r
+      }
+    }
+  }
+
+  def saveIngredient(i: Ingredient): Ingredient = {
+    DB withSession { implicit session =>
+      val ingredients = findIngredients(i.name)
+      if (ingredients.isEmpty) {
+        val iid = insertIngredient(DBIngredient(None, i.name, i.image))
+        Ingredient(Some(iid), i.name, i.image)
+      }
+      else {
+        Ingredient(ingredients.head.id, i.name, ingredients.head.image)
+      }
+    }
+  }
+
+  def findIngredients(name: String): Seq[Ingredient] = {
+    DB withSession { implicit session =>
+      Option(slickIngredients.filter(_.name.toLowerCase === name.toLowerCase).list) match {
+        case Some(ingredients) => ingredients.map(i => Ingredient(i.id, i.name, i.image))
+        case None => List()
+      }
+    }
+  }
+
+  def save(t: RecipeTag): RecipeTag = {
+    DB withSession { implicit session =>
+      val tags = findTags(t.name)
+      if (tags.isEmpty) {
+        val tid = insertTag(DBTag(None, t.name))
+        RecipeTag(Some(tid), t.name)
+      }
+      else {
+        RecipeTag(tags.head.id, t.name)
+      }
+    }
+  }
+
+  def findTags(name: String): Seq[RecipeTag] = {
+    DB withSession { implicit session =>
+        Option(slickTags.filter(_.name.toLowerCase like "%" + name.toLowerCase + "%").list) match {
+          case Some(tags) => tags.map(tag => RecipeTag(tag.id, tag.name))
+          case None => List()
+        }
+    }
+  }
+
+  def getAll: Future[Seq[TinyRecipe]] = find("")
+}

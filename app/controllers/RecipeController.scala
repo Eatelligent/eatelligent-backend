@@ -1,60 +1,43 @@
 package controllers
 
-import repository._
-import play.api.db.slick._
+import com.google.inject.Inject
 import play.api.libs.json._
 import play.api.mvc._
-import play.api.Play.current
-import repository.current.dao._
-import repository.current.dao.driver.simple._
+import repository.Recipe
+import repository.services.RecipeService
+import play.api.libs.concurrent.Execution.Implicits._
 
 
+class RecipeController @Inject() (
+  val recipeService: RecipeService
+                                   ) extends MyController {
 
-object RecipeController extends MyController {
-
-  def listRecipes = DBAction { implicit request =>
-    val json = Json.toJson(recipes.list)
-    Ok(Json.obj("ok" -> true, "recipes" -> json))
+  def listRecipes = Action.async { implicit request =>
+    val recipes = recipeService.getAll
+    recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
-  def saveRecipe = DBAction(BodyParsers.parse.json) { implicit request =>
+  def saveRecipe = Action(BodyParsers.parse.json) { implicit request =>
     val recipeResult = request.body.validate[Recipe]
     recipeResult.fold(
       errors => {
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
       },
       recipe => {
-        saveRecipeToDb(recipe)
-//        recipes.insert(RecipeSchema(recipe.id, recipe.name, recipe.image, recipe.description, recipe.language,
-//          recipe.calories, recipe.procedure, recipe.created, recipe.modified))
-//        recipe.ingredients.foreach{
-//          i => ingredients.insert(IngredientSchema(Some(i.ingredientId), i.name, i.image))
-//               ingredientsInRecipe.insert(IngredientInRecipeSchema(i.recipeId, i.ingredientId, i.amount))
-//        }
-        Ok(Json.obj("ok" -> true, "message" -> (recipe)))
+        recipeService.save(recipe)
+        Ok(Json.obj("ok" -> true, "message" -> recipe))
       }
     )
-
   }
 
-  def getRecipe(id: Long) = DBAction { implicit session =>
-    val recipe = findRecipeById(id)
-//    val ingredients = findIngredientsForRecipe(id)
-//    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe), "ingredients" -> Json.toJson(ingredients)))
-    println("recipe: " + recipe)
-    val a = Json.toJson(recipe)
-    println("Recipe as Json: " + a)
-    Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(recipe)))
+  def getRecipe(id: Long) = Action.async { implicit session =>
+    val recipe = recipeService.find(id)
+    recipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
   }
 
-  def getRecipesByQuery(q: String) = DBAction { implicit session =>
-    val recipes = findRecipesByName(q)
-    Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(recipes)))
-  }
-
-  def getTag(id: Long) = DBAction { implicit session =>
-    val tag = findTagById(id)
-    Ok(Json.obj("ok" -> true, "tag" -> Json.toJson(tag)))
+  def getRecipesByQuery(q: String) = Action.async { implicit session =>
+    val recipes = recipeService.find(q)
+    recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
 
