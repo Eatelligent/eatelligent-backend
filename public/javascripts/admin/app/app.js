@@ -24,6 +24,7 @@ define(function(require) {
   require('apps/header/header');
   require('apps/panel/app');
   require('apps/recipes/app');
+  require('apps/users/app');
   require('apps/ingredients/app');
   require('apps/tags/app');
 
@@ -34,6 +35,7 @@ define(function(require) {
       '(/)recipes(/:id)': 'recipes',
       '(/)tags(/:tag)': 'tags',
       '(/)ingredients(/:id)': 'ingredients',
+      '(/)users(/:id)': 'users',
     },
 
     initialize: function() {
