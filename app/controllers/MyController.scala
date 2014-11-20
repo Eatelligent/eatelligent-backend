@@ -46,8 +46,7 @@ class MyController extends Controller {
     )(unlift(RecipeTag.unapply))
 
   implicit val ingredientForRecipeRead: Reads[IngredientForRecipe] = (
-    (JsPath \ "ingredientId").readNullable[Long] and
-      (JsPath \ "recipeId").readNullable[Long] and
+    (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
       (JsPath \ "image").readNullable[JsValue] and
       (JsPath \ "amount").read[Double]
@@ -55,8 +54,7 @@ class MyController extends Controller {
     )(IngredientForRecipe.apply _)
 
   implicit val ingredientForRecipeWrites: Writes[IngredientForRecipe] = (
-    (JsPath \ "ingredientId").writeNullable[Long] and
-      (JsPath \ "recipeId").writeNullable[Long] and
+    (JsPath \ "id").writeNullable[Long] and
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[JsValue]] and
       (JsPath \ "amount").write[Double]
@@ -86,7 +84,7 @@ class MyController extends Controller {
       (JsPath \ "created").readNullable[DateTime] and
       (JsPath \ "modified").readNullable[DateTime] and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
-      (JsPath \ "tags").read[Seq[RecipeTag]] and
+      (JsPath \ "tags").read[Seq[String]] and
       (JsPath \ "createdBy").read[TinyUser]
     )(Recipe.apply _)
 
@@ -102,35 +100,9 @@ class MyController extends Controller {
       (JsPath \ "created").write[Option[DateTime]] and
       (JsPath \ "modified").write[Option[DateTime]] and
       (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
-      (JsPath \ "tags").write[Seq[RecipeTag]] and
+      (JsPath \ "tags").write[Seq[String]] and
       (JsPath \ "createdBy").write[TinyUser]
     )(unlift(Recipe.unapply))
-
-//  implicit val recipeSchemaRead: Reads[DBRecipe] = (
-//    (JsPath \ "id").readNullable[Long] and
-//      (JsPath \ "name").read[String] and
-//      (JsPath \ "image").read[Option[String]] and
-//      (JsPath \ "description").read[String] and
-//      (JsPath \ "language").read[Int] and
-//      (JsPath \ "calories").read[Double] and
-//      (JsPath \ "procedure").read[String] and
-//      (JsPath \ "created").read[DateTime] and
-//      (JsPath \ "modified").read[DateTime] and
-//      (JsPath \ "createdById").read[Long]
-//    )(RecipeSchema.apply _)
-//
-//  implicit val recipeSchemaWrites: Writes[RecipeSchema] = (
-//    (JsPath \ "id").write[Option[Long]] and
-//      (JsPath \ "name").write[String] and
-//      (JsPath \ "image").write[Option[String]] and
-//      (JsPath \ "description").write[String] and
-//      (JsPath \ "language").write[Int] and
-//      (JsPath \ "calories").write[Double] and
-//      (JsPath \ "procedure").write[String] and
-//      (JsPath \ "created").write[DateTime] and
-//      (JsPath \ "modified").write[DateTime] and
-//      (JsPath \ "createdById").write[Long]
-//    )(unlift(RecipeSchema.unapply))
 
   implicit val tinyRecipeRead: Reads[TinyRecipe] = (
     (JsPath \ "id").read[Long] and

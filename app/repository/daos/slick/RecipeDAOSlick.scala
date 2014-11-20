@@ -59,17 +59,17 @@ class RecipeDAOSlick extends RecipeDAO {
       Future.successful {
         val join = for {
           (iir, i) <- slickIngredientsInRecipe innerJoin slickIngredients on (_.ingredientId === _.id) if iir.recipeId === recipeId
-        } yield (iir.ingredientId, iir.recipeId, i.name, i.image, iir.amount)
+        } yield (iir.ingredientId, i.name, i.image, iir.amount)
 
-        val l: Seq[(Long, Long, String, Option[JsValue], Double)] = join.buildColl[List]
+        val l: Seq[(Long, String, Option[JsValue], Double)] = join.buildColl[List]
         l.map{
-          case (iid, rid, name, image, amount) => IngredientForRecipe(Some(iid), Some(rid), name, image, amount)
+          case (iid, name, image, amount) => IngredientForRecipe(Some(iid), name, image, amount)
         }
       }
     }
   }
 
-  def findTagsForRecipe(recipeId: Long): Future[Seq[RecipeTag]] = {
+  def findTagsForRecipe(recipeId: Long): Future[Seq[String]] = {
     DB withSession { implicit session =>
       Future.successful {
         val join = for {
@@ -78,7 +78,7 @@ class RecipeDAOSlick extends RecipeDAO {
 
         val l = join.buildColl[List]
         val res = l.map {
-          case (id, name) => RecipeTag(id, name)
+          case (id, name) => name
         }
         res
       }
@@ -133,25 +133,23 @@ class RecipeDAOSlick extends RecipeDAO {
 
   //  def deleteImage = ???
 
-  def save(r: Recipe): Future[Recipe] = {
-    DB withTransaction { implicit session =>
-      Future.successful {
-        val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
-          new DateTime(), new DateTime(), r.createdBy.id))
-        r.ingredients.distinct.foreach {
-          i =>
-            val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
-            slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, i.amount))
-        }
-        val names = r.tags.map(_.name)
-        r.tags.distinct.foreach {
-          t =>
-            val tag = save(t)
-            slickTagsForRecipe.insert(DBTagForRecipe(rid, tag.id.get))
-        }
-        r
+  def save(r: Recipe): Future[Option[Recipe]] = {
+    val id = DB withTransaction { implicit session =>
+      val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
+        new DateTime(), new DateTime(), r.createdBy.id))
+      r.ingredients.distinct.foreach {
+        i =>
+          val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
+          slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, i.amount))
       }
+      r.tags.distinct.foreach {
+        t =>
+          val tag = saveTag(t)
+          slickTagsForRecipe.insert(DBTagForRecipe(rid, tag.id.get))
+      }
+      rid
     }
+    find(id)
   }
 
   def saveIngredient(i: Ingredient): Ingredient = {
@@ -176,15 +174,15 @@ class RecipeDAOSlick extends RecipeDAO {
     }
   }
 
-  def save(t: RecipeTag): RecipeTag = {
+  def saveTag(name: String): DBTag = {
     DB withSession { implicit session =>
-      val tags = findTags(t.name)
+      val tags = findTags(name)
       if (tags.isEmpty) {
-        val tid = insertTag(DBTag(None, t.name))
-        RecipeTag(Some(tid), t.name)
+        val tid = insertTag(DBTag(None, name))
+        DBTag(Some(tid), name)
       }
       else {
-        RecipeTag(tags.head.id, t.name)
+        DBTag(tags.head.id, name)
       }
     }
   }

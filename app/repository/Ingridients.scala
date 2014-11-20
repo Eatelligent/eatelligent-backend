@@ -27,7 +27,6 @@ case class Ingredient(
 //                               )
 case class IngredientForRecipe(
                                 ingredientId: Option[Long],
-                                recipeId: Option[Long],
                                 name: String,
                                 image: Option[JsValue],
                                 amount: Double

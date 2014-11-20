@@ -6,7 +6,7 @@ import scala.concurrent.Future
 
 trait RecipeService {
 
-  def save(recipe: Recipe): Future[Recipe]
+  def save(recipe: Recipe): Future[Option[Recipe]]
 
   def find(id: Long): Future[Option[Recipe]]
 
