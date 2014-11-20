@@ -1,6 +1,8 @@
 package repository.services
 
-import repository.{TinyRecipe, Recipe}
+import java.io.File
+
+import repository.{RecipeImage, TinyRecipe, Recipe}
 
 import scala.concurrent.Future
 
@@ -13,5 +15,7 @@ trait RecipeService {
   def find(name: String): Future[List[TinyRecipe]]
 
   def getAll: Future[Seq[TinyRecipe]]
+
+  def saveImage(id: Long, image: File): Future[RecipeImage]
 
 }

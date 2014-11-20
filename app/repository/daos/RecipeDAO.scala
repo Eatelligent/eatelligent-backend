@@ -1,6 +1,8 @@
 package repository.daos
 
-import repository.{TinyRecipe, Recipe}
+import java.io.File
+
+import repository.{RecipeImage, TinyRecipe, Recipe}
 
 import scala.concurrent.Future
 
@@ -13,5 +15,7 @@ trait RecipeDAO {
   def save(recipe: Recipe): Future[Option[Recipe]]
 
   def getAll: Future[Seq[TinyRecipe]]
+
+  def saveImage(id: Long, image: File): Future[RecipeImage]
 
 }

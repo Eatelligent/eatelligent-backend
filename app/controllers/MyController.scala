@@ -13,6 +13,12 @@ case class Unit(
 
 class MyController extends Controller {
 
+  implicit val recipeImageReads: Writes[RecipeImage] = (
+    (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "url").write[String]
+    )(unlift(RecipeImage.unapply))
+
+
   implicit val tinyUserRead: Reads[TinyUser] = (
     (JsPath \ "id").read[Long] and
       (JsPath \ "name").read[String]
