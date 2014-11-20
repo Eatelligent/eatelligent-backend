@@ -1,11 +1,13 @@
 package repository.daos.slick
 
+import java.io.File
+
+import cloudinary.model.CloudinaryResource
+import com.cloudinary.parameters.UploadParameters
 import org.joda.time.DateTime
-import play.api.Logger
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
-import play.api.libs.concurrent.Promise
 import play.api.libs.json.JsValue
 import repository._
 import repository.daos.RecipeDAO
@@ -122,14 +124,17 @@ class RecipeDAOSlick extends RecipeDAO {
   def futureToFutureTry[T](f: Future[T]): Future[Try[T]] =
     f.map(Success(_)).recover({case x => Failure(x)})
 
-//  def updateImage(recipeId: Long, image: String) {
-//    val q = for { r <- slickRecipes if r.id === recipeId } yield r.image
-//
-//    val a = q.run
-//    //    if (a.head.nonEmpty)
-//    //      deleteImage
-//    q.update(Some(image))
-//  }
+  def updateImage(image: RecipeImage) {
+    DB withSession { implicit session =>
+      val q = for { r <- slickRecipes if r.id === image.recipeId } yield r.image
+
+      val a = q.run
+      //    if (a.head.nonEmpty)
+      //      deleteImage
+      q.update(Some(image.url))
+
+    }
+  }
 
   //  def deleteImage = ???
 
@@ -197,4 +202,18 @@ class RecipeDAOSlick extends RecipeDAO {
   }
 
   def getAll: Future[Seq[TinyRecipe]] = find("")
+
+
+  def saveImage(id: Long, image: File): Future[RecipeImage] = {
+    CloudinaryResource.upload(image, UploadParameters().faces(true).colors(true).imageMetadata(true).exif
+      (true)).map {
+      cr =>
+        val image = RecipeImage(id, cr.url())
+        updateImage(image)
+        image
+    }
+  }
+
+
+
 }

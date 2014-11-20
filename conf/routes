@@ -40,9 +40,9 @@ GET     /api/recipes                    @controllers.RecipeController.listRecipe
 
 POST    /api/recipes                     @controllers.RecipeController.saveRecipe
 
-GET     /imageform                  controllers.ImageController.imageForm
+GET     /imageform                  @controllers.ImageController.imageForm
 
-POST    /                           controllers.ImageController.create
+POST    /                           @controllers.ImageController.saveRecipeImage
 
 GET     /api/tags                   @controllers.TagsController.listTags
 
