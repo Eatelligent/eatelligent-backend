@@ -7,6 +7,8 @@ import repository.Recipe
 import repository.services.RecipeService
 import play.api.libs.concurrent.Execution.Implicits._
 
+import scala.concurrent.Future
+
 
 class RecipeController @Inject() (
   val recipeService: RecipeService
@@ -17,15 +19,17 @@ class RecipeController @Inject() (
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
-  def saveRecipe = Action(BodyParsers.parse.json) { implicit request =>
+  def saveRecipe = Action.async(BodyParsers.parse.json) { implicit request =>
     val recipeResult = request.body.validate[Recipe]
     recipeResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
+        Future {
+          BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
+        }
       },
       recipe => {
-        recipeService.save(recipe)
-        Ok(Json.obj("ok" -> true, "message" -> recipe))
+        val newRecipe = recipeService.save(recipe)
+          newRecipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
       }
     )
   }

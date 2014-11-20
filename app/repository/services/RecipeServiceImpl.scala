@@ -8,7 +8,7 @@ import scala.concurrent.Future
 
 class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
-  def save(recipe: Recipe): Future[Recipe] = {
+  def save(recipe: Recipe): Future[Option[Recipe]] = {
     recipeDAO.save(recipe)
   }
 

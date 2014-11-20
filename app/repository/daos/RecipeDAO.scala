@@ -10,7 +10,7 @@ trait RecipeDAO {
 
   def find(name: String): Future[List[TinyRecipe]]
 
-  def save(recipe: Recipe): Future[Recipe]
+  def save(recipe: Recipe): Future[Option[Recipe]]
 
   def getAll: Future[Seq[TinyRecipe]]
 
