@@ -29,12 +29,12 @@ VALUES
   ('NO-no', 'Norwegian'),
   ('EN-en', 'English');
 
-INSERT INTO recipe(name, description, language, calories, procedure, created, modified, created_by)
+INSERT INTO recipe(name, description, language, calories, procedure, spicy, created, modified, created_by)
 VALUES
   ('Lasser', 'En optimal lasser', (SELECT id from language WHERE name = 'Norwegian'), 
-    1000, 'Hvordan lager man en lasser? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE first_name = 'garr')),
+    1000, 'Hvordan lager man en lasser? Jo.. Nå skal du høre..', 1, Now(), Now(), (SELECT id from users WHERE first_name = 'garr')),
   ('Taccer', 'En optimal taccer', (SELECT id from language WHERE name = 'Norwegian'), 
-    1000, 'Hvordan lager man en taccer? Jo.. Nå skal du høre..', Now(), Now(), (SELECT id from users WHERE first_name = 'garr'));
+    1000, 'Hvordan lager man en taccer? Jo.. Nå skal du høre..', 2, Now(), Now(), (SELECT id from users WHERE first_name = 'garr'));
 
 INSERT INTO recipe_in_tag (recipe_id, tag_id)
 VALUES

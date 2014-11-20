@@ -1,13 +1,10 @@
 package controllers
 
-import java.sql.Date
-
 import org.joda.time.DateTime
 import repository._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsValue, JsPath, Reads}
 import play.api.mvc.Controller
-import repository.TagSchema
 
 case class Unit(
                   id: Option[Long],
@@ -26,27 +23,27 @@ class MyController extends Controller {
       (JsPath \ "name").write[String]
     )(unlift(TinyUser.unapply))
 
-  implicit val ingredientSchemaRead: Reads[IngredientSchema] = (
+  implicit val ingredientSchemaRead: Reads[Ingredient] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
       (JsPath \ "image").readNullable[JsValue]
-    )(IngredientSchema.apply _)
+    )(Ingredient.apply _)
 
-  implicit val ingredientSchemaWrites: Writes[IngredientSchema] = (
+  implicit val ingredientSchemaWrites: Writes[Ingredient] = (
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[JsValue]]
-    )(unlift(IngredientSchema.unapply))
+    )(unlift(Ingredient.unapply))
 
-  implicit val tagRead: Reads[TagSchema] = (
+  implicit val tagRead: Reads[RecipeTag] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String]
-    )(TagSchema.apply _)
+    )(RecipeTag.apply _)
 
-  implicit val tagWrite: Writes[TagSchema] =(
+  implicit val tagWrite: Writes[RecipeTag] =(
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String]
-    )(unlift(TagSchema.unapply))
+    )(unlift(RecipeTag.unapply))
 
   implicit val ingredientForRecipeRead: Reads[IngredientForRecipe] = (
     (JsPath \ "ingredientId").readNullable[Long] and
@@ -85,10 +82,11 @@ class MyController extends Controller {
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").readNullable[Double] and
       (JsPath \ "procedure").read[String] and
+      (JsPath \ "spicy").read[Int] and
       (JsPath \ "created").readNullable[DateTime] and
       (JsPath \ "modified").readNullable[DateTime] and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
-      (JsPath \ "tags").read[Seq[TagSchema]] and
+      (JsPath \ "tags").read[Seq[RecipeTag]] and
       (JsPath \ "createdBy").read[TinyUser]
     )(Recipe.apply _)
 
@@ -100,38 +98,39 @@ class MyController extends Controller {
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Option[Double]] and
       (JsPath \ "procedure").write[String] and
+      (JsPath \ "spicy").write[Int] and
       (JsPath \ "created").write[Option[DateTime]] and
       (JsPath \ "modified").write[Option[DateTime]] and
       (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
-      (JsPath \ "tags").write[Seq[TagSchema]] and
+      (JsPath \ "tags").write[Seq[RecipeTag]] and
       (JsPath \ "createdBy").write[TinyUser]
     )(unlift(Recipe.unapply))
 
-  implicit val recipeSchemaRead: Reads[RecipeSchema] = (
-    (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[String]] and
-      (JsPath \ "description").read[String] and
-      (JsPath \ "language").read[Int] and
-      (JsPath \ "calories").read[Double] and
-      (JsPath \ "procedure").read[String] and
-      (JsPath \ "created").read[DateTime] and
-      (JsPath \ "modified").read[DateTime] and
-      (JsPath \ "createdById").read[Long]
-    )(RecipeSchema.apply _)
-
-  implicit val recipeSchemaWrites: Writes[RecipeSchema] = (
-    (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[String]] and
-      (JsPath \ "description").write[String] and
-      (JsPath \ "language").write[Int] and
-      (JsPath \ "calories").write[Double] and
-      (JsPath \ "procedure").write[String] and
-      (JsPath \ "created").write[DateTime] and
-      (JsPath \ "modified").write[DateTime] and
-      (JsPath \ "createdById").write[Long]
-    )(unlift(RecipeSchema.unapply))
+//  implicit val recipeSchemaRead: Reads[DBRecipe] = (
+//    (JsPath \ "id").readNullable[Long] and
+//      (JsPath \ "name").read[String] and
+//      (JsPath \ "image").read[Option[String]] and
+//      (JsPath \ "description").read[String] and
+//      (JsPath \ "language").read[Int] and
+//      (JsPath \ "calories").read[Double] and
+//      (JsPath \ "procedure").read[String] and
+//      (JsPath \ "created").read[DateTime] and
+//      (JsPath \ "modified").read[DateTime] and
+//      (JsPath \ "createdById").read[Long]
+//    )(RecipeSchema.apply _)
+//
+//  implicit val recipeSchemaWrites: Writes[RecipeSchema] = (
+//    (JsPath \ "id").write[Option[Long]] and
+//      (JsPath \ "name").write[String] and
+//      (JsPath \ "image").write[Option[String]] and
+//      (JsPath \ "description").write[String] and
+//      (JsPath \ "language").write[Int] and
+//      (JsPath \ "calories").write[Double] and
+//      (JsPath \ "procedure").write[String] and
+//      (JsPath \ "created").write[DateTime] and
+//      (JsPath \ "modified").write[DateTime] and
+//      (JsPath \ "createdById").write[Long]
+//    )(unlift(RecipeSchema.unapply))
 
   implicit val tinyRecipeRead: Reads[TinyRecipe] = (
     (JsPath \ "id").read[Long] and

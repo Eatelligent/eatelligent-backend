@@ -4,7 +4,7 @@ import play.PlayImport.PlayKeys._
 
 object ApplicationBuild extends Build {
 
-  val playVersion = "2.3.4"
+  val playVersion = "2.3.6"
   val slickPgVersion = "0.6.5.3"
   val playSLickVersion = "0.8.0"
 

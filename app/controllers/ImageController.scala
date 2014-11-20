@@ -40,7 +40,7 @@ object ImageController extends MyController {
             cr =>
               val photo = Photo(photoDetails.recipeId, cr)
               val newPhotoId = DB.withSession{ implicit session =>
-                updateImage(photo.recipeId, cr.url())
+//                updateImage(photo.recipeId, cr.url())
               }
               Ok(Json.obj("ok" -> true, "bilde" -> cr.url()))
           }
