@@ -19,8 +19,9 @@ case class MyUser(
                  )
 
 case class TinyUser(
-                    id: Long,
-                    name: String
+                    id: String,
+                    firstName: Option[String],
+                    lastName: Option[String]
                      )
 case class Role (
                   id: Long,

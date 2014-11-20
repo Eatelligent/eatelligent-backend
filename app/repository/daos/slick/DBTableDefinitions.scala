@@ -43,7 +43,7 @@ object DBTableDefinitions {
                            spicy: Int,
                            created: DateTime,
                            modified: DateTime,
-                           createdById: Long
+                           createdById: String
                            )
 
   class Recipes(tag: Tag) extends Table[DBRecipe](tag, "recipe") {
@@ -57,7 +57,7 @@ object DBTableDefinitions {
     def spicy = column[Int]("spicy")
     def created = column[DateTime]("created")
     def modified = column[DateTime]("modified")
-    def createdById = column[Long]("created_by")
+    def createdById = column[String]("created_by")
 
     def * = (id, name, image, description, language, calories, procedure, spicy, created, modified,
       createdById) <> (DBRecipe.tupled,

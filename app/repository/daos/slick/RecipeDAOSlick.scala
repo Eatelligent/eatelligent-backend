@@ -1,9 +1,12 @@
 package repository.daos.slick
 
 import java.io.File
+import java.util.UUID
 
 import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
+import com.google.inject.Inject
+import models.daos.UserDAO
 import org.joda.time.DateTime
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
@@ -15,7 +18,9 @@ import scala.concurrent._
 import scala.util.{Try, Failure, Success}
 import play.api.libs.concurrent.Execution.Implicits._
 
-class RecipeDAOSlick extends RecipeDAO {
+class RecipeDAOSlick @Inject() (
+  val userDAO: UserDAO
+                                 ) extends RecipeDAO {
   import play.api.Play.current
 
 
@@ -35,14 +40,16 @@ class RecipeDAOSlick extends RecipeDAO {
       val futures = for {
         iF <- findIngredientsForRecipe(r.id.get)
         tF <- findTagsForRecipe(r.id.get)
-      } yield (iF, tF)
+        uF <- userDAO.find(UUID.fromString(r.createdById))
+      } yield (iF, tF, uF)
 
+      val user = futures map (_._3.get)
       futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
-        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, TinyUser(0, "dummy")))
-
-      //        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, TinyUser(x._3.get.userID.toString, x._3.get
+          .firstName, x._3.get.lastName)))
 
   }
+
 
   def find(q: String): Future[List[TinyRecipe]] = {
     DB withSession { implicit session =>
@@ -105,15 +112,14 @@ class RecipeDAOSlick extends RecipeDAO {
         val futures = for {
           iF <- findIngredientsForRecipe(r.id.last)
           tF <- findTagsForRecipe(r.id.last)
-        } yield (iF, tF)
+          uF <- userDAO.find(UUID.fromString(r.createdById))
+        } yield (iF, tF, uF)
 
 
         futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r
           .procedure, r.spicy,
-          Some(r.created), Some(r.modified), x._1, x._2, TinyUser(0, "dummy")))
-
-
-        //        val u = findUserById(r.createdById).map(u => TinyUser(u.id.get, u.name))
+          Some(r.created), Some(r.modified), x._1, x._2, TinyUser(x._3.get.userID.toString, x._3.get
+            .firstName, x._3.get.lastName)))
     }
 
     val listOfTrys = res.map(futureToFutureTry(_))
