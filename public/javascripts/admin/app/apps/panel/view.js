@@ -3,6 +3,7 @@ define(function(require) {
 
   var Marionette = require('marionette');
   var template = require('hbs!./templates/panel');
+  var statsTemplate =require('hbs!./templates/stats');
 
   var d3 = require('d3');
   var MetricsGraphics = require('metrics-graphics');
@@ -70,18 +71,32 @@ define(function(require) {
     }
   });
 
+  var StatsView = Marionette.ItemView.extend({
+    template: statsTemplate,
+    className: 'col-md-6 col-md-offset-3'
+  });
+
   var PanelView = Marionette.LayoutView.extend({
     template: template,
 
     regions: {
       rating: '[data-js-ratings]',
-      users: '[data-js-users]'
+      users: '[data-js-users]',
+      stats: '[data-js-stats]'
     },
 
     onShow: function() {
-      var model = new Backbone.Model();
+      var model = new Backbone.Model({
+        num_recipes: 50,
+        num_ingredients: 152,
+        num_users: 25,
+        num_ratings: 100,
+        num_tags: 23,
+        rating_ratio: 100/25
+      });
       this.rating.show(new RatingView({model: model}));
       this.users.show(new UserView({model: model}));
+      this.stats.show(new StatsView({model: model}));
     }
   });
 
