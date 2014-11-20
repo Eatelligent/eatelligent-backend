@@ -9,9 +9,9 @@ define(function(require) {
     return new Handlebars.SafeString(str);
   });
 
-  Handlebars.registerHelper('linkTags', function(array) {
-    var array = _.map(array, function(el) { 
-      return '<a href="#tags/'+el.name+'">'+el.name+'</a>'; 
+  Handlebars.registerHelper('linkTags', function(tags) {
+    var array = _.map(tags, function(tag) { 
+      return '<a href="#tags/'+tag.name+'">'+tag.name+'</a>'; 
     });
     return new Handlebars.SafeString(array.join(', '));
   });

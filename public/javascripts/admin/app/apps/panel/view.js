@@ -23,7 +23,7 @@ define(function(require) {
       data = convert_dates(data, 'date');
       var fake_baselines = [{value:d3.mean(data, function(d) {
         return d.value;
-      }), label:'Average last 30 days'}]
+      }), label:'Average last 30 days'}];
 
       data_graphic({
         title: "Number of ratings last 30 days",
@@ -54,7 +54,7 @@ define(function(require) {
       data = convert_dates(data, 'date');
       var fake_baselines = [{value:d3.mean(data, function(d) {
         return d.value;
-      }), label:'Average last 30 days'}]
+      }), label:'Average last 30 days'}];
 
       data_graphic({
         title: "Number of users last 30 days",

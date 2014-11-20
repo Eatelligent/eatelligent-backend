@@ -14,7 +14,7 @@ define(function(require) {
   var procedureTemplate = require('hbs!./templates/new/procedure');
   var strengthTemplate = require('hbs!./templates/new/strength');
   var ingredientTemplate = require('hbs!./templates/new/ingredients');
-  var ingredientItemTemplate = require('hbs!./templates/new/ingredients_item')
+  var ingredientItemTemplate = require('hbs!./templates/new/ingredients_item');
   var authorTemplate = require('hbs!./templates/new/author');
 
   var Bloodhound = require('bloodhound');
@@ -42,7 +42,7 @@ define(function(require) {
       '[data-js-tags]': {
         observe: 'tags',
         onSet: function(value) {
-          return _.map(value.split(','), function(t) { return t.trim() });
+          return _.map(value.split(','), function(t) { return t.trim(); });
         }
       }
     },
@@ -70,25 +70,25 @@ define(function(require) {
       var minutes = function(i) {
         var min = 10;
         return min + i * 10;
-      }
+      };
 
       var hours = function(minutes) {
         if (minutes < 60) return minutes+"m";
         var h = parseInt(minutes / 60);
-        return h +"t "+ (minutes - h * 60)+"m"
-      }
+        return h +"t "+ (minutes - h * 60)+"m";
+      };
 
       var array = [];
       _(n).times(function(a) {
-        array.push({minutes: minutes(a), hourmins: hours(minutes(a))})
-      })
+        array.push({minutes: minutes(a), hourmins: hours(minutes(a))});
+      });
       return array;
     },
 
     serializeData: function() {
       return {
         times: this.getTimes(18)
-      }
+      };
     }
   });
   
@@ -100,7 +100,7 @@ define(function(require) {
       tagName: 'option',
       template: _.template('<%- name %>'),
       onShow: function() {
-        this.$el.attr('value', this.model.get('id'))
+        this.$el.attr('value', this.model.get('id'));
       },
     })
 
@@ -138,7 +138,7 @@ define(function(require) {
     className: 'col-md-12 recipe-parameter',
 
     serializeData: function() {
-      return { levels: [1, 2, 3] }
+      return { levels: [1, 2, 3] };
     },
   
     events: {
@@ -171,7 +171,7 @@ define(function(require) {
         name: 'ingredients',
         local: options.ingredients.toJSON(),
         datumTokenizer: function(d) {
-          return Bloodhound.tokenizers.whitespace(d.name)
+          return Bloodhound.tokenizers.whitespace(d.name);
         },
         queryTokenizer: Bloodhound.tokenizers.whitespace
       });
@@ -238,7 +238,7 @@ define(function(require) {
     serializeData: function() {
       return {
         json: JSON.stringify(this.model.toJSON(), null, '\t')
-      }
+      };
     }
   });
 

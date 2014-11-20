@@ -7,7 +7,7 @@ define(function(require) {
 
   channel.comply('module:new:recipe', function() {
     var  controller = new NewController();
-  })
+  });
 
   channel.comply('module:recipes', function(id) {
     var controller = new Controller({id: id});

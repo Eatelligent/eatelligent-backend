@@ -14,7 +14,7 @@ define(function(require) {
     parse: function(response) {
       return response.recipe || response;
     }
-  })
+  });
 
   var Recipes = Backbone.Collection.extend({
     model: Recipe,

@@ -4,7 +4,7 @@ define(function(require) {
   var Marionette = require('marionette');
   var template = require('hbs!./templates/recipes');
   var recipeTemplate = require('hbs!./templates/recipe');
-  var recipeIngredientTemplate = require('hbs!./templates/recipe_ingredient')
+  var recipeIngredientTemplate = require('hbs!./templates/recipe_ingredient');
   var recipeItemTemplate = require('hbs!./templates/recipe_item');
 
   var RecipeIngredientEmpty = Marionette.ItemView.extend({
