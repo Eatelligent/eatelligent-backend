@@ -9,6 +9,17 @@ define(function(require) {
   var MetricsGraphics = require('metrics-graphics');
   var moment = require('moment');
 
+  var convert_dates = function (data, x_accessor, time_format) {
+      time_format = (typeof time_format === "undefined") ? '%Y-%m-%d' : time_format;
+      data = data.map(function(d) {
+          var fff = d3.time.format(time_format);
+          d[x_accessor] = fff.parse(d[x_accessor]);
+          return d;
+      });
+
+      return data;
+  }
+
   var RatingView = Marionette.ItemView.extend({
     template: _.template('<div class="data-js-last-ratings"></div>'),
     className: 'col-md-6 text-center',
