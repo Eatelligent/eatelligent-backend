@@ -1,7 +1,8 @@
+import com.mohiva.play.silhouette.core.Logger
 import play.api.i18n.{Messages, Lang}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.GlobalSettings
+import play.api.{Logger, GlobalSettings}
 import play.api.mvc.{Result, RequestHeader}
 import com.mohiva.play.silhouette.core.{Logger, SecuredSettings}
 import utils.di.SilhouetteModule
@@ -12,7 +13,7 @@ import controllers.routes
 /**
  * The global configuration.
  */
-object Global extends GlobalSettings with SecuredSettings with Logger {
+object Global extends GlobalSettings with SecuredSettings {
 
   /**
    * The Guice dependencies injector.
@@ -45,7 +46,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    * @return The result to send to the client.
    */
   override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Access Denied"))))
+    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Not authenticated"))))
   }
 
   /**
@@ -58,6 +59,6 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    * @return The result to send to the client.
    */
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Access Denied"))))
+    Some(Future.successful(Ok(Json.obj("ok" -> false, "message" -> "Authenticated, but not authorized"))))
   }
 }

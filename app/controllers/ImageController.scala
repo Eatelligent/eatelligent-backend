@@ -21,7 +21,7 @@ class ImageController @Inject() (
 
   val directUploadForm = Form(
     mapping(
-      "id" -> longNumber,
+      "recipeId" -> longNumber,
       "image" -> of[CloudinaryResource]
     )(Image.apply)(Image.unapply)
   )
