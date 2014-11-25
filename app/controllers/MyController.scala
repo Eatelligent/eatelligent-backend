@@ -6,11 +6,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsValue, JsPath, Reads}
 import play.api.mvc.Controller
 
-case class Unit(
-                  id: Option[Long],
-                  name: String
-                 )
-
 class MyController extends Controller {
 
   implicit val recipeImageReads: Writes[RecipeImage] = (
@@ -69,15 +64,15 @@ class MyController extends Controller {
 //        (JsPath \ "unit").writeNullable[Unit]
     )(unlift(IngredientForRecipe.unapply))
 
-  implicit val unitRead: Reads[Unit] = (
-    (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "name").read[String]
-    )(Unit.apply _)
-
-  implicit val unitWrites: Writes[Unit] = (
-    (JsPath \ "id").writeNullable[Long] and
-      (JsPath \ "name").write[String]
-    )(unlift(Unit.unapply))
+//  implicit val unitRead: Reads[Unit] = (
+//    (JsPath \ "id").readNullable[Long] and
+//      (JsPath \ "name").read[String]
+//    )(Unit.apply _)
+//
+//  implicit val unitWrites: Writes[Unit] = (
+//    (JsPath \ "id").writeNullable[Long] and
+//      (JsPath \ "name").write[String]
+//    )(unlift(Unit.unapply))
 
 
   implicit val recipeRead: Reads[Recipe] = (

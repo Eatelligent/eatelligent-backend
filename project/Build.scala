@@ -1,14 +1,17 @@
 import sbt._
 import Keys._
-import play.PlayImport.PlayKeys._
+import play.Play.autoImport._
+import PlayKeys._
 
-object ApplicationBuild extends Build {
+object Build extends Build {
 
   val playVersion = "2.3.6"
   val slickPgVersion = "0.6.5.3"
   val playSLickVersion = "0.8.0"
 
   lazy val appDependencies = Seq(
+    jdbc,
+    cache,
     "com.typesafe.play" %% "play-jdbc" % playVersion,
     "com.typesafe.play" %% "play-json" % playVersion,
     "com.typesafe.play" %% "play-slick" % playSLickVersion,
@@ -40,5 +43,6 @@ object ApplicationBuild extends Build {
       "-language:higherKinds",
       "-language:postfixOps"
     )
-  ).enablePlugins(play.PlayScala)
+  )
+
 }

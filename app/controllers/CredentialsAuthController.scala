@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 import javax.inject.Inject
+import play.api.Logger
 import play.api.libs.json._
 
 import scala.concurrent.Future
@@ -63,7 +64,10 @@ class CredentialsAuthController @Inject() (
         userService.retrieve(loginInfo).flatMap {
           case Some(user) => env.authenticatorService.create(user).map {
             case Some(authenticator) =>
+              Logger.info("Authenticator: " + authenticator)
               env.eventBus.publish(LoginEvent(user, request, request2lang))
+              Logger.info("Redirecting to index")
+              Logger.info("Identity: " + request.toString())
               env.authenticatorService.send(authenticator, Redirect(routes.ApplicationController.index))
             case None => throw new AuthenticationException("Couldn't create an authenticator")
           }
