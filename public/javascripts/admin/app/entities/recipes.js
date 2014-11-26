@@ -19,7 +19,7 @@ define(function(require) {
   var Recipes = Backbone.Collection.extend({
     model: Recipe,
 
-    url: '/api/allrecipes',
+    url: '/api/recipes',
     
     parse: function(response) {
       return response.recipes;

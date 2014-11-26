@@ -56,6 +56,14 @@ define(function(require) {
     if (Backbone.history) {
       Backbone.history.start();
     }
+
+    $.ajaxPrefilter(function(options, originalOptions, xhr) {
+      xhr.fail(function() {
+        if(xhr.status === 403 || xhr.status === 401) {
+          Backbone.history.navigate('login', {trigger: true});
+        }
+      });
+    });
   });
 
   app.on('start', function() {

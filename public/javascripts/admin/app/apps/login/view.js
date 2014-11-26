@@ -8,6 +8,11 @@ define(function(require) {
 
   var LoginView = Marionette.ItemView.extend({
     template: template,
+
+    ui: {
+      'errorbox': '[data-js-errors]'
+    },
+    
     triggers: {
       'submit form': 'login:clicked'
     },
@@ -19,6 +24,11 @@ define(function(require) {
 
     onRender: function() {
       this.stickit();
+    },
+
+    displayError: function(msg) {
+      this.ui.errorbox.addClass('bg-danger');
+      this.ui.errorbox.html(msg);
     }
   });
 

@@ -7,16 +7,22 @@ define(function(require) {
 
   var Controller = Ctrl.extend({
     initialize: function(options) {
+      var self = this;
       var model = channel.request('entities:model:login');
-
-      model.on('change', function(response) {
-        console.log('change', arguments);
-      });
 
       this.view = this.getView(model);
 
       this.view.on('login:clicked', function() {
         model.login();
+      });
+
+      model.on('sync', function() {
+        Backbone.history.navigate('/', {trigger: true});
+        channel.command('module:header');
+      });
+
+      model.on('error', function(model, xhr) {
+        self.view.displayError(xhr.responseJSON.message);
       });
 
       this.region.show(this.view);

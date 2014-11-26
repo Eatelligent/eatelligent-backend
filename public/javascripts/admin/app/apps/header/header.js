@@ -13,7 +13,10 @@ define(function(require) {
   var Controller = Ctrl.extend({
     initialize: function() {
       this.view = this.getView();
-      this.region.show(this.view);
+
+      if (window.location.hash.indexOf('login') < 0) {
+        this.region.show(this.view);
+      }
     },
 
     getView: function() {
