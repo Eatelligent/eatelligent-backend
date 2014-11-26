@@ -11,7 +11,7 @@ define(function(require) {
 
   Handlebars.registerHelper('linkTags', function(tags) {
     var array = _.map(tags, function(tag) { 
-      return '<a href="#tags/'+tag.name+'">'+tag.name+'</a>'; 
+      return '<a href="#tags/'+tag+'">'+tag+'</a>'; 
     });
     return new Handlebars.SafeString(array.join(', '));
   });
