@@ -106,7 +106,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
     Ok(views.html.recipe_form())
   }
 
-  def adminPanel = Action { implicit request => 
+  def adminPanel = SecuredAction { implicit request =>
     Ok(views.html.admin())
   }
 
