@@ -15,12 +15,14 @@ define(function(require) {
   require('utils/templateHelpers');
 
   // Load entities
+  require('entities/login');
   require('entities/recipes');
   require('entities/languages');
   require('entities/ingredients');
   require('entities/tags');
 
   // Load modules
+  require('apps/login/app');
   require('apps/header/header');
   require('apps/panel/app');
   require('apps/recipes/app');
@@ -31,6 +33,7 @@ define(function(require) {
   var Router = Backbone.Router.extend({
     routes: {
       '(/)': 'panel',
+      '(/)login': 'login',
       '(/)recipes/new': 'new:recipe',
       '(/)recipes(/:id)': 'recipes',
       '(/)tags(/:tag)': 'tags',
