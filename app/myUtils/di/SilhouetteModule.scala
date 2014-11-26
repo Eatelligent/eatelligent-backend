@@ -18,6 +18,9 @@ import models.services.{UserService, UserServiceImpl}
 import models.daos._
 import models.daos.slick._
 import models.User
+import repository.daos.{IngredientDAO, TagDAO, RecipeDAO}
+import repository.daos.slick.{IngredientDAOSlick, TagDAOSlick, RecipeDAOSlick}
+import repository.services._
 
 /**
  * The Guice module which wires all Silhouette dependencies.
@@ -29,20 +32,18 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   def configure() {
     bind[UserService].to[UserServiceImpl]
-    val useSlick = Play.configuration.getBoolean("silhouette.seed.db.useSlick").getOrElse(false)
-    if (useSlick) {
-      Logger.debug("Binding to Slick DAO implementations.")
-      bind[UserDAO].to[UserDAOSlick]
-      bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAOSlick]
-      bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAOSlick]
-      bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAOSlick]
-    } else {
-      Logger.debug("Binding to In-Memory DAO implementations.")
-      bind[UserDAO].to[UserDAOImpl]
-      bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAO]
-      bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAO]
-      bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAO]
-    }
+    bind[TagService].to[TagServiceImpl]
+    bind[RecipeService].to[RecipeServiceImpl]
+    bind[IngredientService].to[IngredientServiceImpl]
+    Logger.debug("Binding to Slick DAO implementations.")
+    bind[UserDAO].to[UserDAOSlick]
+    bind[RecipeDAO].to[RecipeDAOSlick]
+    bind[TagDAO].to[TagDAOSlick]
+    bind[IngredientDAO].to[IngredientDAOSlick]
+    bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAOSlick]
+    bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAOSlick]
+    bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAOSlick]
+
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())

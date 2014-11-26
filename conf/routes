@@ -20,34 +20,33 @@ POST    /api/users                       @controllers.SignUpController.signUpJso
 
 POST    /api/authenticate                @controllers.CredentialsAuthController.authenticateJson
 
-GET     /api/ingredients                controllers.IngredientController.listIngredients
+#GET     /api/ingredients                @controllers.IngredientController.listIngredients
 
-GET     /api/ingredients/:id             controllers.IngredientController.getIngredient(id: Long)
+GET     /api/ingredients/:id             @controllers.IngredientController.getIngredient(id: Long)
 
-POST    /api/ingredients                 controllers.IngredientController.saveIngredient
+POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
-GET     /api/languages                  @controllers.ApplicationController.listLanguages
+#GET     /api/languages                  @controllers.ApplicationController.listLanguages
 
-POST    /api/languages                  @controllers.ApplicationController.saveLanguage
+#POST    /api/languages                  @controllers.ApplicationController.saveLanguage
 
 GET     /recipe_form                    @controllers.ApplicationController.recipeForm
 GET     /admin                          @controllers.ApplicationController.adminPanel
 
-GET     /api/recipes/$id<[0-9]+>                controllers.RecipeController.getRecipe(id: Long)
+GET     /api/recipes/$id<[0-9]+>        @controllers.RecipeController.getRecipe(id: Long)
 
-GET     /api/recipes/:q                 controllers.RecipeController.getRecipesByQuery(q: String)
+GET     /api/recipes/:q                 @controllers.RecipeController.getRecipesByQuery(q: String)
+GET     /api/recipes                    @controllers.RecipeController.listRecipes
 
-GET     /api/allrecipes                    controllers.RecipeController.listRecipes
+POST    /api/recipes                     @controllers.RecipeController.saveRecipe
 
-POST    /api/recipes                     controllers.RecipeController.saveRecipe
+GET     /imageform                  @controllers.ImageController.imageForm
 
-GET     /imageform                  controllers.ImageController.imageForm
+POST    /                           @controllers.ImageController.saveRecipeImage
 
-POST    /                           controllers.ImageController.create
+GET     /api/tags                   @controllers.TagsController.listTags
 
-GET     /api/tags                   controllers.TagsController.listTags
-
-GET     /api/tags/:id                   controllers.RecipeController.getTag(id: Long)
+#GET     /api/tags/:id                   @controllers.RecipeController.getTag(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

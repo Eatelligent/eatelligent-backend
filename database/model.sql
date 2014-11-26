@@ -72,6 +72,7 @@ CREATE TABLE recipe (
 	language int8 references language(id) ON DELETE CASCADE,
 	calories real,
 	procedure text,
+	spicy int,
 	created timestamptz,
 	modified timestamptz,
 	created_by text references users(id) ON DELETE CASCADE

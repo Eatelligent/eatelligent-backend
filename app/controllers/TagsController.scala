@@ -1,16 +1,19 @@
 package controllers
 
-import play.api.db.slick.DBAction
+import com.google.inject.Inject
 import play.api.libs.json._
-import repository.current.dao._
-import repository.current.dao.driver.simple._
-import play.api.db.slick._
+import play.api.mvc.Action
+import repository.services.TagService
+import play.api.libs.concurrent.Execution.Implicits._
 
-object TagsController extends MyController {
+class TagsController @Inject() (
+  val tagService: TagService
+)  extends MyController {
 
-  def listTags = DBAction { implicit request =>
-    val json = Json.toJson(tags.list)
-    Ok(Json.obj("ok" -> true, "tags" -> json))
+  def listTags = Action.async { implicit request =>
+    val tags = tagService.getAll()
+    tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
   }
+
 
 }

@@ -81,7 +81,6 @@ class UserDAOSlick extends UserDAO {
    * @return The saved user.
    */
   def save(user: User) = {
-    println("Saving user..")
     DB withSession { implicit session =>
       Future.successful {
         val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image)

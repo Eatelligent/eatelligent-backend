@@ -1,26 +1,11 @@
 package repository
 
-import java.sql.Date
 
-import myUtils.WithMyDriver
-import play.api.libs.json.JsValue
-
-case class MyUser(
-                id: Option[Long],
-                name: String,
-                password: String,
-                email: String,
-                image: Option[JsValue],
-//                birth: Date,
-                city: Option[String],
-                roleId: Long
-//                created: Option[Date],
-//                modified: Option[Date]
-                 )
 
 case class TinyUser(
-                    id: Long,
-                    name: String
+                    id: String,
+                    firstName: Option[String],
+                    lastName: Option[String]
                      )
 case class Role (
                   id: Long,
