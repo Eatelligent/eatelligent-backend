@@ -117,12 +117,14 @@ object DBTableDefinitions {
     def * = (recipeId, tagId) <> (DBTagForRecipe.tupled, DBTagForRecipe.unapply)
   }
 
+
   case class DBUser (
     userID: String,
     firstName: Option[String],
     lastName: Option[String],
     email: Option[String],
-    image: Option[String]
+    image: Option[String],
+    role: Option[String]
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
@@ -131,7 +133,8 @@ object DBTableDefinitions {
     def lastName = column[Option[String]]("last_name")
     def email = column[Option[String]]("email")
     def image = column[Option[String]]("image")
-    def * = (id, firstName, lastName, email, image) <> (DBUser.tupled, DBUser.unapply)
+    def role = column[Option[String]]("role")
+    def * = (id, firstName, lastName, email, image, role) <> (DBUser.tupled, DBUser.unapply)
   }
 
   case class DBLoginInfo (

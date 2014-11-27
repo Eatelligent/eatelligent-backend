@@ -46,21 +46,16 @@ CREATE TABLE user_preferences (
 	/* More definitions of prefs */
 );
 
-CREATE TABLE roles (
-	id serial8 primary key,
-	name text
-);
-
 CREATE TABLE users (
 	id text primary key,
-	role int8 references roles(id),
 	first_name text,
 	last_name text,
 	/*password text,*/
 	email text,	
 	/*city text,*/
 	/*age int,*/
-	image text
+	image text,
+	role text
 	/* user_preferences int8 references user_preferences(id) ON DELETE CASCADE*/
 );
 

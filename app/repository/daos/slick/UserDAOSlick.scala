@@ -35,7 +35,7 @@ class UserDAOSlick extends UserDAO {
                 slickUsers.filter(_.id === userLoginInfo.userID).firstOption match {
                   case Some(user) =>
                     Some(User(UUID.fromString(user.userID), loginInfo, user.firstName, user.lastName, user.email,
-                      user.image))
+                      user.image, user.role))
                   case None => None
                 }
               case None => None
@@ -63,7 +63,8 @@ class UserDAOSlick extends UserDAO {
               case Some(info) =>
                 slickLoginInfos.filter(_.id === info.loginInfoId).firstOption match {
                   case Some(loginInfo) =>
-                    Some(User(UUID.fromString(user.userID), LoginInfo(loginInfo.providerID, loginInfo.providerKey), user.firstName, user.lastName, user.email, user.image))
+                    Some(User(UUID.fromString(user.userID), LoginInfo(loginInfo.providerID, loginInfo.providerKey),
+                      user.firstName, user.lastName, user.email, user.image, user.role))
                   case None => None
                 }
               case None => None
@@ -83,7 +84,7 @@ class UserDAOSlick extends UserDAO {
   def save(user: User) = {
     DB withSession { implicit session =>
       Future.successful {
-        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image)
+        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image, user.role)
         slickUsers.filter(_.id === dbUser.userID).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
           case None => slickUsers.insert(dbUser)

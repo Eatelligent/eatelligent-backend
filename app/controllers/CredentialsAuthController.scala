@@ -46,7 +46,8 @@ class CredentialsAuthController @Inject() (
       (JsPath \ "firstName").write[Option[String]] and
       (JsPath \ "lastName").write[Option[String]] and
       (JsPath \ "email").write[Option[String]] and
-      (JsPath \ "image").write[Option[String]]
+      (JsPath \ "image").write[Option[String]] and
+      (JsPath \ "role").write[Option[String]]
     )(unlift(User.unapply))
 
   /**

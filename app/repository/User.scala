@@ -19,7 +19,8 @@ case class User(
   firstName: Option[String],
   lastName: Option[String],
   email: Option[String],
-  image: Option[String]
+  image: Option[String],
+  role: Option[String]
 ) extends Identity
 
 case class UserSignUp(
