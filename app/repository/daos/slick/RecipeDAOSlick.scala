@@ -95,6 +95,20 @@ class RecipeDAOSlick @Inject() (
     }
   }
 
+
+  def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]] = {
+    // select * from recipe as r join recipe_in_tag on r.id = recipe_id join tags as t on t.id = tag_id WHERE t.name = 'norsk';
+    DB withSession { implicit session =>
+      Future.successful {
+        val join = for {
+          (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
+            .tagId === _.id) if t.name === tagName
+        } yield (r._1.id, r._1.name, r._1.image)
+        join.buildColl[List].map(r => TinyRecipe(r._1.get, r._2, r._3))
+      }
+    }
+  }
+
   def mapToTinyRecipe(recipes: Option[List[Recipe]]): Option[List[TinyRecipe]] = {
     recipes match {
       case Some(r) => Option(r.map{
