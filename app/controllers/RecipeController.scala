@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
 import models.User
+import myUtils.silhouette.WithRole
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -67,7 +68,7 @@ class RecipeController @Inject() (
       (JsPath \ "modified").readNullable[DateTime] and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").read[Seq[String]] and
-      (JsPath \ "createdBy").read[TinyUser]
+      (JsPath \ "createdBy").readNullable[TinyUser]
     )(Recipe.apply _)
 
   implicit val recipeWrites: Writes[Recipe] = (
@@ -83,7 +84,7 @@ class RecipeController @Inject() (
       (JsPath \ "modified").write[Option[DateTime]] and
       (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").write[Seq[String]] and
-      (JsPath \ "createdBy").write[TinyUser]
+      (JsPath \ "createdBy").write[Option[TinyUser]]
     )(unlift(Recipe.unapply))
 
   implicit val tinyRecipeRead: Reads[TinyRecipe] = (
@@ -112,7 +113,7 @@ class RecipeController @Inject() (
         }
       },
       recipe => {
-        val newRecipe = recipeService.save(recipe)
+        val newRecipe = recipeService.save(recipe, request.identity)
           newRecipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
       }
     )

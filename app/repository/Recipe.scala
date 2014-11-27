@@ -15,7 +15,7 @@ case class Recipe(
                    modified: Option[DateTime],
                    ingredients: Seq[IngredientForRecipe],
                    tags: Seq[String],
-                   createdBy: TinyUser
+                   createdBy: Option[TinyUser]
                    )
 
 case class TinyRecipe(

@@ -6,6 +6,7 @@ import java.util.UUID
 import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
+import models.User
 import models.daos.UserDAO
 import org.joda.time.DateTime
 import play.api.db.slick._
@@ -45,8 +46,8 @@ class RecipeDAOSlick @Inject() (
 
       val user = futures map (_._3.get)
       futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
-        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, TinyUser(x._3.get.userID.toString, x._3.get
-          .firstName, x._3.get.lastName)))
+        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, Some(TinyUser(x._3.get.userID.toString, x._3.get
+          .firstName, x._3.get.lastName))))
 
   }
 
@@ -118,8 +119,8 @@ class RecipeDAOSlick @Inject() (
 
         futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r
           .procedure, r.spicy,
-          Some(r.created), Some(r.modified), x._1, x._2, TinyUser(x._3.get.userID.toString, x._3.get
-            .firstName, x._3.get.lastName)))
+          Some(r.created), Some(r.modified), x._1, x._2, Some(TinyUser(x._3.get.userID.toString, x._3.get
+            .firstName, x._3.get.lastName))))
     }
 
     val listOfTrys = res.map(futureToFutureTry(_))
@@ -144,10 +145,10 @@ class RecipeDAOSlick @Inject() (
 
   //  def deleteImage = ???
 
-  def save(r: Recipe): Future[Option[Recipe]] = {
+  def save(r: Recipe, user: User): Future[Option[Recipe]] = {
     val id = DB withTransaction { implicit session =>
       val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
-        new DateTime(), new DateTime(), r.createdBy.id))
+        new DateTime(), new DateTime(), user.userID.toString))
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
