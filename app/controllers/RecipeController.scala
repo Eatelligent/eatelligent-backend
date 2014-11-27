@@ -129,6 +129,11 @@ class RecipeController @Inject() (
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
+  def getRecipesInTag(q: String) = Action.async { implicit request =>
+    val recipes = recipeService.findRecipesInTag(q)
+    recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
+  }
+
 
 
 }

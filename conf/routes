@@ -38,15 +38,15 @@ GET     /api/recipes/$id<[0-9]+>        @controllers.RecipeController.getRecipe(
 GET     /api/recipes/:q                 @controllers.RecipeController.getRecipesByQuery(q: String)
 GET     /api/recipes                    @controllers.RecipeController.listRecipes
 
-POST    /api/recipes                     @controllers.RecipeController.saveRecipe
+POST    /api/recipes                    @controllers.RecipeController.saveRecipe
 
-GET     /imageform                  @controllers.ImageController.imageForm
+GET     /imageform                      @controllers.ImageController.imageForm
 
-POST    /                           @controllers.ImageController.saveRecipeImage
+POST    /                               @controllers.ImageController.saveRecipeImage
 
-GET     /api/tags                   @controllers.TagsController.listTags
+GET     /api/tags                       @controllers.TagsController.listTags
 
-#GET     /api/tags/:id                   @controllers.RecipeController.getTag(id: Long)
+GET     /api/tags/:tagName              @controllers.RecipeController.getRecipesInTag(tagName: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
