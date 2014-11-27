@@ -1,9 +1,10 @@
 import com.mohiva.play.silhouette.core.Logger
+import myUtils.CorsFilter
 import play.api.i18n.{Messages, Lang}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import play.api.{Logger, GlobalSettings}
-import play.api.mvc.{Result, RequestHeader}
+import play.api.{Application, Logger, GlobalSettings}
+import play.api.mvc.{WithFilters, Filter, Result, RequestHeader}
 import com.mohiva.play.silhouette.core.{Logger, SecuredSettings}
 import utils.di.SilhouetteModule
 import scala.concurrent.Future
@@ -13,14 +14,14 @@ import controllers.routes
 /**
  * The global configuration.
  */
-object Global extends GlobalSettings with SecuredSettings {
+object Global extends WithFilters(new CorsFilter) with GlobalSettings with SecuredSettings {
 
   /**
    * The Guice dependencies injector.
    */
   var injector: Injector = _
   
-  override def onStart(app: play.api.Application) = {
+  override def onStart(app: Application) = {
     super.onStart(app)
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())

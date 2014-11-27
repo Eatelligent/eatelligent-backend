@@ -1,6 +1,7 @@
 package controllers
 
 import models.User
+import myUtils.silhouette.WithRole
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
@@ -106,7 +107,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
     Ok(views.html.recipe_form())
   }
 
-  def adminPanel = Action { implicit request =>
+  def adminPanel = UserAwareAction { implicit request =>
     Ok(views.html.admin())
   }
 

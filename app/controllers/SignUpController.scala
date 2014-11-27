@@ -66,7 +66,8 @@ class SignUpController @Inject() (
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "email").readNullable[String] and
-      (JsPath \ "image").readNullable[String]
+      (JsPath \ "image").readNullable[String] and
+      (JsPath \ "role").readNullable[String]
     )(User.apply _)
 
   implicit val userWrites: Writes[User] = (
@@ -75,7 +76,8 @@ class SignUpController @Inject() (
     (JsPath \ "firstName").write[Option[String]] and
     (JsPath \ "lastName").write[Option[String]] and
     (JsPath \ "email").write[Option[String]] and
-    (JsPath \ "image").write[Option[String]]
+    (JsPath \ "image").write[Option[String]] and
+    (JsPath \ "role").write[Option[String]]
     )(unlift(User.unapply))
 
 
@@ -97,7 +99,8 @@ class SignUpController @Inject() (
           firstName = Some(data.firstName),
           lastName = Some(data.lastName),
           email = Some(data.email),
-          image = None
+          image = None,
+          role = Some("user")
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)
@@ -129,7 +132,8 @@ class SignUpController @Inject() (
           firstName = Some(data.firstName),
           lastName = Some(data.lastName),
           email = Some(data.email),
-          image = None
+          image = None,
+          role = Some("user")
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)
