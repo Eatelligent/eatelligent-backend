@@ -2,3 +2,4 @@
 /newrelic
 /test
 .ivy2
+/public/javascripts/admin
