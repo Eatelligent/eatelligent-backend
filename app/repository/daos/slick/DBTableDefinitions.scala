@@ -32,6 +32,22 @@ object DBTableDefinitions {
     }
   }
 
+
+  case class DBLanguage(
+                       id: Option[Long] = None,
+                       locale: String,
+                       name: String
+                       )
+
+  class Languages(tag: Tag) extends Table[DBLanguage](tag, "language") {
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
+    def locale = column[String]("locale")
+    def name = column[String]("name")
+
+    def * = (id, locale, name) <> (DBLanguage.tupled, DBLanguage.unapply)
+  }
+
+
   case class DBRecipe(
                            id: Option[Long],
                            name: String,
@@ -221,6 +237,7 @@ object DBTableDefinitions {
   val slickTagsForRecipe = TableQuery[TagsForRecipe]
   val slickIngredients = TableQuery[Ingredients]
   val slickIngredientsInRecipe = TableQuery[IngredientsInRecipe]
+  val slickLanguages = TableQuery[Languages]
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {
     (slickTags returning slickTags.map(_.id) += tag).toList.head
@@ -232,6 +249,10 @@ object DBTableDefinitions {
 
   def insertIngredient(ingredient: DBIngredient)(implicit session: Session): Long = {
     (slickIngredients returning slickIngredients.map(_.id) += ingredient).toList.head
+  }
+
+  def insertLanguage(language: DBLanguage)(implicit  session: Session): Long = {
+    (slickLanguages returning slickLanguages.map(_.id) += language).toList.head
   }
 
 }

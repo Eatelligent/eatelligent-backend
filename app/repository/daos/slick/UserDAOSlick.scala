@@ -1,10 +1,10 @@
 package models.daos.slick
 
-import models.User
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
+import repository.models.User
 import scala.concurrent.Future
 import java.util.UUID
 import play.Logger

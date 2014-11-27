@@ -1,10 +1,10 @@
 package repository.daos.slick
 
-import repository.Ingredient
 import repository.daos.IngredientDAO
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
+import repository.models.Ingredient
 
 import scala.concurrent.Future
 

@@ -1,9 +1,7 @@
 package repository.services
 
 import java.io.File
-
-import models.User
-import repository.{RecipeImage, TinyRecipe, Recipe}
+import repository.models.{RecipeImage, TinyRecipe, Recipe, User}
 
 import scala.concurrent.Future
 

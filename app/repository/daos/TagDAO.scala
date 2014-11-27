@@ -1,6 +1,6 @@
 package repository.daos
 
-import repository.RecipeTag
+import repository.models.RecipeTag
 
 import scala.concurrent.Future
 
@@ -10,6 +10,6 @@ trait TagDAO {
 
   def save(tag: RecipeTag): Future[RecipeTag]
 
-  def getAll(): Future[Seq[RecipeTag]]
+  def getAll: Future[Seq[RecipeTag]]
 
 }

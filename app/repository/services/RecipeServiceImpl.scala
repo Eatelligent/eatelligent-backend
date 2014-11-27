@@ -3,8 +3,7 @@ package repository.services
 import java.io.File
 
 import com.google.inject.Inject
-import models.User
-import repository.{RecipeImage, TinyRecipe, Recipe}
+import repository.models.{RecipeImage, Recipe, TinyRecipe, User}
 import repository.daos.RecipeDAO
 
 import scala.concurrent.Future

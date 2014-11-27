@@ -3,13 +3,12 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
-import models.User
 import myUtils.silhouette.WithRole
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc._
-import repository._
+import repository.models._
 import repository.services.RecipeService
 import play.api.libs.concurrent.Execution.Implicits._
 

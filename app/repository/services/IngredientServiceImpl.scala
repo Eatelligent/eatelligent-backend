@@ -1,8 +1,8 @@
 package repository.services
 
 import com.google.inject.Inject
-import repository.Ingredient
 import repository.daos.IngredientDAO
+import repository.models.Ingredient
 
 import scala.concurrent.Future
 

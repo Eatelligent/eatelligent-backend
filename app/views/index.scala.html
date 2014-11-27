@@ -1,4 +1,6 @@
-@(user: models.User)
+@import repository.models.User
+
+@(user: User)
 
     @main("Silhouette - Home", Some(user)) {
         <div class="user col-md-6 col-md-offset-3">

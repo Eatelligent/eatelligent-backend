@@ -5,6 +5,7 @@ import repository._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Writes, JsValue, JsPath, Reads}
 import play.api.mvc.Controller
+import repository.models._
 
 class MyController extends Controller {
 

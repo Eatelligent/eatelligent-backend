@@ -1,4 +1,4 @@
-package repository
+package repository.models
 
 import org.joda.time.DateTime
 
@@ -17,9 +17,3 @@ case class Recipe(
                    tags: Seq[String],
                    createdBy: Option[TinyUser]
                    )
-
-case class TinyRecipe(
-                       id: Long,
-                       name: String,
-                       image: Option[String]
-                       )

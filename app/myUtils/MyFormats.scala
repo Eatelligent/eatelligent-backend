@@ -6,7 +6,6 @@ import java.util.UUID
 import com.github.tminglei.slickpg.PgRangeSupportUtils
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.Credentials
-import models.User
 import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
@@ -15,6 +14,7 @@ import com.vividsolutions.jts.geom.Geometry
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import org.joda.time.LocalDateTime
+import repository.models.User
 
 /**
  * my play form data formatters
