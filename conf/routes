@@ -26,9 +26,10 @@ GET     /api/ingredients/:id             @controllers.IngredientController.getIn
 
 POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
-#GET     /api/languages                  @controllers.ApplicationController.listLanguages
+GET     /api/languages                  @controllers.LanguageController.listLanguages
+GET     /api/languages/:id              @controllers.LanguageController.getLanguage(id: Long)
 
-#POST    /api/languages                  @controllers.ApplicationController.saveLanguage
+POST    /api/languages                  @controllers.LanguageController.saveLanguage
 
 GET     /recipe_form                    @controllers.ApplicationController.recipeForm
 GET     /admin                          @controllers.ApplicationController.adminPanel

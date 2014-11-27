@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.inject.Inject
 import play.api.Logger
 import play.api.libs.json._
+import repository.models.User
 
 import scala.concurrent.Future
 import play.api.mvc.{BodyParsers, Action}
@@ -14,7 +15,6 @@ import com.mohiva.play.silhouette.core.services.AuthInfoService
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import models.services.UserService
-import models.User
 import forms.SignInForm
 import play.api.libs.functional.syntax._
 

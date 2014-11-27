@@ -6,7 +6,6 @@ import java.util.UUID
 import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
-import models.User
 import models.daos.UserDAO
 import org.joda.time.DateTime
 import play.api.db.slick._
@@ -15,6 +14,7 @@ import models.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
 import repository._
 import repository.daos.RecipeDAO
+import repository.models._
 import scala.concurrent._
 import scala.util.{Try, Failure, Success}
 import play.api.libs.concurrent.Execution.Implicits._

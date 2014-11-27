@@ -11,7 +11,7 @@ class TagsController @Inject() (
 )  extends MyController {
 
   def listTags = Action.async { implicit request =>
-    val tags = tagService.getAll()
+    val tags = tagService.getAll
     tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
   }
 

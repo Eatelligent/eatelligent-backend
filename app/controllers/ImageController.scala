@@ -2,8 +2,8 @@ package controllers
 
 import com.google.inject.Inject
 import play.api.libs.json.{JsError, Json}
+import repository.models.Image
 import repository.services.RecipeService
-import repository.{Image, RecipeImage}
 
 import scala.concurrent._
 import play.api.mvc.Action

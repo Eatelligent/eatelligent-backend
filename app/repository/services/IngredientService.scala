@@ -1,6 +1,6 @@
 package repository.services
 
-import repository.Ingredient
+import repository.models.Ingredient
 
 import scala.concurrent.Future
 

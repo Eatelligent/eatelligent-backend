@@ -1,10 +1,10 @@
 package repository.daos.slick
 
-import repository.RecipeTag
 import repository.daos.TagDAO
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
+import repository.models.RecipeTag
 
 import scala.concurrent.Future
 
@@ -38,7 +38,7 @@ class TagDAOSlick extends TagDAO {
     }
   }
 
-  def getAll(): Future[Seq[RecipeTag]] = {
+  def getAll: Future[Seq[RecipeTag]] = {
     DB withSession { implicit session =>
       Future.successful {
         slickTags.list.map(t => RecipeTag(t.id, t.name))

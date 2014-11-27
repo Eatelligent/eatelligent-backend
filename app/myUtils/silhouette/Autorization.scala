@@ -1,9 +1,9 @@
 package myUtils.silhouette
 
 import com.mohiva.play.silhouette.core.Authorization
-import models.{User}
 import play.api.mvc.RequestHeader
 import play.api.i18n.Lang
+import repository.models.User
 
 
 /**
