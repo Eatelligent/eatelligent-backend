@@ -28,6 +28,7 @@ define(function(require) {
 
   var SearchView = Marionette.ItemView.extend({
     template: searchTemplate,
+    className: 'input-group mb4',
     ui: {
       searchInput: '[data-js-search]'
     },
