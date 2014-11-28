@@ -15,7 +15,7 @@ trait RecipeDAO {
 
   def getAll: Future[Seq[TinyRecipe]]
 
-  def saveImage(id: Long, image: File): Future[RecipeImage]
+  def saveImage(id: Long, image: File): Future[Option[RecipeImage]]
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]]
 

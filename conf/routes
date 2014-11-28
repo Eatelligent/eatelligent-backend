@@ -20,11 +20,11 @@ POST    /api/users                       @controllers.SignUpController.signUpJso
 
 POST    /api/authenticate                @controllers.CredentialsAuthController.authenticateJson
 
-#GET     /api/ingredients                @controllers.IngredientController.listIngredients
+GET     /api/ingredients                @controllers.IngredientController.listIngredients
 
 GET     /api/ingredients/:id             @controllers.IngredientController.getIngredient(id: Long)
 
-POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
+#POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
 GET     /api/languages                  @controllers.LanguageController.listLanguages
 GET     /api/languages/:id              @controllers.LanguageController.getLanguage(id: Long)

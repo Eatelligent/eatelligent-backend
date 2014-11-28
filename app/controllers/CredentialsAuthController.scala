@@ -92,7 +92,7 @@ class CredentialsAuthController @Inject() (
             case Some(authenticator) =>
               env.eventBus.publish(LoginEvent(user, request, request2lang))
               env.authenticatorService.send(authenticator, Ok(Json.obj("ok" -> true, "message" -> Json.toJson(user))))
-            case None => Ok(Json.obj("ok" -> false, "message" -> Json.toJson(user)))
+            case None => Unauthorized(Json.obj("ok" -> false, "message" -> "Could not authenticate user."))
           }
           case None => Future.failed(new AuthenticationException("Couldn't find user"))
         }

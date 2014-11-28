@@ -3,7 +3,6 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
-import myUtils.silhouette.WithRole
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -19,12 +18,6 @@ class RecipeController @Inject() (
   val recipeService: RecipeService,
   implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
-
-  implicit val recipeImageReads: Writes[RecipeImage] = (
-    (JsPath \ "recipeId").write[Long] and
-      (JsPath \ "url").write[String]
-    )(unlift(RecipeImage.unapply))
-
 
   implicit val tinyUserRead: Reads[TinyUser] = (
     (JsPath \ "id").read[String] and
@@ -98,7 +91,7 @@ class RecipeController @Inject() (
       (JsPath \ "image").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
 
-  def listRecipes = Action.async { implicit request =>
+  def listRecipes = SecuredAction.async { implicit request =>
     val recipes = recipeService.getAll
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
@@ -108,27 +101,30 @@ class RecipeController @Inject() (
     recipeResult.fold(
       errors => {
         Future {
-          BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toFlatJson(errors)))
+          BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
         }
       },
       recipe => {
         val newRecipe = recipeService.save(recipe, request.identity)
-          newRecipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
+        newRecipe.map(r => Created(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
       }
     )
   }
 
-  def getRecipe(id: Long) = Action.async { implicit session =>
+  def getRecipe(id: Long) = SecuredAction.async { implicit request =>
     val recipe = recipeService.find(id)
-    recipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
+    recipe.map {
+      case Some(r) => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r)))
+      case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No recipe with id: " + id + " found.")))
+    }
   }
 
-  def getRecipesByQuery(q: String) = Action.async { implicit session =>
+  def getRecipesByQuery(q: String) = SecuredAction.async { implicit request =>
     val recipes = recipeService.find(q)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
-  def getRecipesInTag(q: String) = Action.async { implicit request =>
+  def getRecipesInTag(q: String) = SecuredAction.async { implicit request =>
     val recipes = recipeService.findRecipesInTag(q)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }

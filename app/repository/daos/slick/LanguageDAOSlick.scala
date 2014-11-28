@@ -1,12 +1,10 @@
 package repository.daos.slick
 
-import org.postgresql.util.PSQLException
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import repository.daos.LanguageDAO
 import repository.models.Language
-import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 

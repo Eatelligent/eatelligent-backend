@@ -12,7 +12,7 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
-import repository._
+import repository.Exceptions.NoSuchRecipeException
 import repository.daos.RecipeDAO
 import repository.models._
 import scala.concurrent._
@@ -225,13 +225,18 @@ class RecipeDAOSlick @Inject() (
   def getAll: Future[Seq[TinyRecipe]] = find("")
 
 
-  def saveImage(id: Long, image: File): Future[RecipeImage] = {
+  def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = {
+    val recipeExists = DB withSession { implicit session =>
+      slickRecipes.filter(_.id === id).length.run > 0
+    }
+    if (!recipeExists)
+      throw new NoSuchRecipeException("No recipe with id: " + id + " in the databse.")
     CloudinaryResource.upload(image, UploadParameters().faces(true).colors(true).imageMetadata(true).exif
       (true)).map {
       cr =>
         val image = RecipeImage(id, cr.url())
         updateImage(image)
-        image
+        Some(image)
     }
   }
 
