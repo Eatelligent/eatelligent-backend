@@ -21,24 +21,24 @@ DROP TABLE IF EXISTS logininfo;
 
 CREATE TABLE language (
 	id serial8 primary key,
-	locale text,
-	name text
+	locale text NOT NULL UNIQUE,
+	name text NOT NULL UNIQUE
 );
 
 CREATE TABLE tags (
 	id serial8 primary key,
-	name text
+	name text NOT NULL UNIQUE
 );
 
 CREATE TABLE ingredient (
 	id serial8 primary key,
-	name text,
+	name text NOT NULL UNIQUE,
 	image json
 );
 
 CREATE TABLE unit (
 	id serial8 primary key,
-	name text
+	name text NOT NULL UNIQUE
 );
 
 CREATE TABLE user_preferences (
@@ -51,7 +51,7 @@ CREATE TABLE users (
 	first_name text,
 	last_name text,
 	/*password text,*/
-	email text,	
+	email text NOT NULL UNIQUE,	
 	/*city text,*/
 	/*age int,*/
 	image text,
@@ -61,16 +61,16 @@ CREATE TABLE users (
 
 CREATE TABLE recipe (
 	id serial8 primary key,
-	name text,
+	name text NOT NULL,
 	image text,
 	description text,
-	language int8 references language(id) ON DELETE CASCADE,
+	language int8 NOT NULL references language(id) ON DELETE CASCADE,
 	calories real,
 	procedure text,
 	spicy int,
-	created timestamptz,
-	modified timestamptz,
-	created_by text references users(id) ON DELETE CASCADE
+	created timestamptz NOT NULL,
+	modified timestamptz NOT NULL,
+	created_by text NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
 

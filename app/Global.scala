@@ -2,6 +2,8 @@ import com.mohiva.play.silhouette.core.Logger
 import myUtils.CorsFilter
 import play.api.i18n.{Messages, Lang}
 import play.api.libs.json.Json
+import play.api._
+import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.{Application, Logger, GlobalSettings}
 import play.api.mvc.{WithFilters, Filter, Result, RequestHeader}
@@ -10,6 +12,7 @@ import utils.di.SilhouetteModule
 import scala.concurrent.Future
 import com.google.inject.{Guice, Injector}
 import controllers.routes
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * The global configuration.
@@ -25,6 +28,13 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
     super.onStart(app)
     // Now the configuration is read and we can create our Injector.
     injector = Guice.createInjector(new SilhouetteModule())
+  }
+
+  override def onError(request: RequestHeader, ex: Throwable) = {
+    Future {
+      InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage)
+      )
+    }
   }
 
   /**
