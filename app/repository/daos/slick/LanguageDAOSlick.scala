@@ -1,10 +1,12 @@
 package repository.daos.slick
 
+import org.postgresql.util.PSQLException
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import repository.daos.LanguageDAO
 import repository.models.Language
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -27,9 +29,9 @@ class LanguageDAOSlick extends LanguageDAO {
   def save(language: Language): Future[Option[Language]] = {
     val id = DB withSession { implicit session =>
       val dbLang = DBLanguage(language.id, language.name, language.locale)
-      insertLanguage(dbLang)
+      Some(insertLanguage(dbLang))
     }
-    find(id)
+    find(id.get)
   }
 
   def getAll: Future[Seq[Language]] = {

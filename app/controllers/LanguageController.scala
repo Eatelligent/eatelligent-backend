@@ -1,6 +1,7 @@
 package controllers
 
 import myUtils.silhouette.WithRole
+import org.postgresql.util.PSQLException
 import play.api.libs.json._
 import play.api.mvc._
 import play.api.libs.functional.syntax._
@@ -32,12 +33,18 @@ class LanguageController @Inject() (
     
   def listLanguages = SecuredAction.async { implicit request =>
       val languages = languageService.getAll
-      languages.map(ls => Ok(Json.obj("ok" -> true, "languages" -> ls)))
+      languages.map(ls => {
+        if (ls.length > 0) Ok(Json.obj("ok" -> true, "languages" -> ls))
+        else NotFound(Json.obj("ok" -> false, "message" -> "No languages found."))
+      })
     }
 
   def getLanguage(id: Long) = SecuredAction.async { implicit request =>
     val l = languageService.find(id)
-    l.map(l => Ok(Json.obj("ok" -> true, "language" -> l)))
+    l.map {
+      case Some(lang) => Ok(Json.obj("ok" -> true, "languages" -> lang))
+      case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No language with id: " + id + " found.")))
+    }
   }
   
   def saveLanguage = SecuredAction(WithRole("admin")).async(BodyParsers.parse.json) { implicit request =>
@@ -49,8 +56,13 @@ class LanguageController @Inject() (
         }
       },
       language => {
-        val newLanguage = languageService.save(language)
-        newLanguage.map(l => Ok(Json.obj("ok" -> true, "language" -> l)))
+        try {
+          val newLanguage = languageService.save(language)
+          newLanguage.map(l => Created(Json.obj("ok" -> true, "language" -> l)))
+        }
+        catch {
+          case e: PSQLException => Future(Conflict(Json.obj("ok" -> false, "message" -> e.getMessage)))
+        }
       }
     )
   }

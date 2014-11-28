@@ -1,5 +1,4 @@
 BEGIN;
-create extension pgcrypto;
 
 INSERT INTO language(locale, name)
 VALUES
