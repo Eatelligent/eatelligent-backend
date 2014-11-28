@@ -1,23 +1,31 @@
 package controllers
 
 import com.google.inject.Inject
-import play.api.libs.json.{JsError, Json}
-import repository.models.Image
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Writes, Json}
+import repository.Exceptions.NoSuchRecipeException
+import repository.models.{RecipeImage, User, Image}
 import repository.services.RecipeService
 
 import scala.concurrent._
-import play.api.mvc.Action
 import play.api.data._
 import play.api.data.Forms._
 import cloudinary.model.CloudinaryResource
 import cloudinary.model.CloudinaryResource.preloadedFormatter
 import ExecutionContext.Implicits.global
+import com.mohiva.play.silhouette.core.{Environment, Silhouette}
+import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 
 
 class ImageController @Inject() (
-  val recipeService: RecipeService
-                                  ) extends MyController {
+  val recipeService: RecipeService,
+  implicit val env: Environment[User, CachedCookieAuthenticator])
+  extends Silhouette[User, CachedCookieAuthenticator] {
 
+  implicit val recipeImageReads: Writes[RecipeImage] = (
+    (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "url").write[String]
+    )(unlift(RecipeImage.unapply))
 
   val directUploadForm = Form(
     mapping(
@@ -26,7 +34,7 @@ class ImageController @Inject() (
     )(Image.apply)(Image.unapply)
   )
 
-  def saveRecipeImage = Action.async { implicit request =>
+  def saveRecipeImage = SecuredAction.async { implicit request =>
     directUploadForm.bindFromRequest.fold(
       formWithErrors => future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) },
       imageDetails => {
@@ -36,14 +44,18 @@ class ImageController @Inject() (
           val formWithErrors = directUploadForm.withError(FormError("image", "Must supply image"))
           future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) }
         } else {
-          val recipeImage = recipeService.saveImage(imageDetails.recipeId, resourceFile.get.ref.file)
-          recipeImage.map(i => Ok(Json.obj("ok" -> true, "recipeImage" -> Json.toJson(i))))
+          try {
+            val recipeImage = recipeService.saveImage(imageDetails.recipeId, resourceFile.get.ref.file)
+            recipeImage.map(i => Created(Json.obj("ok" -> true, "recipeImage" -> Json.toJson(i))))
+          }
+          catch {
+            case e: NoSuchRecipeException => Future(BadRequest(Json.obj("ok" -> false, "message" -> e.getMessage)))
+          }
         }
       })
   }
 
-
-  def imageForm = Action { implicit request =>
+  def imageForm = SecuredAction { implicit request =>
     Ok(views.html.imageform())
   }
 }

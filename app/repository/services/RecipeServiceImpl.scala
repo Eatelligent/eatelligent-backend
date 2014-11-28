@@ -20,7 +20,7 @@ class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
   def getAll: Future[Seq[TinyRecipe]] = recipeDAO.getAll
 
-  def saveImage(id: Long, image: File): Future[RecipeImage] = recipeDAO.saveImage(id, image)
+  def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = recipeDAO.saveImage(id, image)
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]] = recipeDAO.findRecipesInTag(tagName)
 }

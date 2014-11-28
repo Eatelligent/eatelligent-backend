@@ -19,17 +19,17 @@ class LanguageController @Inject() (
   implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
 
-    implicit val languageWrites: Writes[Language] = (
-      (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "locale").write[String] and
-      (JsPath \ "name").write[String]
-    )(unlift(Language.unapply))
-  
-    implicit val languageRead: Reads[Language] = (
-      (JsPath \ "id").readNullable[Long] and
-        (JsPath \ "locale").read[String] and
-        (JsPath \ "name").read[String]
-      )(Language.apply _)
+  implicit val languageWrites: Writes[Language] = (
+    (JsPath \ "id").write[Option[Long]] and
+    (JsPath \ "locale").write[String] and
+    (JsPath \ "name").write[String]
+  )(unlift(Language.unapply))
+
+  implicit val languageRead: Reads[Language] = (
+    (JsPath \ "id").readNullable[Long] and
+      (JsPath \ "locale").read[String] and
+      (JsPath \ "name").read[String]
+    )(Language.apply _)
     
   def listLanguages = SecuredAction.async { implicit request =>
       val languages = languageService.getAll

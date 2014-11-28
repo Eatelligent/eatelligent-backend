@@ -1,22 +1,19 @@
 package controllers
 
-import repository.models.Ingredient
+import repository.models.{User, Ingredient}
 
-import scala.util.{Success, Failure}
 import com.google.inject.Inject
 import repository.services.IngredientService
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.mvc._
-import play.api.mvc.Controller
-import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
-
-import scala.concurrent.duration.Duration
+import com.mohiva.play.silhouette.core.{Environment, Silhouette}
+import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 
 class IngredientController @Inject() (
-  ingredientService: IngredientService
-                                       ) extends Controller {
+  ingredientService: IngredientService,
+  implicit val env: Environment[User, CachedCookieAuthenticator])
+  extends Silhouette[User, CachedCookieAuthenticator] {
 
 
   implicit val ingredientSchemaRead: Reads[Ingredient] = (
@@ -32,39 +29,32 @@ class IngredientController @Inject() (
     )(unlift(Ingredient.unapply))
 
 
-//  def listIngredients = Action { implicit request =>
-//    val json = Json.toJson(ingredientService.getAll)
-//    Ok(Json.obj("ok" -> true, "ingredients" -> json))
-//  }
-
-  def saveIngredient = Action(BodyParsers.parse.json) { implicit request =>
-    val ingredientResult = request.body.validate[Ingredient]
-
-    ingredientResult.fold(
-      errors => {
-        BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
-      },
-      ingredient => {
-        ingredientService.save(ingredient)
-        Ok(Json.obj("ok" -> true, "message" -> Json.toJson(ingredient)))
-      }
-    )
+  def listIngredients = SecuredAction.async { implicit request =>
+    val ingredients = ingredientService.getAll
+    ingredients.map(i => Ok(Json.obj("ok" -> true, "ingredients" -> i)))
   }
 
-  def getIngredient(id: Long) = Action.async { implicit session =>
+//  def saveIngredient = Action.async(BodyParsers.parse.json) { implicit request =>
+//    val ingredientResult = request.body.validate[Ingredient]
+//
+//    ingredientResult.fold(
+//      errors => {
+//        Future(BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors))))
+//      },
+//      ingredient => {
+//        ingredientService.save(ingredient)
+//        Ok(Json.obj("ok" -> true, "message" -> Json.toJson(ingredient)))
+//      }
+//    )
+//  }
+
+  def getIngredient(id: Long) = SecuredAction.async { implicit session =>
     val ingredient =  ingredientService.find(id)
-//    ingredient onComplete  {
-//      case Success(i) => Ok(Json.obj("ok" -> true, "ingredient" -> Json.toJson(i)))
-//      case Failure(f) => Ok(Json.obj("ok" -> false, "message" -> Json.toJson(f)))
-//    }
-    ingredient.map(i => Ok(Json.obj("ok" -> true, "ingredient" -> Json.toJson(i))))
+    ingredient.map{
+      case Some(i) => Ok(Json.obj("ok" -> true, "ingredient" -> Json.toJson(i)))
+      case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No ingredient with id: " + id + " found" +
+        ".")))
+    }
   }
-
-//  def getIngredientsForRecipe(recipeId: Long) = Action { implicit session =>
-//    val json = Json.toJson(findIngredientsForRecipe(recipeId).map{
-//      i => IngredientForRecipe(i.recipeId, i.ingredientId, i.name, i.image, i.amount)
-//    })
-//    Ok(Json.obj("ok" -> true, "ingredients" -> json))
-//  }
 
 }
