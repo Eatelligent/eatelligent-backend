@@ -16,39 +16,45 @@ POST        /signUp                          @controllers.SignUpController.signU
 
 #GET     /api/users/:id                   controllers.UserController.getUser(id: Long)
 
-POST    /api/users                       @controllers.SignUpController.signUpJson
+POST        /api/users                       @controllers.SignUpController.signUpJson
 
-POST    /api/authenticate                @controllers.CredentialsAuthController.authenticateJson
+POST        /api/authenticate                @controllers.CredentialsAuthController.authenticateJson
 
-GET     /api/ingredients                @controllers.IngredientController.listIngredients
+GET         /api/ingredients                 @controllers.IngredientController.listIngredients
 
-GET     /api/ingredients/:id             @controllers.IngredientController.getIngredient(id: Long)
+GET         /api/ingredients/:id             @controllers.IngredientController.getIngredient(id: Long)
 
 #POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
-GET     /api/languages                  @controllers.LanguageController.listLanguages
-GET     /api/languages/:id              @controllers.LanguageController.getLanguage(id: Long)
+GET         /api/languages                   @controllers.LanguageController.listLanguages
+GET         /api/languages/:id               @controllers.LanguageController.getLanguage(id: Long)
 
-POST    /api/languages                  @controllers.LanguageController.saveLanguage
+POST        /api/languages                   @controllers.LanguageController.saveLanguage
 
-GET     /recipe_form                    @controllers.ApplicationController.recipeForm
-GET     /admin                          @controllers.ApplicationController.adminPanel
+GET         /recipe_form                     @controllers.ApplicationController.recipeForm
+GET         /admin                           @controllers.ApplicationController.adminPanel
 
-GET     /api/recipes/$id<[0-9]+>        @controllers.RecipeController.getRecipe(id: Long)
+GET         /api/recipes/$id<[0-9]+>         @controllers.RecipeController.getRecipe(id: Long)
 
-GET     /api/recipes/:q                 @controllers.RecipeController.getRecipesByQuery(q: String)
-GET     /api/recipes                    @controllers.RecipeController.listRecipes
+GET         /api/recipes/:q                  @controllers.RecipeController.getRecipesByQuery(q: String)
+GET         /api/recipes                     @controllers.RecipeController.listRecipes
 
-POST    /api/recipes                    @controllers.RecipeController.saveRecipe
+POST        /api/recipes                     @controllers.RecipeController.saveRecipe
 
-GET     /imageform                      @controllers.ImageController.imageForm
+GET         /imageform                       @controllers.ImageController.imageForm
 
-POST    /                               @controllers.ImageController.saveRecipeImage
+POST        /                                @controllers.ImageController.saveRecipeImage
 
-GET     /api/tags                       @controllers.TagsController.listTags
+GET         /api/tags                        @controllers.TagsController.listTags
 
-GET     /api/tags/:tagName              @controllers.RecipeController.getRecipesInTag(tagName: String)
+GET         /api/tags/:tagName               @controllers.RecipeController.getRecipesInTag(tagName: String)
+
+POST        /api/ratings/recipes               @controllers.RecipeRatingController.saveStarRatingRecipe
+GET         /api/ratings/recipes/:recipeId     @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
+GET         /api/ratings/users                 @controllers.RecipeRatingController.listRatingsForUser
+
+
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /assets/*file                    controllers.Assets.at(path="/public", file)
 GET         /webjars/*file                   controllers.WebJarAssets.at(file)

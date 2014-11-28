@@ -17,8 +17,8 @@ import com.mohiva.play.silhouette.contrib.daos.DelegableAuthInfoDAO
 import models.services.{UserService, UserServiceImpl}
 import models.daos._
 import models.daos.slick._
-import repository.daos.{LanguageDAO, IngredientDAO, TagDAO, RecipeDAO}
-import repository.daos.slick.{LanguageDAOSlick, IngredientDAOSlick, TagDAOSlick, RecipeDAOSlick}
+import repository.daos._
+import repository.daos.slick._
 import repository.models.User
 import repository.services._
 
@@ -41,6 +41,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[TagDAO].to[TagDAOSlick]
     bind[IngredientDAO].to[IngredientDAOSlick]
     bind[LanguageDAO].to[LanguageDAOSlick]
+    bind[RatingDAO].to[RatingDAOSlick]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAOSlick]
     bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAOSlick]
     bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAOSlick]

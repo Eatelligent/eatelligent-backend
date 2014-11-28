@@ -68,7 +68,7 @@ CREATE TABLE recipe (
 	calories real,
 	procedure text,
 	spicy int,
-	created timestamptz NOT NULL,
+	created timestamptz NOT NULL,	
 	modified timestamptz NOT NULL,
 	created_by text NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
@@ -88,7 +88,7 @@ CREATE TABLE ingredient_in_recipe (
 CREATE TABLE user_star_rate_recipe ( /* id references */
 	user_id text,
 	recipe_id int8,
-	stars real
+	rating real
 );
 
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */
