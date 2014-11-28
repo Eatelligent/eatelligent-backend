@@ -226,6 +226,51 @@ object DBTableDefinitions {
     def * = (id.?, accessToken, tokenType, expiresIn, refreshToken, loginInfoId) <> (DBOAuth2Info.tupled, DBOAuth2Info.unapply)
   }
 
+
+  case class DBUserStarRateRecipe(
+    userId: String,
+    recipeId: Long,
+    stars: Double
+                                   )
+
+  class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
+    def userId = column[String]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def rating = column[Double]("rating")
+    def * = (userId, recipeId, rating) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
+  }
+
+  case class DBUserYesNoRateRecipe(
+                                   userId: String,
+                                   recipeId: Long,
+                                   rating: Boolean
+                                   )
+
+  class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
+    def userId = column[String]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def rating = column[Boolean]("rating")
+    def * = (userId, recipeId, rating) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
+  }
+
+  case class DBUserYesNoRateIngredient(
+                                    userId: String,
+                                    recipeId: Long,
+                                    rating: Boolean
+                                    )
+
+  class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
+    "user_yes_no_rate_ingredient") {
+    def userId = column[String]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def rating = column[Boolean]("rating")
+    def * = (userId, recipeId, rating) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient.unapply)
+  }
+
+
+
+
+
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
   val slickUserLoginInfos = TableQuery[UserLoginInfos]
@@ -238,6 +283,10 @@ object DBTableDefinitions {
   val slickIngredients = TableQuery[Ingredients]
   val slickIngredientsInRecipe = TableQuery[IngredientsInRecipe]
   val slickLanguages = TableQuery[Languages]
+  val slickUserStarRateRecipes = TableQuery[UserStarRateRecipes]
+  val slickUserYesNoRateRecipes = TableQuery[UserYesNoRateRecipes]
+  val slickUserYesNoRateIngredient = TableQuery[UserYesNoRateIngredients]
+
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {
     (slickTags returning slickTags.map(_.id) += tag).toList.head
