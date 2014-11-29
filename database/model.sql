@@ -39,24 +39,22 @@ CREATE TABLE ingredient (
 CREATE TABLE unit (
 	id serial8 primary key,
 	name text NOT NULL UNIQUE
-);
-
-CREATE TABLE user_preferences (
-	id serial8 primary key
-	/* More definitions of prefs */
-);
+);	
 
 CREATE TABLE users (
 	id text primary key,
 	first_name text,
 	last_name text,
-	/*password text,*/
 	email text NOT NULL UNIQUE,	
-	/*city text,*/
-	/*age int,*/
+	city text,
+	age int CONSTRAINT age_check CHECK (age > 0 AND age < 100),
 	image text,
 	role text
-	/* user_preferences int8 references user_preferences(id) ON DELETE CASCADE*/
+);
+
+CREATE TABLE user_preferences (
+	user_id text references users(id) ON DELETE CASCADE
+	/* More definitions of prefs */
 );
 
 CREATE TABLE recipe (
@@ -79,29 +77,41 @@ CREATE TABLE recipe_in_tag (
 	tag_id int8 references tags(id) ON DELETE CASCADE
 );
 
+CREATE UNIQUE INDEX recipe_in_tag_idx
+ON recipe_in_tag(recipe_id, tag_id);
+
 CREATE TABLE ingredient_in_recipe (
-	recipe_id int8 references recipe(id),
-	ingredient_id int8 references ingredient(id),
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
+	ingredient_id int8 references ingredient(id) ON DELETE CASCADE,
 	amount real
 );
 
 CREATE TABLE user_star_rate_recipe ( /* id references */
-	user_id text,
-	recipe_id int8,
-	rating real
+	user_id text references users(id) ON DELETE CASCADE,
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
+	rating real CONSTRAINT rating_check CHECK (rating >= 0.0 AND rating <= 5.0)
 );
 
+CREATE UNIQUE INDEX user_star_rate_recipe_idx 
+ON user_star_rate_recipe (user_id, recipe_id);
+
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */
-	user_id text,
-	recipe_id int8,
+	user_id text references users(id) ON DELETE CASCADE,
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating boolean
 );
+
+CREATE UNIQUE INDEX user_yes_no_rate_recipe_idx
+ON user_yes_no_rate_recipe(user_id, recipe_id);
 
 CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
 	user_id text,
 	ingredient_id int8,
 	rating boolean
 );
+
+CREATE UNIQUE INDEX user_yes_no_rate_ingredient_idx
+ON user_yes_no_rate_ingredient(user_id, ingredient_id);
 
 CREATE TABLE logininfo (
 	id serial8 primary key,
