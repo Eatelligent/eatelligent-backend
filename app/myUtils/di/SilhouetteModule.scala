@@ -42,6 +42,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[IngredientDAO].to[IngredientDAOSlick]
     bind[LanguageDAO].to[LanguageDAOSlick]
     bind[RatingDAO].to[RatingDAOSlick]
+    bind[StatsDAO].to[StatsDAOSlick]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAOSlick]
     bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAOSlick]
     bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAOSlick]

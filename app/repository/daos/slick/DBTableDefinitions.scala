@@ -262,9 +262,9 @@ object DBTableDefinitions {
   class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
     "user_yes_no_rate_ingredient") {
     def userId = column[String]("user_id")
-    def recipeId = column[Long]("recipe_id")
+    def ingredientId = column[Long]("ingredient_id")
     def rating = column[Boolean]("rating")
-    def * = (userId, recipeId, rating) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient.unapply)
+    def * = (userId, ingredientId, rating) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient.unapply)
   }
 
 

@@ -54,7 +54,7 @@ POST        /api/ratings/recipes                  @controllers.RecipeRatingContr
 GET         /api/ratings/recipes/:recipeId        @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
 GET         /api/ratings/users                    @controllers.RecipeRatingController.listRatingsForUser
 
-
+GET         /api/stats                            @controllers.StatsController.getTotalStats
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                         controllers.Assets.at(path="/public", file)
