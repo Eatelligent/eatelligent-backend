@@ -13,7 +13,10 @@ class RatingDAOSlick extends RatingDAO {
 
   def saveUserStarRateRecipe(rating: UserStarRateRecipe): Future[Option[UserStarRateRecipe]] = {
     DB withSession { implicit session =>
-      slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating.stars))
+      slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
+        case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating.stars))
+        case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating.stars))
+      }
       findUserStarRateRecipe(rating.userId, rating.recipeId)
     }
   }
