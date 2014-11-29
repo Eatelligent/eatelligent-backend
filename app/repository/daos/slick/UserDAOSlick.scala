@@ -4,7 +4,7 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
-import repository.models.User
+import repository.models.{TinyUser, User}
 import scala.concurrent.Future
 import java.util.UUID
 import play.Logger
@@ -104,6 +104,16 @@ class UserDAOSlick extends UserDAO {
             slickUserLoginInfos += DBUserLoginInfo(dbUser.userID, dbLoginInfo.id.get)
         }
         user // We do not change the user => return it
+      }
+    }
+  }
+
+  def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        slickUsers.drop(offset).take(limit).list map {
+          u => TinyUser(u.userID, u.firstName, u.lastName)
+        }
       }
     }
   }
