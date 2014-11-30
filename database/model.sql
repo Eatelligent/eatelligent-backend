@@ -65,9 +65,12 @@ CREATE TABLE recipe (
 	language int8 NOT NULL references language(id) ON DELETE CASCADE,
 	calories real,
 	procedure text,
-	spicy int,
+	spicy int CONSTRAINT spicy_check CHECK (spicy > 0 AND spicy < 4),
+	time int CONSTRAINT time_check CHECK (time > 0),
 	created timestamptz NOT NULL,	
 	modified timestamptz NOT NULL,
+	published timestamptz,
+	deleted timestamptz,
 	created_by text NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
