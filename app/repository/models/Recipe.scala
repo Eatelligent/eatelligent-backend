@@ -11,8 +11,11 @@ case class Recipe(
                    calories: Option[Double],
                    procedure: String,
                    spicy: Int,
+                   time: Int,
                    created: Option[DateTime],
                    modified: Option[DateTime],
+                   published: Option[DateTime],
+                   deleted: Option[DateTime],
                    ingredients: Seq[IngredientForRecipe],
                    tags: Seq[String],
                    createdBy: Option[TinyUser]
