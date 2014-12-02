@@ -16,6 +16,7 @@ define(function(require) {
 
   // Load entities
   require('entities/login');
+  require('entities/stats');
   require('entities/recipes');
   require('entities/languages');
   require('entities/ingredients');

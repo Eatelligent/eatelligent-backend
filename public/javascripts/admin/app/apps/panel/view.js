@@ -84,7 +84,12 @@ define(function(require) {
 
   var StatsView = Marionette.ItemView.extend({
     template: statsTemplate,
-    className: 'col-md-6 col-md-offset-3'
+    className: 'col-md-6 col-md-offset-3',
+    serializeData: function() {
+      return _.extend(this.model.toJSON(), {
+        ratingRatio: this.model.get('numRatings') / this.model.get('numUsers') || 0
+      });
+    }
   });
 
   var PanelView = Marionette.LayoutView.extend({
@@ -107,7 +112,7 @@ define(function(require) {
       });
       this.rating.show(new RatingView({model: model}));
       this.users.show(new UserView({model: model}));
-      this.stats.show(new StatsView({model: model}));
+      this.stats.show(new StatsView({model: this.model}));
     }
   });
 
