@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 import javax.inject.Inject
+import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json._
 import repository.models.User
@@ -47,7 +48,8 @@ class CredentialsAuthController @Inject() (
       (JsPath \ "lastName").write[Option[String]] and
       (JsPath \ "email").write[Option[String]] and
       (JsPath \ "image").write[Option[String]] and
-      (JsPath \ "role").write[Option[String]]
+      (JsPath \ "role").write[Option[String]] and
+      (JsPath \ "created").write[Option[DateTime]]
     )(unlift(User.unapply))
 
   /**

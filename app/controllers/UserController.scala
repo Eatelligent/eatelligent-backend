@@ -3,6 +3,7 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 import myUtils.silhouette.WithRole
+import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repository.models.{TinyUser, UserSignUp, User}
@@ -64,7 +65,8 @@ class UserController @Inject() (
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "email").readNullable[String] and
       (JsPath \ "image").readNullable[String] and
-      (JsPath \ "role").readNullable[String]
+      (JsPath \ "role").readNullable[String] and
+      (JsPath \ "created").readNullable[DateTime]
     )(User.apply _)
 
   implicit val userWrites: Writes[User] = (
@@ -74,7 +76,8 @@ class UserController @Inject() (
       (JsPath \ "lastName").write[Option[String]] and
       (JsPath \ "email").write[Option[String]] and
       (JsPath \ "image").write[Option[String]] and
-      (JsPath \ "role").write[Option[String]]
+      (JsPath \ "role").write[Option[String]] and
+      (JsPath \ "created").write[Option[DateTime]]
     )(unlift(User.unapply))
 
 

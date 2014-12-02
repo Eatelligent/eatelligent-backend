@@ -80,7 +80,7 @@ class RecipeController @Inject() (
       (JsPath \ "modified").write[Option[DateTime]] and
       (JsPath \ "published").write[Option[DateTime]] and
       (JsPath \ "deleted").write[Option[DateTime]] and
-      (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
+        (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").write[Seq[String]] and
       (JsPath \ "createdBy").write[Option[TinyUser]]
     )(unlift(Recipe.unapply))

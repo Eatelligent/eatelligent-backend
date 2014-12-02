@@ -1,5 +1,6 @@
 package repository.daos.slick
 
+import org.joda.time.DateTime
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._
@@ -14,8 +15,10 @@ class RatingDAOSlick extends RatingDAO {
   def saveUserStarRateRecipe(rating: UserStarRateRecipe): Future[Option[UserStarRateRecipe]] = {
     DB withSession { implicit session =>
       slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
-        case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating.stars))
-        case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating.stars))
+        case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
+          .stars, new DateTime()))
+        case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
+          .stars, new DateTime()))
       }
       findUserStarRateRecipe(rating.userId, rating.recipeId)
     }
@@ -25,7 +28,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
-          case Some(x) => Some(UserStarRateRecipe(x.userId, x.recipeId, x.stars))
+          case Some(x) => Some(UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created)))
           case None => None
         }
       }
@@ -36,7 +39,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(_.recipeId === recipeId).list map {
-          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars)
+          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created))
         }
       }
     }
@@ -46,7 +49,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(_.userId === userId).list map {
-          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars)
+          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created))
         }
       }
     }
