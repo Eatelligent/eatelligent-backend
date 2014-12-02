@@ -54,17 +54,18 @@ define(function(require) {
   });
 
   app.on('before:start', function() {
-    if (Backbone.history) {
-      Backbone.history.start();
-    }
-
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
       xhr.fail(function() {
         if(xhr.status === 403 || xhr.status === 401) {
           Backbone.history.navigate('login', {trigger: true});
+          channel.command('module:header');
         }
       });
     });
+
+    if (Backbone.history) {
+      Backbone.history.start();
+    }
   });
 
   app.on('start', function() {

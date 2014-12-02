@@ -16,6 +16,8 @@ define(function(require) {
 
       if (window.location.hash.indexOf('login') < 0) {
         this.region.show(this.view);
+      } else {
+        this.region.reset();
       }
     },
 

@@ -6,8 +6,8 @@ define(function(require) {
 
   var LoginModel = Backbone.Model.extend({
     defaults: {
-      email: 'tandeeey@gmail.com',
-      password: 'password'
+      email: 'admin@admin.com',
+      password: 'admin'
     },
 
     url: '/api/authenticate',
