@@ -2,6 +2,7 @@ package models.services
 
 import java.util.UUID
 import javax.inject.Inject
+import org.joda.time.DateTime
 import play.api.libs.concurrent.Execution.Implicits._
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.services.AuthInfo
@@ -63,7 +64,8 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           lastName = profile.lastName,
           email = profile.email,
           image = profile.avatarURL,
-          role = Some("user")
+          role = Some("user"),
+          created = Some(new DateTime())
         ))
     }
   }

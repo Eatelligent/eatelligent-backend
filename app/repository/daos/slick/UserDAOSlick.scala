@@ -1,5 +1,6 @@
 package models.daos.slick
 
+import org.joda.time.DateTime
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
@@ -35,7 +36,7 @@ class UserDAOSlick extends UserDAO {
                 slickUsers.filter(_.id === userLoginInfo.userID).firstOption match {
                   case Some(user) =>
                     Some(User(UUID.fromString(user.userID), loginInfo, user.firstName, user.lastName, user.email,
-                      user.image, user.role))
+                      user.image, user.role, Some(user.created)))
                   case None => None
                 }
               case None => None
@@ -64,7 +65,7 @@ class UserDAOSlick extends UserDAO {
                 slickLoginInfos.filter(_.id === info.loginInfoId).firstOption match {
                   case Some(loginInfo) =>
                     Some(User(UUID.fromString(user.userID), LoginInfo(loginInfo.providerID, loginInfo.providerKey),
-                      user.firstName, user.lastName, user.email, user.image, user.role))
+                      user.firstName, user.lastName, user.email, user.image, user.role, Some(user.created)))
                   case None => None
                 }
               case None => None
@@ -84,7 +85,8 @@ class UserDAOSlick extends UserDAO {
   def save(user: User) = {
     DB withSession { implicit session =>
       Future.successful {
-        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image, user.role)
+        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image, user.role,
+          user.created match  { case Some(time) => time case None => new DateTime()})
         slickUsers.filter(_.id === dbUser.userID).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
           case None => slickUsers.insert(dbUser)

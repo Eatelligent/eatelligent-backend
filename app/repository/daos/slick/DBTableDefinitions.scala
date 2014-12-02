@@ -150,7 +150,8 @@ object DBTableDefinitions {
     lastName: Option[String],
     email: Option[String],
     image: Option[String],
-    role: Option[String]
+    role: Option[String],
+    created: DateTime
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
@@ -160,7 +161,8 @@ object DBTableDefinitions {
     def email = column[Option[String]]("email")
     def image = column[Option[String]]("image")
     def role = column[Option[String]]("role")
-    def * = (id, firstName, lastName, email, image, role) <> (DBUser.tupled, DBUser.unapply)
+    def created = column[DateTime]("created")
+    def * = (id, firstName, lastName, email, image, role, created) <> (DBUser.tupled, DBUser.unapply)
   }
 
   case class DBLoginInfo (
@@ -240,33 +242,38 @@ object DBTableDefinitions {
   case class DBUserStarRateRecipe(
     userId: String,
     recipeId: Long,
-    stars: Double
+    stars: Double,
+    created: DateTime
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Double]("rating")
-    def * = (userId, recipeId, rating) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, recipeId, rating, created) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
   }
 
   case class DBUserYesNoRateRecipe(
                                    userId: String,
                                    recipeId: Long,
-                                   rating: Boolean
+                                   rating: Boolean,
+                                   created: DateTime
                                    )
 
   class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Boolean]("rating")
-    def * = (userId, recipeId, rating) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, recipeId, rating, created) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
   }
 
   case class DBUserYesNoRateIngredient(
                                     userId: String,
                                     recipeId: Long,
-                                    rating: Boolean
+                                    rating: Boolean,
+                                    created: DateTime
                                     )
 
   class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
@@ -274,11 +281,10 @@ object DBTableDefinitions {
     def userId = column[String]("user_id")
     def ingredientId = column[Long]("ingredient_id")
     def rating = column[Boolean]("rating")
-    def * = (userId, ingredientId, rating) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, ingredientId, rating, created) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient
+      .unapply)
   }
-
-
-
 
 
   val slickUsers = TableQuery[Users]
