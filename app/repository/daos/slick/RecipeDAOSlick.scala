@@ -224,7 +224,18 @@ class RecipeDAOSlick @Inject() (
     }
   }
 
-  def getAll: Future[Seq[TinyRecipe]] = find("")
+  def getAll(offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[Seq[TinyRecipe]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        slickRecipes
+          .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
+          .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
+          .drop(offset).take (limit).list.map {
+            x => TinyRecipe(x.id.get, x.name, x.image)
+          }
+      }
+    }
+  }
 
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = {
