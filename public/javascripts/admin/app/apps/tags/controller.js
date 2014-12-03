@@ -10,6 +10,10 @@ define(function(require) {
       var searchmodel = new Backbone.Model(options);
       this.view = this.getView(searchmodel);
 
+      this.view.on('all', function() {
+        console.log(arguments);
+      })
+
       this.view.on('search', function() {
         var query = searchmodel.get('q');
         var recipes = channel.request('entities:collection:tags:recipe', query);

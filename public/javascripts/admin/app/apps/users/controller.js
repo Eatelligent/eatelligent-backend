@@ -2,19 +2,28 @@ define(function(require) {
   'use strict';
 
   var Ctrl = require('utils/controller');
-  var UsersView = require('./view');
+  var Views = require('./view');
   var channel = require('backbone.radio').channel('app');
 
   var Controller = Ctrl.extend({
     initialize: function(options) {
       var users = channel.request('entities:collection:users');
+      var self = this;
+      this.view = this.getListView(users);
 
-      this.view = this.getView(users);
+      this.view.on('childview:user:clicked', function(child) {
+        console.log(arguments);
+        self.region.show(self.getUserView(child.model))
+      });
       this.region.show(this.view);
     },
 
-    getView: function(collection) {
-      return new UsersView({collection: collection});
+    getListView: function(collection) {
+      return new Views.ListView({collection: collection});
+    },
+
+    getUserView: function(model) {
+      return new Views.UserView({model: model});
     }
   });
 

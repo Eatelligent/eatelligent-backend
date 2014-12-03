@@ -21,6 +21,7 @@ define(function(require) {
   require('entities/languages');
   require('entities/ingredients');
   require('entities/tags');
+  require('entities/users');
 
   // Load modules
   require('apps/login/app');
