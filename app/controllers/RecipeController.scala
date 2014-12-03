@@ -3,6 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
+import myUtils.silhouette.WithRole
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -97,8 +98,9 @@ class RecipeController @Inject() (
       (JsPath \ "image").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
 
-  def listRecipes = SecuredAction.async { implicit request =>
-    val recipes = recipeService.getAll
+  def listRecipes(offset: Integer , limit: Integer, published: Boolean, deleted: Boolean) =
+    SecuredAction(WithRole("admin")).async { implicit request =>
+    val recipes = recipeService.getAll(offset, limit, published, deleted)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
