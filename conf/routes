@@ -57,7 +57,7 @@ GET            /api/ratings/users                    @controllers.RecipeRatingCo
 
 GET            /api/stats                            @controllers.StatsController.getTotalStats
 GET            /api/stats/users                      @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
-GET            /api/stats/ratings                    @controllers.StatsController.getUserStats(from: String?="1970-01-01", to: String ?= "2100-12-31")
+GET            /api/stats/ratings                    @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
 
 # Map static resources from the /public folder to the /assets URL path
 GET            /assets/*file                         controllers.Assets.at(path="/public", file)

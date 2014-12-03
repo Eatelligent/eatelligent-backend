@@ -36,6 +36,4 @@ class StatsController @Inject() (
       }
   }
 
-
-
 }

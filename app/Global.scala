@@ -32,8 +32,11 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
 
   override def onError(request: RequestHeader, ex: Throwable) = {
     Future {
-      InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage)
-      )
+      ex.getCause match {
+        case e: IllegalArgumentException => BadRequest(Json.obj("ok" -> false, "message" -> Json
+          .toJson(ex.getMessage)))
+        case _ => InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage))
+      }
     }
   }
 
