@@ -3,6 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
+import myUtils.silhouette.WithRole
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -56,8 +57,11 @@ class RecipeController @Inject() (
       (JsPath \ "calories").readNullable[Double] and
       (JsPath \ "procedure").read[String] and
       (JsPath \ "spicy").read[Int] and
+      (JsPath \ "time").read[Int] and
       (JsPath \ "created").readNullable[DateTime] and
       (JsPath \ "modified").readNullable[DateTime] and
+      (JsPath \ "published").readNullable[DateTime] and
+      (JsPath \ "deleted").readNullable[DateTime] and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").read[Seq[String]] and
       (JsPath \ "createdBy").readNullable[TinyUser]
@@ -72,9 +76,12 @@ class RecipeController @Inject() (
       (JsPath \ "calories").write[Option[Double]] and
       (JsPath \ "procedure").write[String] and
       (JsPath \ "spicy").write[Int] and
+      (JsPath \ "time").write[Int] and
       (JsPath \ "created").write[Option[DateTime]] and
       (JsPath \ "modified").write[Option[DateTime]] and
-      (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
+      (JsPath \ "published").write[Option[DateTime]] and
+      (JsPath \ "deleted").write[Option[DateTime]] and
+        (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").write[Seq[String]] and
       (JsPath \ "createdBy").write[Option[TinyUser]]
     )(unlift(Recipe.unapply))
@@ -91,8 +98,9 @@ class RecipeController @Inject() (
       (JsPath \ "image").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
 
-  def listRecipes = SecuredAction.async { implicit request =>
-    val recipes = recipeService.getAll
+  def listRecipes(offset: Integer , limit: Integer, published: Boolean, deleted: Boolean) =
+    SecuredAction(WithRole("admin")).async { implicit request =>
+    val recipes = recipeService.getAll(offset, limit, published, deleted)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 

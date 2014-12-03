@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 import javax.inject.Inject
+import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repository.models.{UserSignUp, User}
@@ -67,7 +68,8 @@ class SignUpController @Inject() (
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "email").readNullable[String] and
       (JsPath \ "image").readNullable[String] and
-      (JsPath \ "role").readNullable[String]
+      (JsPath \ "role").readNullable[String] and
+      (JsPath \ "created").readNullable[DateTime]
     )(User.apply _)
 
   implicit val userWrites: Writes[User] = (
@@ -77,7 +79,8 @@ class SignUpController @Inject() (
     (JsPath \ "lastName").write[Option[String]] and
     (JsPath \ "email").write[Option[String]] and
     (JsPath \ "image").write[Option[String]] and
-    (JsPath \ "role").write[Option[String]]
+    (JsPath \ "role").write[Option[String]] and
+      (JsPath \ "created").write[Option[DateTime]]
     )(unlift(User.unapply))
 
 
@@ -100,7 +103,8 @@ class SignUpController @Inject() (
           lastName = Some(data.lastName),
           email = Some(data.email),
           image = None,
-          role = Some("user")
+          role = Some("user"),
+          created = None
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)
@@ -133,7 +137,8 @@ class SignUpController @Inject() (
           lastName = Some(data.lastName),
           email = Some(data.email),
           image = None,
-          role = Some("user")
+          role = Some("user"),
+          created = None
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)

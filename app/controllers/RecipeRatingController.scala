@@ -3,6 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
+import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc._
@@ -21,13 +22,15 @@ class RecipeRatingController @Inject() (
   implicit val userStarRateRecipeRead: Reads[UserStarRateRecipe] = (
     (JsPath \ "userId").read[String] and
       (JsPath \ "recipeId").read[Long] and
-      (JsPath \ "rating").read[Double]
+      (JsPath \ "rating").read[Double] and
+      (JsPath \ "created").readNullable[DateTime]
     )(UserStarRateRecipe.apply _)
 
   implicit val userStarRateRecipeWrite: Writes[UserStarRateRecipe] = (
     (JsPath \ "userId").write[String] and
       (JsPath \ "recipeId").write[Long] and
-      (JsPath \ "rating").write[Double]
+      (JsPath \ "rating").write[Double] and
+        (JsPath \ "created").write[Option[DateTime]]
     )(unlift(UserStarRateRecipe.unapply))
 
   def listRatingsForUser = SecuredAction.async { implicit request =>

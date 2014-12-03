@@ -46,8 +46,8 @@ class RecipeDAOSlick @Inject() (
 
       val user = futures map (_._3.get)
       futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
-        r.spicy, Some(r.created), Some(r.modified), x._1, x._2, Some(TinyUser(x._3.get.userID.toString, x._3.get
-          .firstName, x._3.get.lastName))))
+        r.spicy, r.time, Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2,
+        Some(TinyUser(x._3.get.userID.toString, x._3.get.firstName, x._3.get.lastName))))
 
   }
 
@@ -132,8 +132,10 @@ class RecipeDAOSlick @Inject() (
 
 
         futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r
-          .procedure, r.spicy,
-          Some(r.created), Some(r.modified), x._1, x._2, Some(TinyUser(x._3.get.userID.toString, x._3.get
+          .procedure, r.spicy, r.time,
+          Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2, Some(TinyUser(x._3.get
+            .userID.toString, x._3
+            .get
             .firstName, x._3.get.lastName))))
     }
 
@@ -162,7 +164,7 @@ class RecipeDAOSlick @Inject() (
   def save(r: Recipe, user: User): Future[Option[Recipe]] = {
     val id = DB withTransaction { implicit session =>
       val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
-        new DateTime(), new DateTime(), user.userID.toString))
+        r.time, new DateTime(), new DateTime(), None, r.deleted, user.userID.toString))
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
@@ -222,7 +224,18 @@ class RecipeDAOSlick @Inject() (
     }
   }
 
-  def getAll: Future[Seq[TinyRecipe]] = find("")
+  def getAll(offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[Seq[TinyRecipe]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        slickRecipes
+          .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
+          .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
+          .drop(offset).take (limit).list.map {
+            x => TinyRecipe(x.id.get, x.name, x.image)
+          }
+      }
+    }
+  }
 
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = {

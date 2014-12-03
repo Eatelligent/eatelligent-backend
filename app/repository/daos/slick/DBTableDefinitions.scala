@@ -1,37 +1,42 @@
 package models.daos.slick
 
-import java.sql.Timestamp
-
-import org.joda.time.DateTime
+import org.joda.time.{Duration, DateTime}
 import play.api.libs.json.{Json, JsValue}
-import play.api.data.format.Formats
-import play.api.data.format.Formatter
+//import play.api.data.format.Formats
+//import play.api.data.format.Formatter
 import play.api.data.FormError
 import myUtils.MyPostgresDriver.simple._
 import com.vividsolutions.jts.io.{WKTReader, WKTWriter}
 object DBTableDefinitions {
 
-  implicit def date2dateTime = MappedColumnType.base[DateTime, Timestamp](
-    dateTime => new Timestamp(dateTime.getMillis),
-    date => new DateTime(date))
+//  implicit def date2dateTime = MappedColumnType.base[DateTime, Timestamp](
+//    dateTime => new Timestamp(dateTime.getMillis),
+//    date => new DateTime(date))
 
-  def jsonFormat: Formatter[JsValue] = new Formatter[JsValue] {
-    override val format = Some(("format.json", Nil))
-
-    def bind(key: String, data: Map[String, String]) =
-      parsing(Json.parse(_), "error.json", Nil)(key, data)
-    def unbind(key: String, value: JsValue) = Map(key -> Json.stringify(value))
-  }
-
-  private def parsing[T](parse: String => T, errMsg: String, errArgs: Seq[Any])(
-    key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
-    Formats.stringFormat.bind(key, data).right.flatMap { s =>
-      scala.util.control.Exception.allCatch[T]
-        .either(parse(s))
-        .left.map(e => Seq(FormError(key, errMsg, errArgs)))
-    }
-  }
-
+//  def jsonFormat: Formatter[JsValue] = new Formatter[JsValue] {
+//    override val format = Some(("format.json", Nil))
+//
+//    def bind(key: String, data: Map[String, String]) =
+//      parsing(Json.parse(_), "error.json", Nil)(key, data)
+//    def unbind(key: String, value: JsValue) = Map(key -> Json.stringify(value))
+//  }
+//
+//  def durationFormat: Formatter[Duration] = new Formatter[Duration] {
+//    override val format = Some(("format.duration", Nil))
+//
+//    def bind(key: String, data: Map[String, String]) =
+//      parsing(Duration.parse(_), "error.duration", Nil)(key, data)
+//    def unbind(key: String, value: Duration) = Map(key -> value.toString)
+//  }
+//
+//  private def parsing[T](parse: String => T, errMsg: String, errArgs: Seq[Any])(
+//    key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
+//    Formats.stringFormat.bind(key, data).right.flatMap { s =>
+//      scala.util.control.Exception.allCatch[T]
+//        .either(parse(s))
+//        .left.map(e => Seq(FormError(key, errMsg, errArgs)))
+//    }
+//  }
 
   case class DBLanguage(
                        id: Option[Long] = None,
@@ -57,8 +62,11 @@ object DBTableDefinitions {
                            calories: Double,
                            procedure: String,
                            spicy: Int,
+                           time: Int,
                            created: DateTime,
                            modified: DateTime,
+                           published: Option[DateTime],
+                           deleted: Option[DateTime],
                            createdById: String
                            )
 
@@ -71,13 +79,15 @@ object DBTableDefinitions {
     def calories = column[Double]("calories")
     def procedure = column[String]("procedure")
     def spicy = column[Int]("spicy")
+    def time = column[Int]("time")
     def created = column[DateTime]("created")
     def modified = column[DateTime]("modified")
+    def published = column[Option[DateTime]]("published")
+    def deleted = column[Option[DateTime]]("deleted")
     def createdById = column[String]("created_by")
 
-    def * = (id, name, image, description, language, calories, procedure, spicy, created, modified,
-      createdById) <> (DBRecipe.tupled,
-      DBRecipe.unapply)
+    def * = (id, name, image, description, language, calories, procedure, spicy, time, created, modified, published,
+      deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
   }
 
   case class DBIngredient(
@@ -140,7 +150,8 @@ object DBTableDefinitions {
     lastName: Option[String],
     email: Option[String],
     image: Option[String],
-    role: Option[String]
+    role: Option[String],
+    created: DateTime
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
@@ -150,7 +161,8 @@ object DBTableDefinitions {
     def email = column[Option[String]]("email")
     def image = column[Option[String]]("image")
     def role = column[Option[String]]("role")
-    def * = (id, firstName, lastName, email, image, role) <> (DBUser.tupled, DBUser.unapply)
+    def created = column[DateTime]("created")
+    def * = (id, firstName, lastName, email, image, role, created) <> (DBUser.tupled, DBUser.unapply)
   }
 
   case class DBLoginInfo (
@@ -230,33 +242,38 @@ object DBTableDefinitions {
   case class DBUserStarRateRecipe(
     userId: String,
     recipeId: Long,
-    stars: Double
+    stars: Double,
+    created: DateTime
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Double]("rating")
-    def * = (userId, recipeId, rating) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, recipeId, rating, created) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
   }
 
   case class DBUserYesNoRateRecipe(
                                    userId: String,
                                    recipeId: Long,
-                                   rating: Boolean
+                                   rating: Boolean,
+                                   created: DateTime
                                    )
 
   class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Boolean]("rating")
-    def * = (userId, recipeId, rating) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, recipeId, rating, created) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
   }
 
   case class DBUserYesNoRateIngredient(
                                     userId: String,
                                     recipeId: Long,
-                                    rating: Boolean
+                                    rating: Boolean,
+                                    created: DateTime
                                     )
 
   class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
@@ -264,11 +281,10 @@ object DBTableDefinitions {
     def userId = column[String]("user_id")
     def ingredientId = column[Long]("ingredient_id")
     def rating = column[Boolean]("rating")
-    def * = (userId, ingredientId, rating) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient.unapply)
+    def created = column[DateTime]("created")
+    def * = (userId, ingredientId, rating, created) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient
+      .unapply)
   }
-
-
-
 
 
   val slickUsers = TableQuery[Users]

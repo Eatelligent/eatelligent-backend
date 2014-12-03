@@ -13,7 +13,7 @@ POST        /signUp                               @controllers.SignUpController.
 
 OPTIONS /api/authenticate @controllers.ApplicationController.options
 
-GET         /api/users           @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
+GET         /api/users                            @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
 GET         /api/users/:id                        @controllers.UserController.getUser(id: String)
 GET         /api/user                             @controllers.UserController.getCurrentUser
@@ -39,7 +39,7 @@ GET         /admin                                @controllers.ApplicationContro
 GET         /api/recipes/$id<[0-9]+>              @controllers.RecipeController.getRecipe(id: Long)
 
 GET         /api/recipes/:q                       @controllers.RecipeController.getRecipesByQuery(q: String)
-GET         /api/recipes                          @controllers.RecipeController.listRecipes
+GET         /api/recipes                          @controllers.RecipeController.listRecipes(offset: Integer ?= 0,limit: Integer ?= 20,published:Boolean ?= true,        deleted:        Boolean ?= false)
 
 POST        /api/recipes                          @controllers.RecipeController.saveRecipe
 
