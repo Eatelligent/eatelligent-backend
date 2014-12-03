@@ -1,6 +1,6 @@
 package models.daos.slick
 
-import org.joda.time.{Duration, DateTime}
+import org.joda.time.{LocalDateTime, Duration, DateTime}
 import play.api.libs.json.{Json, JsValue}
 //import play.api.data.format.Formats
 //import play.api.data.format.Formatter
@@ -63,10 +63,10 @@ object DBTableDefinitions {
                            procedure: String,
                            spicy: Int,
                            time: Int,
-                           created: DateTime,
-                           modified: DateTime,
-                           published: Option[DateTime],
-                           deleted: Option[DateTime],
+                           created: LocalDateTime,
+                           modified: LocalDateTime,
+                           published: Option[LocalDateTime],
+                           deleted: Option[LocalDateTime],
                            createdById: String
                            )
 
@@ -80,10 +80,10 @@ object DBTableDefinitions {
     def procedure = column[String]("procedure")
     def spicy = column[Int]("spicy")
     def time = column[Int]("time")
-    def created = column[DateTime]("created")
-    def modified = column[DateTime]("modified")
-    def published = column[Option[DateTime]]("published")
-    def deleted = column[Option[DateTime]]("deleted")
+    def created = column[LocalDateTime]("created")
+    def modified = column[LocalDateTime]("modified")
+    def published = column[Option[LocalDateTime]]("published")
+    def deleted = column[Option[LocalDateTime]]("deleted")
     def createdById = column[String]("created_by")
 
     def * = (id, name, image, description, language, calories, procedure, spicy, time, created, modified, published,
@@ -151,7 +151,7 @@ object DBTableDefinitions {
     email: Option[String],
     image: Option[String],
     role: Option[String],
-    created: DateTime
+    created: LocalDateTime
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
@@ -161,7 +161,7 @@ object DBTableDefinitions {
     def email = column[Option[String]]("email")
     def image = column[Option[String]]("image")
     def role = column[Option[String]]("role")
-    def created = column[DateTime]("created")
+    def created = column[LocalDateTime]("created")
     def * = (id, firstName, lastName, email, image, role, created) <> (DBUser.tupled, DBUser.unapply)
   }
 
@@ -243,14 +243,14 @@ object DBTableDefinitions {
     userId: String,
     recipeId: Long,
     stars: Double,
-    created: DateTime
+    created: LocalDateTime
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Double]("rating")
-    def created = column[DateTime]("created")
+    def created = column[LocalDateTime]("created")
     def * = (userId, recipeId, rating, created) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
   }
 
@@ -258,14 +258,14 @@ object DBTableDefinitions {
                                    userId: String,
                                    recipeId: Long,
                                    rating: Boolean,
-                                   created: DateTime
+                                   created: LocalDateTime
                                    )
 
   class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
     def userId = column[String]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Boolean]("rating")
-    def created = column[DateTime]("created")
+    def created = column[LocalDateTime]("created")
     def * = (userId, recipeId, rating, created) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
   }
 
@@ -273,7 +273,7 @@ object DBTableDefinitions {
                                     userId: String,
                                     recipeId: Long,
                                     rating: Boolean,
-                                    created: DateTime
+                                    created: LocalDateTime
                                     )
 
   class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
@@ -281,7 +281,7 @@ object DBTableDefinitions {
     def userId = column[String]("user_id")
     def ingredientId = column[Long]("ingredient_id")
     def rating = column[Boolean]("rating")
-    def created = column[DateTime]("created")
+    def created = column[LocalDateTime]("created")
     def * = (userId, ingredientId, rating, created) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient
       .unapply)
   }

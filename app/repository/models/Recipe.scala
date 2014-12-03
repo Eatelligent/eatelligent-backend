@@ -1,6 +1,6 @@
 package repository.models
 
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 
 case class Recipe(
                    id: Option[Long],
@@ -12,10 +12,10 @@ case class Recipe(
                    procedure: String,
                    spicy: Int,
                    time: Int,
-                   created: Option[DateTime],
-                   modified: Option[DateTime],
-                   published: Option[DateTime],
-                   deleted: Option[DateTime],
+                   created: Option[LocalDateTime],
+                   modified: Option[LocalDateTime],
+                   published: Option[LocalDateTime],
+                   deleted: Option[LocalDateTime],
                    ingredients: Seq[IngredientForRecipe],
                    tags: Seq[String],
                    createdBy: Option[TinyUser]

@@ -1,10 +1,10 @@
 package repository.models
 
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 
 case class UserStarRateRecipe(
                                  userId: String,
                                  recipeId: Long,
                                  stars: Double,
-                                 created: Option[DateTime]
+                                 created: Option[LocalDateTime]
                                  )

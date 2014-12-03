@@ -50,7 +50,7 @@ CREATE TABLE users (
 	age int CONSTRAINT age_check CHECK (age > 0 AND age < 100),
 	image text,
 	role text,
-	created timestamptz
+	created timestamp
 );
 
 CREATE TABLE user_preferences (
@@ -68,10 +68,10 @@ CREATE TABLE recipe (
 	procedure text,
 	spicy int CONSTRAINT spicy_check CHECK (spicy > 0 AND spicy < 4),
 	time int CONSTRAINT time_check CHECK (time > 0),
-	created timestamptz NOT NULL,	
-	modified timestamptz NOT NULL,
-	published timestamptz,
-	deleted timestamptz,
+	created timestamp NOT NULL,
+	modified timestamp NOT NULL,
+	published timestamp,
+	deleted timestamp,
 	created_by text NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
@@ -94,7 +94,7 @@ CREATE TABLE user_star_rate_recipe ( /* id references */
 	user_id text references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating real CONSTRAINT rating_check CHECK (rating >= 0.0 AND rating <= 5.0),
-	created timestamptz
+	created timestamp
 );
 
 CREATE UNIQUE INDEX user_star_rate_recipe_idx 
@@ -104,7 +104,7 @@ CREATE TABLE user_yes_no_rate_recipe ( /* id references */
 	user_id text references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating boolean,
-	created timestamptz
+	created timestamp
 );
 
 CREATE UNIQUE INDEX user_yes_no_rate_recipe_idx
@@ -114,7 +114,7 @@ CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
 	user_id text,
 	ingredient_id int8,
 	rating boolean,
-	created timestamptz
+	created timestamp
 );
 
 CREATE UNIQUE INDEX user_yes_no_rate_ingredient_idx

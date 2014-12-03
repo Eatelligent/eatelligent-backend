@@ -3,8 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
-import org.joda.time.DateTime
-import play.api.libs.functional.syntax._
+import myUtils.JsonFormats
 import play.api.libs.json._
 import play.api.mvc._
 import repository.daos.RatingDAO
@@ -17,21 +16,7 @@ import scala.concurrent.Future
 class RecipeRatingController @Inject() (
                                    val ratingDAO: RatingDAO,
                                    implicit val env: Environment[User, CachedCookieAuthenticator])
-  extends Silhouette[User, CachedCookieAuthenticator] {
-
-  implicit val userStarRateRecipeRead: Reads[UserStarRateRecipe] = (
-    (JsPath \ "userId").read[String] and
-      (JsPath \ "recipeId").read[Long] and
-      (JsPath \ "rating").read[Double] and
-      (JsPath \ "created").readNullable[DateTime]
-    )(UserStarRateRecipe.apply _)
-
-  implicit val userStarRateRecipeWrite: Writes[UserStarRateRecipe] = (
-    (JsPath \ "userId").write[String] and
-      (JsPath \ "recipeId").write[Long] and
-      (JsPath \ "rating").write[Double] and
-        (JsPath \ "created").write[Option[DateTime]]
-    )(unlift(UserStarRateRecipe.unapply))
+  extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
   def listRatingsForUser = SecuredAction.async { implicit request =>
     val ratings = ratingDAO.findStarRatingsForUser(request.identity.userID.toString)

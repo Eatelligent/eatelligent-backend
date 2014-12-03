@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 import javax.inject.Inject
+import myUtils.JsonFormats
 import org.joda.time.DateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -33,56 +34,7 @@ class SignUpController @Inject() (
   val authInfoService: AuthInfoService,
   val avatarService: AvatarService,
   val passwordHasher: PasswordHasher)
-  extends Silhouette[User, CachedCookieAuthenticator] {
-
-  implicit val signUpRead: Reads[UserSignUp] = (
-    (JsPath \ "id").readNullable[UUID] and
-      (JsPath \ "firstName").read[String] and
-      (JsPath \ "lastName").read[String] and
-      (JsPath \ "email").read[String] and
-      (JsPath \ "password").read[String]
-    )(UserSignUp.apply _)
-
-  implicit val signUpWrite: Writes[UserSignUp] = (
-    (JsPath \ "id").write[Option[UUID]] and
-      (JsPath \ "firstName").write[String] and
-      (JsPath \ "lastName").write[String] and
-      (JsPath \ "email").write[String] and
-      (JsPath \ "password").write[String]
-    )(unlift(UserSignUp.unapply))
-
-  implicit val loginInfoReads: Reads[LoginInfo] = (
-    (JsPath \ "providerID").read[String] and
-      (JsPath \ "providerKey").read[String]
-    )(LoginInfo.apply _)
-
-  implicit val loginInfoWrites: Writes[LoginInfo] = (
-    (JsPath \ "providerID").write[String] and
-      (JsPath \ "providerKey").write[String]
-    )(unlift(LoginInfo.unapply))
-
-  implicit val userRead: Reads[User] = (
-    (JsPath \ "id").read[UUID] and
-      (JsPath \ "loginInfo").read[LoginInfo] and
-      (JsPath \ "firstName").readNullable[String] and
-      (JsPath \ "lastName").readNullable[String] and
-      (JsPath \ "email").readNullable[String] and
-      (JsPath \ "image").readNullable[String] and
-      (JsPath \ "role").readNullable[String] and
-      (JsPath \ "created").readNullable[DateTime]
-    )(User.apply _)
-
-  implicit val userWrites: Writes[User] = (
-    (JsPath \ "id").write[UUID] and
-    (JsPath \ "loginInfo").write[LoginInfo] and
-    (JsPath \ "firstName").write[Option[String]] and
-    (JsPath \ "lastName").write[Option[String]] and
-    (JsPath \ "email").write[Option[String]] and
-    (JsPath \ "image").write[Option[String]] and
-    (JsPath \ "role").write[Option[String]] and
-      (JsPath \ "created").write[Option[DateTime]]
-    )(unlift(User.unapply))
-
+  extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
 
   /**

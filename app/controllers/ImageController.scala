@@ -1,6 +1,7 @@
 package controllers
 
 import com.google.inject.Inject
+import myUtils.JsonFormats
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes, Json}
 import repository.Exceptions.NoSuchRecipeException
@@ -20,12 +21,7 @@ import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 class ImageController @Inject() (
   val recipeService: RecipeService,
   implicit val env: Environment[User, CachedCookieAuthenticator])
-  extends Silhouette[User, CachedCookieAuthenticator] {
-
-  implicit val recipeImageReads: Writes[RecipeImage] = (
-    (JsPath \ "recipeId").write[Long] and
-      (JsPath \ "url").write[String]
-    )(unlift(RecipeImage.unapply))
+  extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
   val directUploadForm = Form(
     mapping(

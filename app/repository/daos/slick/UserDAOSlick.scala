@@ -1,6 +1,6 @@
 package models.daos.slick
 
-import org.joda.time.DateTime
+import org.joda.time.{LocalDateTime, DateTime}
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
@@ -86,7 +86,7 @@ class UserDAOSlick extends UserDAO {
     DB withSession { implicit session =>
       Future.successful {
         val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email, user.image, user.role,
-          user.created match  { case Some(time) => time case None => new DateTime()})
+          user.created match  { case Some(time) => time case None => new LocalDateTime()})
         slickUsers.filter(_.id === dbUser.userID).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
           case None => slickUsers.insert(dbUser)

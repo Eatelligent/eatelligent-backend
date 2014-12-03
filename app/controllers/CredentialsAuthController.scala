@@ -2,6 +2,7 @@ package controllers
 
 import java.util.UUID
 import javax.inject.Inject
+import myUtils.JsonFormats
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json._
@@ -29,28 +30,9 @@ class CredentialsAuthController @Inject() (
                                             val userService: UserService,
                                             val authInfoService: AuthInfoService
                                            )
-  extends Silhouette[User, CachedCookieAuthenticator] {
+  extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
-  implicit val credentialsReads: Reads[Credentials] = (
-    (JsPath \ "email").read[String] and
-      (JsPath \ "password").read[String]
-    )(Credentials.apply _)
 
-  implicit val loginInfoWrites: Writes[LoginInfo] = (
-    (JsPath \ "providerID").write[String] and
-      (JsPath \ "providerKey").write[String]
-    )(unlift(LoginInfo.unapply))
-
-  implicit val userWrites: Writes[User] = (
-    (JsPath \ "id").write[UUID] and
-      (JsPath \ "loginInfo").write[LoginInfo] and
-      (JsPath \ "firstName").write[Option[String]] and
-      (JsPath \ "lastName").write[Option[String]] and
-      (JsPath \ "email").write[Option[String]] and
-      (JsPath \ "image").write[Option[String]] and
-      (JsPath \ "role").write[Option[String]] and
-      (JsPath \ "created").write[Option[DateTime]]
-    )(unlift(User.unapply))
 
   /**
    * Authenticates a user against the credentials provider.

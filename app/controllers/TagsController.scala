@@ -3,6 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
+import myUtils.JsonFormats
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repository.models.{User, RecipeTag}
@@ -12,12 +13,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 class TagsController @Inject() (
   val tagService: TagService,
   implicit val env: Environment[User, CachedCookieAuthenticator])
-  extends Silhouette[User, CachedCookieAuthenticator] {
-
-  implicit val tagWrite: Writes[RecipeTag] =(
-    (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "name").write[String]
-    )(unlift(RecipeTag.unapply))
+  extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
   def listTags = SecuredAction.async { implicit request =>
     val tags = tagService.getAll

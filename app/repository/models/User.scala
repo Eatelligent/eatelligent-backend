@@ -3,7 +3,7 @@ package repository.models
 import java.util.UUID
 
 import com.mohiva.play.silhouette.core.{Identity, LoginInfo}
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 
 case class User(
   userID: UUID,
@@ -13,7 +13,7 @@ case class User(
   email: Option[String],
   image: Option[String],
   role: Option[String],
-  created: Option[DateTime]
+  created: Option[LocalDateTime]
 ) extends Identity
 
 case class UserSignUp(

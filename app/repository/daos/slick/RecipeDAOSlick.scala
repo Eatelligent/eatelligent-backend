@@ -7,7 +7,7 @@ import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
 import models.daos.UserDAO
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
@@ -164,7 +164,7 @@ class RecipeDAOSlick @Inject() (
   def save(r: Recipe, user: User): Future[Option[Recipe]] = {
     val id = DB withTransaction { implicit session =>
       val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
-        r.time, new DateTime(), new DateTime(), None, r.deleted, user.userID.toString))
+        r.time, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.toString))
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))

@@ -1,6 +1,6 @@
 package repository.daos.slick
 
-import org.joda.time.DateTime
+import org.joda.time.LocalDateTime
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._
@@ -16,9 +16,9 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
         case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
-          .stars, new DateTime()))
+          .stars, new LocalDateTime()))
         case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
-          .stars, new DateTime()))
+          .stars, new LocalDateTime()))
       }
       findUserStarRateRecipe(rating.userId, rating.recipeId)
     }
@@ -54,10 +54,7 @@ class RatingDAOSlick extends RatingDAO {
       }
     }
   }
-  
-  
-  
-  
+
   def saveUserYesNoRateRecipe(rating: UserYesNoRateRecipe): Future[Option[UserYesNoRateRecipe]] = {
     Future.successful(None)
   }
@@ -65,11 +62,5 @@ class RatingDAOSlick extends RatingDAO {
   def saveUserYesNoRateIngredient(rating: UserYesNoRateIngredient): Future[Option[UserYesNoRateIngredient]] = {
     Future.successful(None)
   }
-
-
-
-
-
-
 
 }
