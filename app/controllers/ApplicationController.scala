@@ -1,5 +1,7 @@
 package controllers
 
+import play.api.Play
+import play.api.Play.current
 import play.api.mvc._
 import com.mohiva.play.silhouette.core.{LogoutEvent, Environment, Silhouette}
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
@@ -59,7 +61,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
   }
 
   def adminPanel = UserAwareAction { implicit request =>
-    Ok(views.html.admin())
+    val isDevelopment = Play.configuration.getString("isDevelopment").get.toBoolean
+    Ok(views.html.admin(isDevelopment))
   }
 
   def options = UserAwareAction { implicit request =>
