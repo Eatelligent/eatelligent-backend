@@ -1,6 +1,7 @@
 define(function(require) {
   'use strict';
 
+  var Backbone = require('backbone');
   var Marionette = require('marionette');
   var template = require('hbs!./templates/layout');
   var searchTemplate = require('hbs!./templates/search');
@@ -16,7 +17,14 @@ define(function(require) {
 
   var ResultItem = Marionette.ItemView.extend({
     template: resultItemTemplate,
-    tagName: 'tr'
+    tagName: 'tr',
+    events: {
+      'click': 'onRecipeClicked'
+    },
+
+    onRecipeClicked: function() {
+      Backbone.history.navigate('recipes/'+this.model.get('id'), {trigger: true});
+    }
   });
 
   var ResultView = Marionette.CompositeView.extend({
