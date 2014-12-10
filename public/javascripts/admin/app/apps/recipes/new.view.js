@@ -15,7 +15,6 @@ define(function(require) {
   var strengthTemplate = require('hbs!./templates/new/strength');
   var ingredientTemplate = require('hbs!./templates/new/ingredients');
   var ingredientItemTemplate = require('hbs!./templates/new/ingredients_item');
-  var authorTemplate = require('hbs!./templates/new/author');
 
   var Bloodhound = require('bloodhound');
   var Typeahead = require('typeahead');
@@ -65,6 +64,8 @@ define(function(require) {
     },
 
     updateModel: function(e) {
+      $('[data-js-time]', this.$el).removeClass('btn-primary');
+      $(e.target).addClass('btn-primary');
       var val = parseInt($(e.target).attr('value'));
       this.model.set('time', val);
     },
@@ -106,8 +107,6 @@ define(function(require) {
         this.$el.attr('value', this.model.get('id'));
       }
     })
-
-    // TODO: bind to mainmodel
   });
   
   var DescriptionView = Marionette.ItemView.extend({
@@ -147,7 +146,9 @@ define(function(require) {
     className: 'col-md-12 recipe-parameter',
 
     serializeData: function() {
-      return { levels: [1, 2, 3] };
+      return { 
+        levels: [1, 2, 3]
+      };
     },
   
     events: {
@@ -155,8 +156,13 @@ define(function(require) {
     },
 
     updateModel: function(e) {
+      $('[data-js-strength]', this.$el).removeClass('btn-primary');
+      $(e.target, this.$el).addClass('btn-primary');
       var val = parseInt($(e.target).attr('value'), 10);
       this.model.set('spicy', val);
+    },
+    onRender: function() {
+      $('[value='+this.model.get('spicy')+']', this.$el).addClass('btn-primary');
     }
   });
 
@@ -243,16 +249,6 @@ define(function(require) {
     }
   });
 
-  var AuthorView = Marionette.ItemView.extend({
-    template: authorTemplate,
-    className: 'col-md-12 recipe-parameter',
-
-    initialize: function() {
-      // TODO: Select another user?
-      // this.model.set('createdBy', {id: 1});
-    }
-  });
-
   var ResultView = Marionette.ItemView.extend({
     template: _.template('<pre class="mb5"><%- json %></pre><button class="btn btn-primary">Send Recipe</button>'),
     serializeData: function() {
@@ -279,7 +275,6 @@ define(function(require) {
       procedure: '[data-js-procedure]', 
       strength: '[data-js-strength]', 
       ingredients: '[data-js-ingredients]', 
-      author: '[data-js-author]', 
       result: '[data-js-result]'
     },
 
@@ -314,7 +309,6 @@ define(function(require) {
       this.procedure.show(new ProcedureView({model: this.model}));
       this.strength.show(new StrengthView({model: this.model}));
       this.ingredients.show(new IngredientView({model: this.model, ingredients: this.ingredientsCollection}));
-      this.author.show(new AuthorView({model: this.model}));
     }
   });
 

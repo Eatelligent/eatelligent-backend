@@ -5,7 +5,14 @@ define(function(require) {
   var channel = require('backbone.radio').channel('app');
 
   var FreshRecipe = Backbone.Model.extend({
-    url: '/api/recipes'
+    url: '/api/recipes',
+    defaults: {
+      name: '',
+      tags: [],
+      description: '',
+      procedure: '',
+      spicy: 1
+    }
   });
 
   var Recipe = Backbone.Model.extend({
