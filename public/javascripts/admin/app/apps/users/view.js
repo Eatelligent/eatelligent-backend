@@ -7,7 +7,12 @@ define(function(require) {
   var userTemplate = require('hbs!./templates/user');
 
   var UserView = Marionette.ItemView.extend({
-    template: userTemplate
+    template: userTemplate,
+    serializeData: function() {
+      return _.extend(this.model.toJSON(), {
+        json: JSON.stringify(this.model.toJSON(), null, '\t')
+      })
+    }
   });
 
   var UserItem = Marionette.ItemView.extend({

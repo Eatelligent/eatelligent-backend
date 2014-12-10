@@ -136,7 +136,7 @@ define(function(require) {
           var procedure = $('[data-js-procedure]', self.$el).code();
           self.model.set('procedure', procedure);
         },
-        height: 200
+        height: 150
       });
     }
   });
@@ -241,7 +241,10 @@ define(function(require) {
     initialize: function(options) {
       this.childViewOptions = {ingredients: options.ingredients};
       this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
-      this.model.set('ingredients', this.collection);
+      var model = this.model.set('ingredients', this.collection);
+      this.collection.on('all', function() { 
+        model.trigger('change');
+      });
     },
 
     onAddIngredient: function() {
@@ -250,7 +253,7 @@ define(function(require) {
   });
 
   var ResultView = Marionette.ItemView.extend({
-    template: _.template('<pre class="mb5"><%- json %></pre><button class="btn btn-primary">Send Recipe</button>'),
+    template: _.template('<pre class="mb3"><%- json %></pre><button class="btn btn-lg btn-success mb3">Save recipe</button>'),
     serializeData: function() {
       return {
         json: JSON.stringify(this.model.toJSON(), null, '\t')
@@ -284,6 +287,14 @@ define(function(require) {
       this.tagsCollection = options.tags;
       this.model = channel.request('model:new:recipe');
       this.model.set('language', this.languagesCollection.where({name: 'NO-no'})[0].get('id'));
+      
+      this.listenTo(this.model, 'change', function() {
+        this.onShowJson();
+      });
+
+      this.listenTo(this.model, 'sync', function() {
+        Backbone.history.navigate('recipes/'+this.model.get('recipe').id, {trigger: true});
+      });
     },
 
     events: {

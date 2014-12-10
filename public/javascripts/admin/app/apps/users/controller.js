@@ -12,8 +12,11 @@ define(function(require) {
       this.view = this.getListView(users);
 
       this.view.on('childview:user:clicked', function(child) {
-        console.log(arguments);
-        self.region.show(self.getUserView(child.model))
+        var model = child.model;
+        model.fetch();
+        channel.request('when:fetched', model, function() {
+          self.region.show(self.getUserView(child.model))
+        });
       });
       this.region.show(this.view);
     },

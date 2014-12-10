@@ -57,7 +57,7 @@ define(function(require) {
   app.on('before:start', function() {
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
       xhr.fail(function() {
-        if(xhr.status > 400) {
+        if(xhr.status > 400 && xhr.status < 500) {
           Backbone.history.navigate('login', {trigger: true});
           channel.command('module:header');
         }

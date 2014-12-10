@@ -4,10 +4,18 @@ define(function(require) {
   var Backbone = require('backbone');
   var channel = require('backbone.radio').channel('app');
 
+  var User = Backbone.Model.extend({
+    urlRoot: '/api/users',
+    parse: function(response) {
+      return response.user || response;
+    }
+  });
+
   var Users = Backbone.Collection.extend({
     url: '/api/users',
+    model: User,
     parse: function(response) {
-      return response.users;
+      return response.users || response;
     }
   });
 
