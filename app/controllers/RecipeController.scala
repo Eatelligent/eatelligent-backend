@@ -40,6 +40,21 @@ class RecipeController @Inject() (
     )
   }
 
+  def updateRecipe = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    val recipeResult = request.body.validate[Recipe]
+    recipeResult.fold(
+      errors => {
+        Future {
+          BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
+        }
+      },
+      recipe => {
+        val newRecipe = recipeService.update(recipe, request.identity)
+        newRecipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
+      }
+    )
+  }
+
   def getRecipe(id: Long) = SecuredAction.async { implicit request =>
     val recipe = recipeService.find(id)
     recipe.map {

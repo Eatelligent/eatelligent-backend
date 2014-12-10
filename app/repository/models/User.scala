@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.core.{Identity, LoginInfo}
 import org.joda.time.LocalDateTime
 
 case class User(
-  userID: UUID,
+  userID: Option[Long],
   loginInfo: LoginInfo,
   firstName: Option[String],
   lastName: Option[String],
@@ -17,7 +17,7 @@ case class User(
 ) extends Identity
 
 case class UserSignUp(
-  userId: Option[UUID],
+  userId: Option[Long],
   firstName: String,
   lastName: String,
   email: String,
@@ -25,7 +25,7 @@ case class UserSignUp(
                        )
 
 case class TinyUser(
-                     id: String,
+                     id: Long,
                      firstName: Option[String],
                      lastName: Option[String]
                      )

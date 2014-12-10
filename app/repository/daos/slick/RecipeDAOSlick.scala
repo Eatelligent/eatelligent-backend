@@ -8,8 +8,9 @@ import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
 import models.daos.UserDAO
 import org.joda.time.LocalDateTime
+import play.api.Logger
 import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
+import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
 import repository.Exceptions.NoSuchRecipeException
@@ -27,11 +28,10 @@ class RecipeDAOSlick @Inject() (
 
   def find(id: Long): Future[Option[Recipe]] = {
     DB withSession { implicit session =>
-        slickRecipes.filter(
-          r => r.id === id
-        ).firstOption match {
-          case Some(recipe) => transformRecipe(recipe).map(x => Some(x))
-          case None => Future { None }
+        slickRecipes.filter(_.id === id)
+          .firstOption match {
+            case Some(recipe) => transformRecipe(recipe).map(x => Some(x))
+            case None => Future { None }
       }
     }
   }
@@ -41,13 +41,13 @@ class RecipeDAOSlick @Inject() (
       val futures = for {
         iF <- findIngredientsForRecipe(r.id.get)
         tF <- findTagsForRecipe(r.id.get)
-        uF <- userDAO.find(UUID.fromString(r.createdById))
+        uF <- userDAO.find(r.createdById)
       } yield (iF, tF, uF)
 
       val user = futures map (_._3.get)
-      futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r.procedure,
+      futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
         r.spicy, r.time, Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2,
-        Some(TinyUser(x._3.get.userID.toString, x._3.get.firstName, x._3.get.lastName))))
+        Some(TinyUser(x._3.get.userID.get, x._3.get.firstName, x._3.get.lastName))))
 
   }
 
@@ -127,14 +127,14 @@ class RecipeDAOSlick @Inject() (
         val futures = for {
           iF <- findIngredientsForRecipe(r.id.last)
           tF <- findTagsForRecipe(r.id.last)
-          uF <- userDAO.find(UUID.fromString(r.createdById))
+          uF <- userDAO.find(r.createdById)
         } yield (iF, tF, uF)
 
 
-        futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, Some(r.calories), r
+        futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r
           .procedure, r.spicy, r.time,
           Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2, Some(TinyUser(x._3.get
-            .userID.toString, x._3
+            .userID.get, x._3
             .get
             .firstName, x._3.get.lastName))))
     }
@@ -162,9 +162,49 @@ class RecipeDAOSlick @Inject() (
   //  def deleteImage = ???
 
   def save(r: Recipe, user: User): Future[Option[Recipe]] = {
+    DB withSession { implicit session =>
+      val rid: Long = insert(r, user)
+      find(rid)
+    }
+  }
+
+  def update(r: Recipe, user: User): Future[Option[Recipe]] = {
+    DB withTransaction { implicit session =>
+
+      r.id match {
+        case Some(id) =>
+          slickRecipes.filter(_.id === id).firstOption match {
+            case Some(recipeFound) =>
+              slickIngredientsInRecipe.filter(_.recipeId === recipeFound.id).delete
+              slickTagsForRecipe.filter(_.recipeId === recipeFound.id).delete
+              slickRecipes.filter(_.id === recipeFound.id).update(
+                DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r.procedure, r
+                  .spicy,
+                  r.time, recipeFound.created, new LocalDateTime(), r.published, r.deleted, user.userID.get))
+              r.ingredients.distinct.foreach {
+                i =>
+                  val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
+                  slickIngredientsInRecipe.insert(DBIngredientInRecipe(recipeFound.id.get, ingr.id.get, i.amount))
+              }
+              r.tags.distinct.foreach {
+                t =>
+                  val tag = saveTag(t)
+                  slickTagsForRecipe.insert(DBTagForRecipe(recipeFound.id.get, tag.id.get))
+              }
+            case None => throw NoSuchRecipeException(r.id)
+          }
+        case None => throw NoSuchRecipeException(r.id)
+      }
+    }
+    find(r.id.get)
+  }
+
+
+  def insert(r: Recipe, user: User): Long = {
     val id = DB withTransaction { implicit session =>
-      val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, 0, r.procedure, r.spicy,
-        r.time, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.toString))
+      val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r
+        .procedure, r.spicy,
+        r.time, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.get))
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
@@ -177,8 +217,10 @@ class RecipeDAOSlick @Inject() (
       }
       rid
     }
-    find(id)
+    id
   }
+
+
 
   def saveIngredient(i: Ingredient): Ingredient = {
     DB withSession { implicit session =>

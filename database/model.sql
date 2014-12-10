@@ -42,7 +42,7 @@ CREATE TABLE unit (
 );	
 
 CREATE TABLE users (
-	id text primary key,
+	id serial8 primary key,
 	first_name text,
 	last_name text,
 	email text NOT NULL UNIQUE,	
@@ -54,7 +54,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE user_preferences (
-	user_id text references users(id) ON DELETE CASCADE
+	user_id int8 references users(id) ON DELETE CASCADE
 	/* More definitions of prefs */
 );
 
@@ -72,7 +72,7 @@ CREATE TABLE recipe (
 	modified timestamp NOT NULL,
 	published timestamp,
 	deleted timestamp,
-	created_by text NOT NULL references users(id) ON DELETE CASCADE
+	created_by int8 NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
 
@@ -91,17 +91,18 @@ CREATE TABLE ingredient_in_recipe (
 );
 
 CREATE TABLE user_star_rate_recipe ( /* id references */
-	user_id text references users(id) ON DELETE CASCADE,
+	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating real CONSTRAINT rating_check CHECK (rating >= 0.0 AND rating <= 5.0),
-	created timestamp
+	created timestamp,
+	created_long int8
 );
 
 CREATE UNIQUE INDEX user_star_rate_recipe_idx 
 ON user_star_rate_recipe (user_id, recipe_id);
 
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */
-	user_id text references users(id) ON DELETE CASCADE,
+	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating boolean,
 	created timestamp
@@ -111,7 +112,7 @@ CREATE UNIQUE INDEX user_yes_no_rate_recipe_idx
 ON user_yes_no_rate_recipe(user_id, recipe_id);
 
 CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
-	user_id text,
+	user_id int8,
 	ingredient_id int8,
 	rating boolean,
 	created timestamp
@@ -127,7 +128,7 @@ CREATE TABLE logininfo (
 );
 
 CREATE TABLE userlogininfo (
-	user_id text NOT NULL,
+	user_id int8 NOT NULL,
 	login_info_id int8 NOT NULL
 );
 

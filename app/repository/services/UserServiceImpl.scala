@@ -26,7 +26,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    */
   def retrieve(loginInfo: LoginInfo): Future[Option[User]] = userDAO.find(loginInfo)
 
-  def findUserByUID(uid: UUID): Future[Option[User]] = userDAO.find(uid)
+  def findUserByUID(uid: Long): Future[Option[User]] = userDAO.find(uid)
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]] = userDAO.getAll(offset, limit)
 
@@ -58,7 +58,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
         ))
       case None => // Insert a new user
         userDAO.save(User(
-          userID = UUID.randomUUID(),
+          userID = None,
           loginInfo = profile.loginInfo,
           firstName = profile.firstName,
           lastName = profile.lastName,

@@ -24,7 +24,7 @@ class RatingDAOSlick extends RatingDAO {
     }
   }
 
-  def findUserStarRateRecipe(userId: String, recipeId: Long): Future[Option[UserStarRateRecipe]] = {
+  def findUserStarRateRecipe(userId: Long, recipeId: Long): Future[Option[UserStarRateRecipe]] = {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
@@ -45,7 +45,7 @@ class RatingDAOSlick extends RatingDAO {
     }
   }
 
-  def findStarRatingsForUser(userId: String): Future[Seq[UserStarRateRecipe]] = {
+  def findStarRatingsForUser(userId: Long): Future[Seq[UserStarRateRecipe]] = {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(_.userId === userId).list map {

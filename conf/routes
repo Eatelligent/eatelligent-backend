@@ -15,7 +15,7 @@ OPTIONS        /api/authenticate                     @controllers.ApplicationCon
 
 GET            /api/users                            @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
-GET            /api/users/:id                        @controllers.UserController.getUser(id: String)
+GET            /api/users/:id                        @controllers.UserController.getUser(id: Long)
 GET            /api/user                             @controllers.UserController.getCurrentUser
 
 POST           /api/users                            @controllers.SignUpController.signUpJson
@@ -42,6 +42,7 @@ GET            /api/recipes/:q                       @controllers.RecipeControll
 GET            /api/recipes                          @controllers.RecipeController.listRecipes(offset: Integer ?= 0,limit: Integer ?= 20,published:Boolean ?= true,        deleted:        Boolean ?= false)
 
 POST           /api/recipes                          @controllers.RecipeController.saveRecipe
+PUT            /api/recipes                          @controllers.RecipeController.updateRecipe
 
 GET            /imageform                            @controllers.ImageController.imageForm
 

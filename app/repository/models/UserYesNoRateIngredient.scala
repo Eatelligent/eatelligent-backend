@@ -3,7 +3,7 @@ package repository.models
 import org.joda.time.LocalDateTime
 
 case class UserYesNoRateIngredient(
-                                      userId: String,
+                                      userId: Long,
                                       recipeId: Long,
                                       rating: Boolean,
                                       created: Option[LocalDateTime]

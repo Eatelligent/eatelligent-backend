@@ -9,6 +9,8 @@ trait RecipeService {
 
   def save(recipe: Recipe, user: User): Future[Option[Recipe]]
 
+  def update(r: Recipe, user: User): Future[Option[Recipe]]
+
   def find(id: Long): Future[Option[Recipe]]
 
   def find(name: String): Future[List[TinyRecipe]]

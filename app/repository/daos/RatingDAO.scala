@@ -12,6 +12,6 @@ trait RatingDAO {
 
   def findStarRatingsForRecipe(recipeId: Long): Future[Seq[UserStarRateRecipe]]
 
-  def findStarRatingsForUser(userId: String): Future[Seq[UserStarRateRecipe]]
+  def findStarRatingsForUser(userId: Long): Future[Seq[UserStarRateRecipe]]
 
 }

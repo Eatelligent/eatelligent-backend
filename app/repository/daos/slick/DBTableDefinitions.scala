@@ -57,34 +57,34 @@ object DBTableDefinitions {
                            id: Option[Long],
                            name: String,
                            image: Option[String],
-                           description: String,
+                           description: Option[String],
                            language: Int,
-                           calories: Double,
-                           procedure: String,
-                           spicy: Int,
-                           time: Int,
+                           calories: Option[Double],
+                           procedure: Option[String],
+                           spicy: Option[Int],
+                           time: Option[Int],
                            created: LocalDateTime,
                            modified: LocalDateTime,
                            published: Option[LocalDateTime],
                            deleted: Option[LocalDateTime],
-                           createdById: String
+                           createdById: Long
                            )
 
   class Recipes(tag: Tag) extends Table[DBRecipe](tag, "recipe") {
     def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
     def image = column[Option[String]]("image")
-    def description = column[String]("description")
+    def description = column[Option[String]]("description")
     def language = column[Int]("language")
-    def calories = column[Double]("calories")
-    def procedure = column[String]("procedure")
-    def spicy = column[Int]("spicy")
-    def time = column[Int]("time")
+    def calories = column[Option[Double]]("calories")
+    def procedure = column[Option[String]]("procedure")
+    def spicy = column[Option[Int]]("spicy")
+    def time = column[Option[Int]]("time")
     def created = column[LocalDateTime]("created")
     def modified = column[LocalDateTime]("modified")
     def published = column[Option[LocalDateTime]]("published")
     def deleted = column[Option[LocalDateTime]]("deleted")
-    def createdById = column[String]("created_by")
+    def createdById = column[Long]("created_by")
 
     def * = (id, name, image, description, language, calories, procedure, spicy, time, created, modified, published,
       deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
@@ -145,7 +145,7 @@ object DBTableDefinitions {
 
 
   case class DBUser (
-    userID: String,
+    userID: Option[Long],
     firstName: Option[String],
     lastName: Option[String],
     email: Option[String],
@@ -155,7 +155,7 @@ object DBTableDefinitions {
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
-    def id = column[String]("id", O.PrimaryKey)
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
     def firstName = column[Option[String]]("first_name")
     def lastName = column[Option[String]]("last_name")
     def email = column[Option[String]]("email")
@@ -179,12 +179,12 @@ object DBTableDefinitions {
   }
 
   case class DBUserLoginInfo (
-    userID: String,
+    userID: Long,
     loginInfoId: Long
   )
 
   class UserLoginInfos(tag: Tag) extends Table[DBUserLoginInfo](tag, "userlogininfo") {
-    def userID = column[String]("user_id", O.NotNull)
+    def userID = column[Long]("user_id", O.NotNull)
     def loginInfoId = column[Long]("login_info_id", O.NotNull)
     def * = (userID, loginInfoId) <> (DBUserLoginInfo.tupled, DBUserLoginInfo.unapply)
   }
@@ -240,14 +240,14 @@ object DBTableDefinitions {
 
 
   case class DBUserStarRateRecipe(
-    userId: String,
+    userId: Long,
     recipeId: Long,
     stars: Double,
     created: LocalDateTime
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
-    def userId = column[String]("user_id")
+    def userId = column[Long]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Double]("rating")
     def created = column[LocalDateTime]("created")
@@ -255,14 +255,14 @@ object DBTableDefinitions {
   }
 
   case class DBUserYesNoRateRecipe(
-                                   userId: String,
+                                   userId: Long,
                                    recipeId: Long,
                                    rating: Boolean,
                                    created: LocalDateTime
                                    )
 
   class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
-    def userId = column[String]("user_id")
+    def userId = column[Long]("user_id")
     def recipeId = column[Long]("recipe_id")
     def rating = column[Boolean]("rating")
     def created = column[LocalDateTime]("created")
@@ -270,7 +270,7 @@ object DBTableDefinitions {
   }
 
   case class DBUserYesNoRateIngredient(
-                                    userId: String,
+                                    userId: Long,
                                     recipeId: Long,
                                     rating: Boolean,
                                     created: LocalDateTime
@@ -278,7 +278,7 @@ object DBTableDefinitions {
 
   class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
     "user_yes_no_rate_ingredient") {
-    def userId = column[String]("user_id")
+    def userId = column[Long]("user_id")
     def ingredientId = column[Long]("ingredient_id")
     def rating = column[Boolean]("rating")
     def created = column[LocalDateTime]("created")
@@ -318,6 +318,10 @@ object DBTableDefinitions {
 
   def insertLanguage(language: DBLanguage)(implicit  session: Session): Long = {
     (slickLanguages returning slickLanguages.map(_.id) += language).toList.head
+  }
+
+  def insertUser(user: DBUser)(implicit session: Session): Long = {
+    (slickUsers returning slickUsers.map(_.id) += user).toList.head
   }
 
 }

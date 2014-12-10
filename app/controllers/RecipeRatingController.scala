@@ -19,7 +19,7 @@ class RecipeRatingController @Inject() (
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
   def listRatingsForUser = SecuredAction.async { implicit request =>
-    val ratings = ratingDAO.findStarRatingsForUser(request.identity.userID.toString)
+    val ratings = ratingDAO.findStarRatingsForUser(request.identity.userID.get)
     ratings.map(r => Ok(Json.obj("ok" -> true, "ratings" -> r)))
   }
 

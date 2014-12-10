@@ -5,14 +5,29 @@ import java.io.File
 import com.google.inject.Inject
 import repository.models.{RecipeImage, Recipe, TinyRecipe, User}
 import repository.daos.RecipeDAO
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
 class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
   def save(recipe: Recipe, user: User): Future[Option[Recipe]] = {
-    recipeDAO.save(recipe, user)
+
+    recipe.id match {
+      case Some(id) =>
+        recipeDAO.find(id).flatMap {
+          case Some(r) =>
+            recipeDAO.save(recipe.copy(
+              name = recipe.name
+            ), user)
+          case None =>
+            recipeDAO.save(recipe, user)
+        }
+      case None => recipeDAO.save(recipe, user)
+    }
   }
+
+  def update(r: Recipe, user: User): Future[Option[Recipe]] = recipeDAO.update(r, user)
 
   def find(id: Long): Future[Option[Recipe]] = recipeDAO.find(id)
 

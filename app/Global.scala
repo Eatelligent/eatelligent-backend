@@ -8,6 +8,7 @@ import play.api.mvc.Results._
 import play.api.{Application, Logger, GlobalSettings}
 import play.api.mvc.{WithFilters, Filter, Result, RequestHeader}
 import com.mohiva.play.silhouette.core.{Logger, SecuredSettings}
+import repository.Exceptions.NoSuchRecipeException
 import utils.di.SilhouetteModule
 import scala.concurrent.Future
 import com.google.inject.{Guice, Injector}
@@ -35,6 +36,7 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
       ex.getCause match {
         case e: IllegalArgumentException => BadRequest(Json.obj("ok" -> false, "message" -> Json
           .toJson(ex.getMessage)))
+        case e: NoSuchRecipeException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
         case _ => InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage))
       }
     }

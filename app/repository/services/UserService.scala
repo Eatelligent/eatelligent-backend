@@ -30,7 +30,7 @@ trait UserService extends IdentityService[User] {
    */
   def save[A <: AuthInfo](profile: CommonSocialProfile[A]): Future[User]
 
-  def findUserByUID(uid: UUID): Future[Option[User]]
+  def findUserByUID(uid: Long): Future[Option[User]]
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]]
 }

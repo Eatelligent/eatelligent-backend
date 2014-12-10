@@ -43,7 +43,7 @@ trait JsonFormats {
     )(Credentials.apply _)
 
   implicit val signUpRead: Reads[UserSignUp] = (
-    (JsPath \ "id").readNullable[UUID] and
+    (JsPath \ "id").readNullable[Long] and
       (JsPath \ "firstName").read[String] and
       (JsPath \ "lastName").read[String] and
       (JsPath \ "email").read[String] and
@@ -51,7 +51,7 @@ trait JsonFormats {
     )(UserSignUp.apply _)
 
   implicit val signUpWrite: Writes[UserSignUp] = (
-    (JsPath \ "id").write[Option[UUID]] and
+    (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "firstName").write[String] and
       (JsPath \ "lastName").write[String] and
       (JsPath \ "email").write[String] and
@@ -69,7 +69,7 @@ trait JsonFormats {
     )(unlift(LoginInfo.unapply))
 
   implicit val userRead: Reads[User] = (
-    (JsPath \ "id").read[UUID] and
+    (JsPath \ "id").readNullable[Long] and
       (JsPath \ "loginInfo").read[LoginInfo] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "lastName").readNullable[String] and
@@ -80,7 +80,7 @@ trait JsonFormats {
     )(User.apply _)
 
   implicit val userWrites: Writes[User] = (
-    (JsPath \ "id").write[UUID] and
+    (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "loginInfo").write[LoginInfo] and
       (JsPath \ "firstName").write[Option[String]] and
       (JsPath \ "lastName").write[Option[String]] and
@@ -91,13 +91,13 @@ trait JsonFormats {
     )(unlift(User.unapply))
 
   implicit val tinyUserRead: Reads[TinyUser] = (
-    (JsPath \ "id").read[String] and
+    (JsPath \ "id").read[Long] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "lastName").readNullable[String]
     )(TinyUser.apply _)
 
   implicit val tinyUserWrite: Writes[TinyUser] = (
-    (JsPath \ "id").write[String] and
+    (JsPath \ "id").write[Long] and
       (JsPath \ "firstName").write[Option[String]] and
       (JsPath \ "lastName").write[Option[String]]
     )(unlift(TinyUser.unapply))
@@ -120,14 +120,14 @@ trait JsonFormats {
     )(Language.apply _)
 
   implicit val userStarRateRecipeRead: Reads[UserStarRateRecipe] = (
-    (JsPath \ "userId").read[String] and
+    (JsPath \ "userId").read[Long] and
       (JsPath \ "recipeId").read[Long] and
       (JsPath \ "rating").read[Double] and
       (JsPath \ "created").readNullable[LocalDateTime]
     )(UserStarRateRecipe.apply _)
 
   implicit val userStarRateRecipeWrite: Writes[UserStarRateRecipe] = (
-    (JsPath \ "userId").write[String] and
+    (JsPath \ "userId").write[Long] and
       (JsPath \ "recipeId").write[Long] and
       (JsPath \ "rating").write[Double] and
       (JsPath \ "created").write[Option[LocalDateTime]]
@@ -158,12 +158,12 @@ trait JsonFormats {
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
       (JsPath \ "image").readNullable[String] and
-      (JsPath \ "description").read[String] and
+      (JsPath \ "description").readNullable[String] and
       (JsPath \ "language").read[Int] and
       (JsPath \ "calories").readNullable[Double] and
-      (JsPath \ "procedure").read[String] and
-      (JsPath \ "spicy").read[Int] and
-      (JsPath \ "time").read[Int] and
+      (JsPath \ "procedure").readNullable[String] and
+      (JsPath \ "spicy").readNullable[Int] and
+      (JsPath \ "time").readNullable[Int] and
       (JsPath \ "created").readNullable[LocalDateTime] and
       (JsPath \ "modified").readNullable[LocalDateTime] and
       (JsPath \ "published").readNullable[LocalDateTime] and
@@ -177,12 +177,12 @@ trait JsonFormats {
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[String]] and
-      (JsPath \ "description").write[String] and
+      (JsPath \ "description").write[Option[String]] and
       (JsPath \ "language").write[Int] and
       (JsPath \ "calories").write[Option[Double]] and
-      (JsPath \ "procedure").write[String] and
-      (JsPath \ "spicy").write[Int] and
-      (JsPath \ "time").write[Int] and
+      (JsPath \ "procedure").write[Option[String]] and
+      (JsPath \ "spicy").write[Option[Int]] and
+      (JsPath \ "time").write[Option[Int]] and
       (JsPath \ "created").write[Option[LocalDateTime]] and
       (JsPath \ "modified").write[Option[LocalDateTime]] and
       (JsPath \ "published").write[Option[LocalDateTime]] and

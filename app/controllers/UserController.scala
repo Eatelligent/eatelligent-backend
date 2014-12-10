@@ -37,8 +37,8 @@ class UserController @Inject() (
                                    val passwordHasher: PasswordHasher)
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
-  def getUser(userId: String) = SecuredAction(WithRole("admin")).async { implicit request =>
-    userService.findUserByUID(UUID.fromString(userId)) map {
+  def getUser(userId: Long) = SecuredAction(WithRole("admin")).async { implicit request =>
+    userService.findUserByUID(userId) map {
       case Some(user) => Ok(Json.obj("ok" -> true, "user" -> user))
       case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("Could not find any user with id: " +
         userId)))
@@ -51,7 +51,7 @@ class UserController @Inject() (
   }
 
   def getCurrentUser = SecuredAction.async { implicit request =>
-    userService.findUserByUID(request.identity.userID) map {
+    userService.findUserByUID(request.identity.userID.get) map {
       case Some(user) => Ok(Json.obj("ok" -> true, "user" -> user))
       case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("Could not find current user")))
     }
