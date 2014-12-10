@@ -20,6 +20,8 @@ define(function(require) {
   var Bloodhound = require('bloodhound');
   var Typeahead = require('typeahead');
 
+  var channel = require('backbone.radio').channel('app');
+
   require('backbone.stickit');
   require('summernote');
 
@@ -63,7 +65,7 @@ define(function(require) {
     },
 
     updateModel: function(e) {
-      var val = $(e.target).attr('value');
+      var val = parseInt($(e.target).attr('value'));
       this.model.set('time', val);
     },
     
@@ -102,7 +104,7 @@ define(function(require) {
       template: _.template('<%- name %>'),
       onShow: function() {
         this.$el.attr('value', this.model.get('id'));
-      },
+      }
     })
 
     // TODO: bind to mainmodel
@@ -154,7 +156,7 @@ define(function(require) {
 
     updateModel: function(e) {
       var val = parseInt($(e.target).attr('value'), 10);
-      this.model.set('strength', val);
+      this.model.set('spicy', val);
     }
   });
 
@@ -165,7 +167,18 @@ define(function(require) {
     },
 
     bindings: {
-      '[data-js-amount]': 'amount',
+      '.typeahead': {
+        observe: 'name',
+        onSet: function() {
+          return $('.typeahead', this.$el).typeahead('val');
+        }
+      },
+      '[data-js-amount]': {
+        observe: 'amount',
+        onSet: function(v) {
+          return parseInt(v, 10);
+        }
+      },
       '[data-js-unit]': 'unit'
     },
 
@@ -236,16 +249,22 @@ define(function(require) {
 
     initialize: function() {
       // TODO: Select another user?
-      this.model.set('createdBy', {id: 1});
+      // this.model.set('createdBy', {id: 1});
     }
   });
 
   var ResultView = Marionette.ItemView.extend({
-    template: _.template('<pre><%- json %></pre>'),
+    template: _.template('<pre class="mb5"><%- json %></pre><button class="btn btn-primary">Send Recipe</button>'),
     serializeData: function() {
       return {
         json: JSON.stringify(this.model.toJSON(), null, '\t')
       };
+    },
+    triggers: {
+      'click button': 'save:clicked'
+    },
+    onSaveClicked: function() {
+      this.model.save();
     }
   });
 
@@ -268,7 +287,14 @@ define(function(require) {
       this.languagesCollection = options.languages;
       this.ingredientsCollection = options.ingredients;
       this.tagsCollection = options.tags;
-      this.model = new Backbone.Model();
+      this.model = channel.request('model:new:recipe');
+      this.model.set('language', this.languagesCollection.where({name: 'NO-no'})[0].get('id'));
+    },
+
+    events: {
+      'change [data-js-languages]': function(e) {
+        this.model.set('language', parseInt($(e.target).val()));
+      }
     },
 
     triggers: {

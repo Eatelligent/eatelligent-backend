@@ -16,4 +16,8 @@ define(function(require) {
     return new Handlebars.SafeString(array.join(', '));
   });
 
+  Handlebars.registerHelper('html', function(html) {
+    return new Handlebars.SafeString(html);
+  })
+
 });

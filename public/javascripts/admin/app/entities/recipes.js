@@ -4,8 +4,12 @@ define(function(require) {
   var Backbone = require('backbone');
   var channel = require('backbone.radio').channel('app');
 
+  var FreshRecipe = Backbone.Model.extend({
+    url: '/api/recipes'
+  });
+
   var Recipe = Backbone.Model.extend({
-    urlRoot: '/api/recipes/',
+    urlRoot: '/api/recipes',
 
     initialize: function(options) {
       this.id = options.id || 0;
@@ -19,11 +23,15 @@ define(function(require) {
   var Recipes = Backbone.Collection.extend({
     model: Recipe,
 
-    url: '/api/recipes',
+    url: '/api/recipes?published=false&deleted=false',
     
     parse: function(response) {
       return response.recipes;
     }
+  });
+
+  channel.reply('model:new:recipe', function() {
+    return new FreshRecipe();
   });
 
   channel.reply('entities:collection:recipes', function() {
