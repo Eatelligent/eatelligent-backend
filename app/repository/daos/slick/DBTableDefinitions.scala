@@ -243,7 +243,8 @@ object DBTableDefinitions {
     userId: Long,
     recipeId: Long,
     stars: Double,
-    created: LocalDateTime
+    created: LocalDateTime,
+    createdLong: Long
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
@@ -251,7 +252,9 @@ object DBTableDefinitions {
     def recipeId = column[Long]("recipe_id")
     def rating = column[Double]("rating")
     def created = column[LocalDateTime]("created")
-    def * = (userId, recipeId, rating, created) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe.unapply)
+    def createdLong = column[Long]("created_long")
+    def * = (userId, recipeId, rating, created, createdLong) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe
+      .unapply)
   }
 
   case class DBUserYesNoRateRecipe(

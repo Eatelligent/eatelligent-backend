@@ -1,6 +1,6 @@
 package repository.daos.slick
 
-import org.joda.time.LocalDateTime
+import org.joda.time.{DateTime, LocalDateTime}
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._
@@ -16,9 +16,9 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
         case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
-          .stars, new LocalDateTime()))
+          .stars, new LocalDateTime(), new DateTime().getMillis))
         case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
-          .stars, new LocalDateTime()))
+          .stars, new LocalDateTime(), new DateTime().getMillis))
       }
       findUserStarRateRecipe(rating.userId, rating.recipeId)
     }
