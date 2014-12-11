@@ -14,19 +14,24 @@ VALUES
 
 INSERT INTO logininfo(provider_id, provider_key)
 VALUES
-  ('credentials', 'admin@admin.com');
+  ('credentials', 'admin@admin.com'),
+  ('credentials', 'gurr@admin.com'),
+  ('credentials', 'bone@admin.com'),
+  ('credentials', 'garr@admin.com');
 
 INSERT INTO userlogininfo(user_id, login_info_id)
 VALUES
-  ((SELECT id FROM users WHERE role = 'admin'), (SELECT id FROM logininfo WHERE provider_key = 'admin@admin.com'));
+  ((SELECT id FROM users WHERE role = 'admin'), (SELECT id FROM logininfo WHERE provider_key = 'admin@admin.com')),
+  ((SELECT id FROM users WHERE email = 'gurr@admin.com'), (SELECT id FROM logininfo WHERE provider_key = 'gurr@admin.com')),
+  ((SELECT id FROM users WHERE email = 'bone@admin.com'), (SELECT id FROM logininfo WHERE provider_key = 'bone@admin.com')),
+  ((SELECT id FROM users WHERE email = 'garr@admin.com'), (SELECT id FROM logininfo WHERE provider_key = 'garr@admin.com'));
 
 INSERT INTO passwordinfo(hasher, password, login_info_id)
 VALUES
-  (
-    'bcrypt',
-    crypt('admin', gen_salt('bf')),
-    (SELECT id FROM logininfo WHERE provider_key = 'admin@admin.com')
-    );
+  ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'admin@admin.com')),
+  ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'gurr@admin.com')),
+  ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'bone@admin.com')),
+  ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'garr@admin.com'));
 
 INSERT INTO recipe(name, language, created, modified, created_by)
 VALUES
