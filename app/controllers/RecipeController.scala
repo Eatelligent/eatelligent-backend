@@ -85,6 +85,6 @@ class RecipeController @Inject() (
     val recipe = recipeService.deleteRecipe(id)
     recipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
   }
-  
+
 
 }

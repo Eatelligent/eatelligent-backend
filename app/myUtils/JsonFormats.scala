@@ -1,6 +1,6 @@
 package myUtils
 
-import java.util.UUID
+import play.api.libs.json.Reads._
 
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.Credentials
@@ -115,8 +115,8 @@ trait JsonFormats {
 
   implicit val languageRead: Reads[Language] = (
     (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "locale").read[String] and
-      (JsPath \ "name").read[String]
+      (JsPath \ "locale").read(minLength[String](1)) and
+      (JsPath \ "name").read(minLength[String](1))
     )(Language.apply _)
 
   implicit val userStarRateRecipeRead: Reads[UserStarRateRecipe] = (
@@ -140,7 +140,7 @@ trait JsonFormats {
 
   implicit val ingredientForRecipeRead: Reads[IngredientForRecipe] = (
     (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "name").read[String] and
+      (JsPath \ "name").read(minLength[String](1)) and
       (JsPath \ "image").readNullable[JsValue] and
       (JsPath \ "amount").read[Double]
     //    (JsPath \ "unit").readNullable[Unit]
@@ -156,7 +156,7 @@ trait JsonFormats {
 
   implicit val recipeRead: Reads[Recipe] = (
     (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "name").read[String] and
+      (JsPath \ "name").read(minLength[String](1)) and
       (JsPath \ "image").readNullable[String] and
       (JsPath \ "description").readNullable[String] and
       (JsPath \ "language").read[Int] and
