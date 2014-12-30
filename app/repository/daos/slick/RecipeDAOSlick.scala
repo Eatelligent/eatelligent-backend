@@ -102,7 +102,7 @@ class RecipeDAOSlick @Inject() (
       Future.successful {
         val join = for {
           (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
-            .tagId === _.id) if t.name === tagName
+            .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase
         } yield (r._1.id, r._1.name, r._1.image)
         join.buildColl[List].map(r => TinyRecipe(r._1.get, r._2, r._3))
       }
@@ -293,6 +293,21 @@ class RecipeDAOSlick @Inject() (
         updateImage(image)
         Some(image)
     }
+  }
+
+
+  def deleteRecipe(id: Long): Future[Option[Recipe]] = {
+    DB withTransaction { implicit session =>
+      slickRecipes.filter(_.id === id).firstOption match {
+        case Some(r) =>
+          slickRecipes.filter(_.id === r.id).update(
+            DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r.procedure, r
+              .spicy,
+              r.time, r.created, new LocalDateTime(), r.published, Some(new LocalDateTime()), r.createdById))
+        case None => throw new NoSuchRecipeException(id)
+      }
+    }
+    find(id)
   }
 
 

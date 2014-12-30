@@ -43,6 +43,7 @@ GET            /api/recipes                          @controllers.RecipeControll
 
 POST           /api/recipes                          @controllers.RecipeController.saveRecipe
 PUT            /api/recipes                          @controllers.RecipeController.updateRecipe
+DELETE         /api/recipes/:id                      @controllers.RecipeController.deleteRecipe(id: Long)
 
 GET            /imageform                            @controllers.ImageController.imageForm
 

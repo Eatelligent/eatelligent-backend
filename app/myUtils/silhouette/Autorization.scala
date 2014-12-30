@@ -18,3 +18,11 @@ case class WithRole (anyOf: String) extends Authorization[User] {
 object WithRole {
   def isAuthorized (user: User, anyOf: String): Boolean = user.role.get == anyOf
 }
+
+case class IsAuthor (authorId: Long) extends Authorization[User] {
+  def isAuthorized(user: User)(implicit request: RequestHeader, lang: Lang) = IsAuthor.isAuthorized(user, authorId)
+}
+
+object IsAuthor {
+  def isAuthorized(user: User, authorId: Long): Boolean = user.userID.get == authorId
+}

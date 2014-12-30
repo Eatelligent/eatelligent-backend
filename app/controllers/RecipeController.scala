@@ -4,14 +4,16 @@ import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
 import myUtils.JsonFormats
-import myUtils.silhouette.WithRole
+import myUtils.silhouette.{IsAuthor, WithRole}
 import play.api.libs.json._
 import play.api.mvc._
 import repository.models._
 import repository.services.RecipeService
 import play.api.libs.concurrent.Execution.Implicits._
 
-import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Success}
 
 
 class RecipeController @Inject() (
@@ -72,5 +74,17 @@ class RecipeController @Inject() (
     val recipes = recipeService.findRecipesInTag(q)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
+
+  def deleteRecipe(id: Long) = SecuredAction(
+    IsAuthor(
+      Await.result(recipeService.find(id), Duration(1, "seconds")) match {
+        case Some(r) => r.createdBy.get.id
+        case None => -1
+      }
+    )).async { implicit request =>
+    val recipe = recipeService.deleteRecipe(id)
+    recipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
+  }
+  
 
 }

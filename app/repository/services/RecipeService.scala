@@ -21,4 +21,6 @@ trait RecipeService {
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]]
 
+  def deleteRecipe(id: Long): Future[Option[Recipe]]
+
 }
