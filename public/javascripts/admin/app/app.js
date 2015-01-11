@@ -60,6 +60,11 @@ define(function(require) {
         if(xhr.status > 400 && xhr.status < 500) {
           Backbone.history.navigate('login', {trigger: true});
           channel.command('module:header');
+        } 
+
+        if (localStorage.getItem('mealchooserRole') !== 'admin') {
+          Backbone.history.navigate('login', {trigger: true});
+          channel.command('module:header');
         }
       });
     });

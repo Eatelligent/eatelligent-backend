@@ -28,6 +28,10 @@ define(function(require) {
 
     initialize: function() {
       this.collection = new Backbone.Collection(this.model.get('ingredients'));
+    },
+
+    triggers: {
+      'click [data-js-edit]': 'edit:clicked'
     }
   });
 

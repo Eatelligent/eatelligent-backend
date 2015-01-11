@@ -11,7 +11,7 @@ define(function(require) {
     serializeData: function() {
       return _.extend(this.model.toJSON(), {
         json: JSON.stringify(this.model.toJSON(), null, '\t')
-      })
+      });
     }
   });
 

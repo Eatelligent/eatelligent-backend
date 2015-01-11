@@ -15,7 +15,7 @@ define(function(require) {
         var model = child.model;
         model.fetch();
         channel.request('when:fetched', model, function() {
-          self.region.show(self.getUserView(child.model))
+          self.region.show(self.getUserView(child.model));
         });
       });
       this.region.show(this.view);

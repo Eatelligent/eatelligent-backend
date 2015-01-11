@@ -5,8 +5,8 @@ define(function(require) {
   var NewController = require('./new.controller');
   var Controller = require('./controller');
 
-  channel.comply('module:new:recipe', function() {
-    var  controller = new NewController();
+  channel.comply('module:new:recipe', function(options) {
+    var controller = new NewController(options);
   });
 
   channel.comply('module:recipes', function(id) {

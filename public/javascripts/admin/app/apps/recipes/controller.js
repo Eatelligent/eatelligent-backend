@@ -35,6 +35,11 @@ define(function(require) {
 
     showRecipeView: function(model) {
       var view = new Views.RecipeView({model: model});
+
+      view.on('edit:clicked', function() {
+        channel.command('module:new:recipe', {model: model});       
+      });
+      
       this.region.show(view);
     }
   });

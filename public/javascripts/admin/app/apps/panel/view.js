@@ -18,7 +18,7 @@ define(function(require) {
       });
 
       return data;
-  }
+  };
 
   var RatingView = Marionette.ItemView.extend({
     template: _.template('<div class="data-js-last-ratings"></div>'),

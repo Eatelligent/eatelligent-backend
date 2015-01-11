@@ -93,6 +93,13 @@ define(function(require) {
       return {
         times: this.getTimes(18)
       };
+    },
+
+    onShow: function() {
+      var time = this.model.get('time');
+      if (time) {
+        $('[value='+time+']').click();
+      }
     }
   });
   
@@ -115,6 +122,7 @@ define(function(require) {
 
     onShow: function() {
       var self = this;
+
       $('[data-js-description]', this.$el).summernote({
         onChange: function() {
           var description = $('[data-js-description]', self.$el).code();
@@ -240,7 +248,16 @@ define(function(require) {
 
     initialize: function(options) {
       this.childViewOptions = {ingredients: options.ingredients};
-      this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
+
+      if(this.model.get('ingredients')) {
+        var ingredients = this.model.get('ingredients').map(function(ing) {
+          return {name: ing.name, image: ing.image, amount: ing.amount};
+        });
+        console.log(ingredients);
+        this.collection = new Backbone.Collection(ingredients);
+      } else {
+        this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
+      }
       var model = this.model.set('ingredients', this.collection);
       this.collection.on('all', function() { 
         model.trigger('change');
@@ -285,8 +302,13 @@ define(function(require) {
       this.languagesCollection = options.languages;
       this.ingredientsCollection = options.ingredients;
       this.tagsCollection = options.tags;
-      this.model = channel.request('model:new:recipe');
-      this.model.set('language', this.languagesCollection.where({name: 'NO-no'})[0].get('id'));
+
+      if(options.model) {
+        this.model = options.model;
+      } else {
+        this.model = channel.request('model:new:recipe');
+        this.model.set('language', this.languagesCollection.where({name: 'NO-no'})[0].get('id'));
+      }
       
       this.listenTo(this.model, 'change', function() {
         this.onShowJson();

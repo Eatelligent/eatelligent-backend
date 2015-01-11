@@ -17,6 +17,8 @@ define(function(require) {
       });
 
       model.on('sync', function() {
+        localStorage.setItem('mealchooserRole', model.get('message').role);
+
         Backbone.history.navigate('/', {trigger: true});
         channel.command('module:header');
       });
