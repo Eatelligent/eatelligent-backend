@@ -142,16 +142,16 @@ trait JsonFormats {
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read(minLength[String](1)) and
       (JsPath \ "image").readNullable[JsValue] and
+      (JsPath \ "unit").read[String] and
       (JsPath \ "amount").read[Double]
-    //    (JsPath \ "unit").readNullable[Unit]
     )(IngredientForRecipe.apply _)
 
   implicit val ingredientForRecipeWrites: Writes[IngredientForRecipe] = (
     (JsPath \ "id").writeNullable[Long] and
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[JsValue]] and
+      (JsPath \ "unit").write[String] and
       (JsPath \ "amount").write[Double]
-    //        (JsPath \ "unit").writeNullable[Unit]
     )(unlift(IngredientForRecipe.unapply))
 
   implicit val recipeRead: Reads[Recipe] = (

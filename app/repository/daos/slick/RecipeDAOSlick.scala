@@ -13,7 +13,7 @@ import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
-import repository.Exceptions.NoSuchRecipeException
+import repository.Exceptions.{NoSuchUnitException, NoSuchRecipeException}
 import repository.daos.RecipeDAO
 import repository.models._
 import scala.concurrent._
@@ -68,12 +68,13 @@ class RecipeDAOSlick @Inject() (
     DB withSession { implicit session =>
       Future.successful {
         val join = for {
-          (iir, i) <- slickIngredientsInRecipe innerJoin slickIngredients on (_.ingredientId === _.id) if iir.recipeId === recipeId
-        } yield (iir.ingredientId, i.name, i.image, iir.amount)
+          ((iir, i), u) <- slickIngredientsInRecipe innerJoin slickIngredients on (_.ingredientId === _.id) innerJoin
+            slickUnits on (_._1.unitId === _.id) if iir.recipeId === recipeId
+        } yield (iir.ingredientId, i.name, i.image, u.name, iir.amount)
 
-        val l: Seq[(Long, String, Option[JsValue], Double)] = join.buildColl[List]
+        val l: Seq[(Long, String, Option[JsValue], String, Double)] = join.buildColl[List]
         l.map{
-          case (iid, name, image, amount) => IngredientForRecipe(Some(iid), name, image, amount)
+          case (iid, name, image, unit, amount) => IngredientForRecipe(Some(iid), name, image, unit, amount)
         }
       }
     }
@@ -184,7 +185,9 @@ class RecipeDAOSlick @Inject() (
               r.ingredients.distinct.foreach {
                 i =>
                   val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
-                  slickIngredientsInRecipe.insert(DBIngredientInRecipe(recipeFound.id.get, ingr.id.get, i.amount))
+                  slickIngredientsInRecipe.insert(DBIngredientInRecipe(recipeFound.id.get, ingr.id.get, getUnitId(i
+                    .unit), i
+                    .amount))
               }
               r.tags.distinct.foreach {
                 t =>
@@ -199,6 +202,15 @@ class RecipeDAOSlick @Inject() (
     find(r.id.get)
   }
 
+  def getUnitId(name: String): Long = {
+    DB withSession { implicit session =>
+      slickUnits.filter(_.name === name).firstOption match {
+        case Some(u) => u.id.get
+        case None => throw new NoSuchUnitException(name)
+      }
+    }
+  }
+
 
   def insert(r: Recipe, user: User): Long = {
     val id = DB withTransaction { implicit session =>
@@ -208,7 +220,7 @@ class RecipeDAOSlick @Inject() (
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
-          slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, i.amount))
+          slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, getUnitId(i.unit), i.amount))
       }
       r.tags.distinct.foreach {
         t =>

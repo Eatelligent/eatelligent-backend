@@ -90,6 +90,18 @@ object DBTableDefinitions {
       deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
   }
 
+  case class DBUnit(
+                   id: Option[Long],
+                   name: String
+                     )
+
+  class Units(tag: Tag) extends Table[DBUnit](tag, "unit") {
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
+    def name = column[String]("name")
+    def * = (id, name) <> (DBUnit.tupled, DBUnit.unapply)
+  }
+
+
   case class DBIngredient(
                                id: Option[Long],
                                name: String,
@@ -107,14 +119,16 @@ object DBTableDefinitions {
   case class DBIngredientInRecipe(
                                        recipeId: Long,
                                        ingredientId: Long,
+                                       unitId: Long,
                                        amount: Double
                                        )
 
   class IngredientsInRecipe(tag: Tag) extends Table[DBIngredientInRecipe](tag, "ingredient_in_recipe") {
     def recipeId = column[Long]("recipe_id")
     def ingredientId = column[Long]("ingredient_id")
+    def unitId = column[Long]("unit_id")
     def amount = column[Double]("amount")
-    def * = (recipeId, ingredientId, amount) <> (DBIngredientInRecipe.tupled, DBIngredientInRecipe.unapply)
+    def * = (recipeId, ingredientId, unitId, amount) <> (DBIngredientInRecipe.tupled, DBIngredientInRecipe.unapply)
   }
 
 
@@ -305,6 +319,7 @@ object DBTableDefinitions {
   val slickUserStarRateRecipes = TableQuery[UserStarRateRecipes]
   val slickUserYesNoRateRecipes = TableQuery[UserYesNoRateRecipes]
   val slickUserYesNoRateIngredient = TableQuery[UserYesNoRateIngredients]
+  val slickUnits = TableQuery[Units]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {

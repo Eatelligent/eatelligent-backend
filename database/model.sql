@@ -30,15 +30,16 @@ CREATE TABLE tags (
 	name text NOT NULL UNIQUE
 );
 
-CREATE TABLE ingredient (
-	id serial8 primary key,
-	name text NOT NULL UNIQUE,
-	image json
-);
-
 CREATE TABLE unit (
 	id serial8 primary key,
 	name text NOT NULL UNIQUE
+);
+
+CREATE TABLE ingredient (
+	id serial8 primary key,
+	name text NOT NULL UNIQUE,
+	image json,
+	default_unit int8 references unit(id) ON DELETE CASCADE
 );	
 
 CREATE TABLE users (
@@ -87,6 +88,7 @@ ON recipe_in_tag(recipe_id, tag_id);
 CREATE TABLE ingredient_in_recipe (
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	ingredient_id int8 references ingredient(id) ON DELETE CASCADE,
+	unit_id int8,
 	amount real
 );
 

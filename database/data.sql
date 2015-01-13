@@ -33,12 +33,36 @@ VALUES
   ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'bone@admin.com')),
   ('bcrypt', crypt('admin', gen_salt('bf')), (SELECT id FROM logininfo WHERE provider_key = 'garr@admin.com'));
 
+INSERT INTO unit(name)
+VALUES
+  ('liter'),
+  ('gram'),
+  ('kilogram'),
+  ('teaspoon'),
+  ('tablespoon'),
+  ('piece'),
+  ('deciliter');
+
+INSERT INTO ingredient(name, default_unit)
+VALUES
+  ('lasagnekrydder', (SELECT id FROM unit WHERE name = 'piece')),
+  ('ost', (SELECT id FROM unit WHERE name = 'gram')),
+  ('lasagneplater', (SELECT id FROM unit WHERE name = 'piece')),
+  ('kjøttdeig', (SELECT id FROM unit WHERE name = 'gram'));
+
 INSERT INTO recipe(name, language, created, modified, created_by)
 VALUES
   ('lasser', (SELECT id FROM language WHERE name = 'Norwegian'), NOW(), NOW(), (SELECT id FROM users WHERE first_name = 'garr')),
   ('taccer', (SELECT id FROM language WHERE name = 'Norwegian'), NOW(), NOW(), (SELECT id FROM users WHERE first_name = 'garr')),
   ('suppe', (SELECT id FROM language WHERE name = 'Norwegian'), NOW(), NOW(), (SELECT id FROM users WHERE first_name = 'garr')),
   ('ribbe', (SELECT id FROM language WHERE name = 'Norwegian'), NOW(), NOW(), (SELECT id FROM users WHERE first_name = 'garr'));
+
+INSERT INTO ingredient_in_recipe(recipe_id, ingredient_id, unit_id, amount)
+VALUES
+  ((SELECT id FROM recipe WHERE name = 'lasser'), (SELECT id FROM ingredient WHERE name = 'lasagnekrydder'), (SELECT id FROM unit WHERE name = 'piece'), 1.0),
+  ((SELECT id FROM recipe WHERE name = 'lasser'), (SELECT id FROM ingredient WHERE name = 'lasagneplater'), (SELECT id FROM unit WHERE name = 'piece'), 1.0),
+  ((SELECT id FROM recipe WHERE name = 'lasser'), (SELECT id FROM ingredient WHERE name = 'ost'), (SELECT id FROM unit WHERE name = 'gram'), 200.0),
+  ((SELECT id FROM recipe WHERE name = 'lasser'), (SELECT id FROM ingredient WHERE name = 'kjøttdeig'), (SELECT id FROM unit WHERE name = 'gram'), 400.0);
 
 INSERT INTO user_star_rate_recipe
 VALUES
