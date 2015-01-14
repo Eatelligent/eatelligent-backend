@@ -3,64 +3,68 @@
 # ~~~~
 
 # Home page
-GET            /                                     @controllers.ApplicationController.index
-GET            /signIn                               @controllers.ApplicationController.signIn
-GET            /signUp                               @controllers.ApplicationController.signUp
-GET            /signOut                              @controllers.ApplicationController.signOut
-GET            /authenticate/:provider               @controllers.SocialAuthController.authenticate(provider)
-POST           /authenticate/credentials             @controllers.CredentialsAuthController.authenticate
-POST           /signUp                               @controllers.SignUpController.signUp
+GET            /                                       @controllers.ApplicationController.index
+GET            /signIn                                 @controllers.ApplicationController.signIn
+GET            /signUp                                 @controllers.ApplicationController.signUp
+GET            /signOut                                @controllers.ApplicationController.signOut
+GET            /authenticate/:provider                 @controllers.SocialAuthController.authenticate(provider)
+POST           /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
+POST           /signUp                                 @controllers.SignUpController.signUp
 
-OPTIONS        /api/authenticate                     @controllers.ApplicationController.options
+OPTIONS        /api/authenticate                       @controllers.ApplicationController.options
 
-GET            /api/users                            @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
+GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
-GET            /api/users/:id                        @controllers.UserController.getUser(id: Long)
-GET            /api/user                             @controllers.UserController.getCurrentUser
+GET            /api/users/:id                          @controllers.UserController.getUser(id: Long)
+GET            /api/user                               @controllers.UserController.getCurrentUser
 
-POST           /api/users                            @controllers.SignUpController.signUpJson
+POST           /api/users                              @controllers.SignUpController.signUpJson
 
-POST           /api/authenticate                     @controllers.CredentialsAuthController.authenticateJson
+POST           /api/authenticate                       @controllers.CredentialsAuthController.authenticateJson
 
-GET            /api/ingredients                      @controllers.IngredientController.listIngredients
+GET            /api/ingredients                        @controllers.IngredientController.listIngredients
 
-GET            /api/ingredients/:id                  @controllers.IngredientController.getIngredient(id: Long)
+GET            /api/ingredients/:id                    @controllers.IngredientController.getIngredient(id: Long)
 
 #POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
-GET            /api/languages                        @controllers.LanguageController.listLanguages
-GET            /api/languages/:id                    @controllers.LanguageController.getLanguage(id: Long)
+GET            /api/languages                          @controllers.LanguageController.listLanguages
+GET            /api/languages/:id                      @controllers.LanguageController.getLanguage(id: Long)
 
-POST           /api/languages                        @controllers.LanguageController.saveLanguage
+POST           /api/languages                          @controllers.LanguageController.saveLanguage
 
-GET            /recipe_form                          @controllers.ApplicationController.recipeForm
-GET            /admin                                @controllers.ApplicationController.adminPanel
+GET            /recipe_form                            @controllers.ApplicationController.recipeForm
+GET            /admin                                  @controllers.ApplicationController.adminPanel
 
-GET            /api/recipes/$id<[0-9]+>              @controllers.RecipeController.getRecipe(id: Long)
+GET            /api/recipes/$id<[0-9]+>                @controllers.RecipeController.getRecipe(id: Long)
 
-GET            /api/recipes/:q                       @controllers.RecipeController.getRecipesByQuery(q: String)
-GET            /api/recipes                          @controllers.RecipeController.listRecipes(offset: Integer ?= 0,limit: Integer ?= 20,published:Boolean ?= true,        deleted:        Boolean ?= false)
+#GET            /api/recipes/:q                         @controllers.RecipeController.getRecipesByQuery(q: String)
+GET            /api/recipes                            @controllers.RecipeController.listRecipes(offset: Integer ?= 0,limit: Integer ?= 20,published:Boolean ?= true,        deleted:        Boolean ?= false)
 
-POST           /api/recipes                          @controllers.RecipeController.saveRecipe
-PUT            /api/recipes                          @controllers.RecipeController.updateRecipe
-DELETE         /api/recipes/:id                      @controllers.RecipeController.deleteRecipe(id: Long)
+POST           /api/recipes                            @controllers.RecipeController.saveRecipe
+PUT            /api/recipes                            @controllers.RecipeController.updateRecipe
+DELETE         /api/recipes/:id                        @controllers.RecipeController.deleteRecipe(id: Long)
 
-GET            /imageform                            @controllers.ImageController.imageForm
+GET            /imageform                              @controllers.ImageController.imageForm
 
-POST           /                                     @controllers.ImageController.saveRecipeImage
+POST           /                                       @controllers.ImageController.saveRecipeImage
 
-GET            /api/tags                             @controllers.TagsController.listTags
+GET            /api/tags                               @controllers.TagsController.listTags
 
-GET            /api/tags/:tagName                    @controllers.RecipeController.getRecipesInTag(tagName: String)
+GET            /api/tags/:tagName                      @controllers.RecipeController.getRecipesInTag(tagName: String)
 
-POST           /api/ratings/recipes                  @controllers.RecipeRatingController.saveStarRatingRecipe
-GET            /api/ratings/recipes/:recipeId        @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
-GET            /api/ratings/users                    @controllers.RecipeRatingController.listRatingsForUser
+POST           /api/ratings/recipes                    @controllers.RecipeRatingController.saveStarRatingRecipe
+GET            /api/ratings/recipes/:recipeId          @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
+GET            /api/ratings/users                      @controllers.RecipeRatingController.listRatingsForUser
 
-GET            /api/stats                            @controllers.StatsController.getTotalStats
-GET            /api/stats/users                      @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
-GET            /api/stats/ratings                    @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
+GET            /api/stats                              @controllers.StatsController.getTotalStats
+GET            /api/stats/users                        @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
+GET            /api/stats/ratings                      @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
+
+GET            /api/recipes/favorites                  @controllers.FavoritesController.listFavorites
+POST           /api/recipes/favorites/:recipeId        @controllers.FavoritesController.addToFavorite(recipeId: Long)
+DELETE         /api/recipes/favorites/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET            /assets/*file                         controllers.Assets.at(path="/public", file)
-GET            /webjars/*file                        controllers.WebJarAssets.at(file)
+GET            /assets/*file                           controllers.Assets.at(path="/public", file)
+GET            /webjars/*file                          controllers.WebJarAssets.at(file)

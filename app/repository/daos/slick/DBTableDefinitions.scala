@@ -179,6 +179,17 @@ object DBTableDefinitions {
     def * = (id, firstName, lastName, email, image, role, created) <> (DBUser.tupled, DBUser.unapply)
   }
 
+  case class DBFavorites (
+                         userId: Long,
+                         recipeId: Long
+                           )
+
+  class Favorites(tag: Tag) extends Table[DBFavorites](tag, "favorites") {
+    def userId = column[Long]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def * = (userId, recipeId) <> (DBFavorites.tupled, DBFavorites.unapply)
+  }
+
   case class DBLoginInfo (
     id: Option[Long],
     providerID: String,
@@ -320,6 +331,7 @@ object DBTableDefinitions {
   val slickUserYesNoRateRecipes = TableQuery[UserYesNoRateRecipes]
   val slickUserYesNoRateIngredient = TableQuery[UserYesNoRateIngredients]
   val slickUnits = TableQuery[Units]
+  val slickFavorites = TableQuery[Favorites]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {

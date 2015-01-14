@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS oauth1info CASCADE;
 DROP TABLE IF EXISTS passwordinfo CASCADE;
 DROP TABLE IF EXISTS userlogininfo CASCADE;
 DROP TABLE IF EXISTS logininfo;
+DROP TABLE IF EXISTS favorites;
 
 CREATE TABLE language (
 	id serial8 primary key,
@@ -76,6 +77,14 @@ CREATE TABLE recipe (
 	created_by int8 NOT NULL references users(id) ON DELETE CASCADE
 	/* Public rating (matirialized view) */
 );
+
+CREATE TABLE favorites (
+	user_id int8 references users(id) ON DELETE CASCADE,
+	recipe_id int8 references recipe(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX favorites_idx
+ON favorites(user_id, recipe_id);
 
 CREATE TABLE recipe_in_tag (
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,

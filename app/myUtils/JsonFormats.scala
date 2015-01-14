@@ -203,4 +203,9 @@ trait JsonFormats {
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
+
+  implicit val favoriteWrites: Writes[Favorite] = (
+    (JsPath \ "userId").write[Long] and
+      (JsPath \ "recipeId").write[Long]
+    )(unlift(Favorite.unapply))
 }
