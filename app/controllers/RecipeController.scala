@@ -13,17 +13,15 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
-
 
 class RecipeController @Inject() (
   val recipeService: RecipeService,
   implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
-  def listRecipes(offset: Integer , limit: Integer, published: Boolean, deleted: Boolean) =
+  def listRecipes(q: String, offset: Integer , limit: Integer, published: Boolean, deleted: Boolean) =
     SecuredAction(WithRole("admin")).async { implicit request =>
-    val recipes = recipeService.getAll(offset, limit, published, deleted)
+    val recipes = recipeService.find(q, offset, limit, published, deleted)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
@@ -63,11 +61,6 @@ class RecipeController @Inject() (
       case Some(r) => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r)))
       case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No recipe with id: " + id + " found.")))
     }
-  }
-
-  def getRecipesByQuery(q: String) = SecuredAction.async { implicit request =>
-    val recipes = recipeService.find(q)
-    recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 
   def getRecipesInTag(q: String) = SecuredAction.async { implicit request =>

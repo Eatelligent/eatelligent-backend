@@ -9,13 +9,12 @@ trait RecipeDAO {
 
   def find(id: Long): Future[Option[Recipe]]
 
-  def find(name: String): Future[List[TinyRecipe]]
+  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean):
+  Future[Seq[TinyRecipe]]
 
   def save(recipe: Recipe, user: User): Future[Option[Recipe]]
 
   def update(r: Recipe, user: User): Future[Option[Recipe]]
-
-  def getAll(offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[Seq[TinyRecipe]]
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]]
 

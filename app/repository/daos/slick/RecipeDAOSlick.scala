@@ -51,16 +51,18 @@ class RecipeDAOSlick @Inject() (
 
   }
 
-
-  def find(q: String): Future[List[TinyRecipe]] = {
+  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[List[TinyRecipe]] = {
     DB withSession { implicit session =>
-      Future.successful( {
-        val res = Option(slickRecipes.filter(_.name.toLowerCase like "%" + q.toLowerCase + "%").list)
-        res match {
-          case Some(r) => r.map(x => TinyRecipe(x.id.get, x.name, x.image))
-          case None => List()
-        }
-      })
+      Future.successful {
+          slickRecipes
+            .filter(_.name.toLowerCase like "%" + q.toLowerCase + "%")
+            .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
+            .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
+            .drop(offset).take (limit)
+            .list.map (
+              x => TinyRecipe(x.id.get, x.name, x.image)
+          )
+      }
     }
   }
 
@@ -277,20 +279,6 @@ class RecipeDAOSlick @Inject() (
         }
     }
   }
-
-  def getAll(offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[Seq[TinyRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
-        slickRecipes
-          .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
-          .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
-          .drop(offset).take (limit).list.map {
-            x => TinyRecipe(x.id.get, x.name, x.image)
-          }
-      }
-    }
-  }
-
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = {
     val recipeExists = DB withSession { implicit session =>
