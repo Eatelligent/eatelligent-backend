@@ -56,7 +56,15 @@ class SignUpController @Inject() (
           email = Some(data.email),
           image = None,
           role = Some("user"),
-          created = None
+          created = None,
+          recipeLanguage = None,
+          appLanguage = None,
+          city = None,
+          country = None,
+          sex = None,
+          yearBorn = None,
+          enrolled = None,
+          metricSystem = None
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)
@@ -85,12 +93,20 @@ class SignUpController @Inject() (
         val user = User(
           userID = None,
           loginInfo = loginInfo,
-          firstName = Some(data.firstName),
-          lastName = Some(data.lastName),
+          firstName = data.firstName,
+          lastName = data.lastName,
           email = Some(data.email),
           image = None,
           role = Some("user"),
-          created = None
+          created = None,
+          recipeLanguage = None,
+          appLanguage = None,
+          city = None,
+          country = None,
+          sex = None,
+          yearBorn = None,
+          enrolled = None,
+          metricSystem = None
         )
         for {
           avatar <- avatarService.retrieveURL(data.email)

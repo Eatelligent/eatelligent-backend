@@ -47,12 +47,18 @@ CREATE TABLE users (
 	id serial8 primary key,
 	first_name text,
 	last_name text,
-	email text NOT NULL UNIQUE,	
-	city text,
-	age int CONSTRAINT age_check CHECK (age > 0 AND age < 100),
+	email text NOT NULL UNIQUE,
 	image text,
 	role text,
-	created timestamp
+	created timestamp,
+	recipe_language int8 references language(id),
+	app_language int8 references language(id),
+	city text,
+	country text,
+	sex text,
+	year_born int CONSTRAINT age_check CHECK (year_born > 1900 AND year_born < 2016),
+	enrolled boolean,
+	metric_system boolean
 );
 
 CREATE TABLE user_preferences (

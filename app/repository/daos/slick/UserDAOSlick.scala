@@ -35,8 +35,24 @@ class UserDAOSlick extends UserDAO {
               case Some(userLoginInfo) =>
                 slickUsers.filter(_.id === userLoginInfo.userID).firstOption match {
                   case Some(user) =>
-                    Some(User(user.userID, loginInfo, user.firstName, user.lastName, user.email,
-                      user.image, user.role, Some(user.created)))
+                    Some(User(
+                      user.userID,
+                      loginInfo,
+                      user.firstName,
+                      user.lastName,
+                      user.email,
+                      user.image,
+                      user.role,
+                      Some(user.created),
+                      user.recipeLanguage,
+                      user.appLanguage,
+                      user.city,
+                      user.country,
+                      user.sex,
+                      user.yearBorn,
+                      Some(user.enrolled),
+                      Some(user.metricSystem)
+                    ))
                   case None => None
                 }
               case None => None
@@ -64,8 +80,24 @@ class UserDAOSlick extends UserDAO {
               case Some(info) =>
                 slickLoginInfos.filter(_.id === info.loginInfoId).firstOption match {
                   case Some(loginInfo) =>
-                    Some(User(user.userID, LoginInfo(loginInfo.providerID, loginInfo.providerKey),
-                      user.firstName, user.lastName, user.email, user.image, user.role, Some(user.created)))
+                    Some(User(
+                      user.userID,
+                      LoginInfo(loginInfo.providerID, loginInfo.providerKey),
+                      user.firstName,
+                      user.lastName,
+                      user.email,
+                      user.image,
+                      user.role,
+                      Some(user.created),
+                      user.recipeLanguage,
+                      user.appLanguage,
+                      user.city,
+                      user.country,
+                      user.sex,
+                      user.yearBorn,
+                      Some(user.enrolled),
+                      Some(user.metricSystem)
+                    ))
                   case None => None
                 }
               case None => None
@@ -85,8 +117,31 @@ class UserDAOSlick extends UserDAO {
   def save(user: User) = {
     DB withSession { implicit session =>
       Future.successful {
-        val dbUser = DBUser(user.userID, user.firstName, user.lastName, user.email, user.image, user.role,
-          user.created match  { case Some(time) => time case None => new LocalDateTime()})
+        val dbUser =
+          DBUser(user.userID,
+            user.firstName,
+            user.lastName,
+            user.email,
+            user.image,
+            user.role,
+            user.created match {
+              case Some(time) => time
+              case None => new LocalDateTime()
+            }, user.recipeLanguage,
+            user.appLanguage,
+            user.city,
+            user.country,
+            user.sex,
+            user.yearBorn,
+            user.enrolled match {
+              case Some(e) => e
+              case None => false
+            },
+            user.metricSystem match {
+              case Some(m) => m
+              case None => true
+            }
+          )
         val id: Long = slickUsers.filter(_.id === dbUser.userID).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
             userFound.userID.get

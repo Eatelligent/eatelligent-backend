@@ -5,12 +5,12 @@ VALUES
   ('NO-no', 'Norwegian'),
   ('EN-en', 'English');
 
-INSERT INTO users(first_name, last_name, email, image, role, created)
+INSERT INTO users(first_name, last_name, email, image, role, created, enrolled, metric_system)
 VALUES
-  ('admin', 'admin', 'admin@admin.com', null, 'admin', NOW()),
-  ('gurr', 'gurr', 'gurr@admin.com', null, 'user', NOW()),
-  ('bone', 'bone', 'bone@admin.com', null, 'user', NOW()),
-  ('garr', 'garr', 'garr@admin.com', null, 'user', NOW());
+  ('admin', 'admin', 'admin@admin.com', null, 'admin', NOW(), false, true),
+  ('gurr', 'gurr', 'gurr@admin.com', null, 'user', NOW(), false, true),
+  ('bone', 'bone', 'bone@admin.com', null, 'user', NOW(), false, true),
+  ('garr', 'garr', 'garr@admin.com', null, 'user', NOW(), false, true);
 
 INSERT INTO logininfo(provider_id, provider_key)
 VALUES

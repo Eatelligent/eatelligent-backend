@@ -165,7 +165,15 @@ object DBTableDefinitions {
     email: Option[String],
     image: Option[String],
     role: Option[String],
-    created: LocalDateTime
+    created: LocalDateTime,
+    recipeLanguage: Option[Long],
+    appLanguage: Option[Long],
+    city: Option[String],
+    country: Option[String],
+    sex: Option[String],
+    yearBorn: Option[Int],
+    enrolled: Boolean,
+    metricSystem: Boolean
   )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "users") {
@@ -176,7 +184,18 @@ object DBTableDefinitions {
     def image = column[Option[String]]("image")
     def role = column[Option[String]]("role")
     def created = column[LocalDateTime]("created")
-    def * = (id, firstName, lastName, email, image, role, created) <> (DBUser.tupled, DBUser.unapply)
+    def recipeLanguage = column[Option[Long]]("recipe_language")
+    def appLanguage = column[Option[Long]]("app_language")
+    def city = column[Option[String]]("city")
+    def country = column[Option[String]]("country")
+    def sex = column[Option[String]]("sex")
+    def yearBorn = column[Option[Int]]("year_born")
+    def enrolled = column[Boolean]("enrolled")
+    def metricSystem = column[Boolean]("metric_system")
+    def * = (id, firstName, lastName, email, image, role, created, recipeLanguage, appLanguage, city, country, sex,
+      yearBorn, enrolled, metricSystem) <> (DBUser
+      .tupled, DBUser
+      .unapply)
   }
 
   case class DBFavorites (

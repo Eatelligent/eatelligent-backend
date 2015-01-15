@@ -44,19 +44,11 @@ trait JsonFormats {
 
   implicit val signUpRead: Reads[UserSignUp] = (
     (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "firstName").read[String] and
-      (JsPath \ "lastName").read[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "email").read[String] and
       (JsPath \ "password").read[String]
     )(UserSignUp.apply _)
-
-  implicit val signUpWrite: Writes[UserSignUp] = (
-    (JsPath \ "id").write[Option[Long]] and
-      (JsPath \ "firstName").write[String] and
-      (JsPath \ "lastName").write[String] and
-      (JsPath \ "email").write[String] and
-      (JsPath \ "password").write[String]
-    )(unlift(UserSignUp.unapply))
 
   implicit val loginInfoReads: Reads[LoginInfo] = (
     (JsPath \ "providerID").read[String] and
@@ -76,7 +68,15 @@ trait JsonFormats {
       (JsPath \ "email").readNullable[String] and
       (JsPath \ "image").readNullable[String] and
       (JsPath \ "role").readNullable[String] and
-      (JsPath \ "created").readNullable[LocalDateTime]
+      (JsPath \ "created").readNullable[LocalDateTime] and
+      (JsPath \ "recipeLanguage").readNullable[Long] and
+      (JsPath \ "appLanguage").readNullable[Long] and
+      (JsPath \ "city").readNullable[String] and
+      (JsPath \ "country").readNullable[String] and
+      (JsPath \ "sex").readNullable[String] and
+      (JsPath \ "yearBorn").readNullable[Int] and
+      (JsPath \ "enrolled").readNullable[Boolean] and
+      (JsPath \ "metricSystem").readNullable[Boolean]
     )(User.apply _)
 
   implicit val userWrites: Writes[User] = (
@@ -87,7 +87,15 @@ trait JsonFormats {
       (JsPath \ "email").write[Option[String]] and
       (JsPath \ "image").write[Option[String]] and
       (JsPath \ "role").write[Option[String]] and
-      (JsPath \ "created").write[Option[LocalDateTime]]
+      (JsPath \ "created").write[Option[LocalDateTime]] and
+      (JsPath \ "recipeLanguage").write[Option[Long]] and
+      (JsPath \ "appLanguage").write[Option[Long]] and
+      (JsPath \ "city").write[Option[String]] and
+      (JsPath \ "country").write[Option[String]] and
+      (JsPath \ "sex").write[Option[String]] and
+      (JsPath \ "yearBorn").write[Option[Int]] and
+      (JsPath \ "enrolled").write[Option[Boolean]] and
+      (JsPath \ "metricSystem").write[Option[Boolean]]
     )(unlift(User.unapply))
 
   implicit val tinyUserRead: Reads[TinyUser] = (

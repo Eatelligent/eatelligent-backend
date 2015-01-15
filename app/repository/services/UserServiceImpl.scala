@@ -65,7 +65,15 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
           email = profile.email,
           image = profile.avatarURL,
           role = Some("user"),
-          created = Some(new LocalDateTime())
+          created = Some(new LocalDateTime()),
+          recipeLanguage = None,
+          appLanguage = None,
+          city = None,
+          country = None,
+          sex = None,
+          yearBorn = None,
+          enrolled = None,
+          metricSystem = None
         ))
     }
   }
