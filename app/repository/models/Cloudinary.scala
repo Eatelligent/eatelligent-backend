@@ -4,7 +4,7 @@ import cloudinary.model.CloudinaryResource
 import com.cloudinary.Implicits._
 import com.cloudinary.Transformation
 
-case class Image(recipeId:Long, image:CloudinaryResource)
+case class Image(image:CloudinaryResource)
 
 case class RecipeImage(recipeId:Long, url: String) {
 }

@@ -44,9 +44,7 @@ POST           /api/recipes                            @controllers.RecipeContro
 PUT            /api/recipes                            @controllers.RecipeController.updateRecipe
 DELETE         /api/recipes/:id                        @controllers.RecipeController.deleteRecipe(id: Long)
 
-GET            /imageform                              @controllers.ImageController.imageForm
-
-POST           /                                       @controllers.ImageController.saveRecipeImage
+POST           /api/recipes/:recipeId                  @controllers.ImageController.saveRecipeImage(recipeId: Long)
 
 GET            /api/tags                               @controllers.TagsController.listTags
 

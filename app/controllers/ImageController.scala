@@ -25,12 +25,11 @@ class ImageController @Inject() (
 
   val directUploadForm = Form(
     mapping(
-      "recipeId" -> longNumber,
       "image" -> of[CloudinaryResource]
     )(Image.apply)(Image.unapply)
   )
 
-  def saveRecipeImage = SecuredAction.async { implicit request =>
+  def saveRecipeImage(recipeId: Long) = SecuredAction.async { implicit request =>
     directUploadForm.bindFromRequest.fold(
       formWithErrors => future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) },
       imageDetails => {
@@ -41,7 +40,7 @@ class ImageController @Inject() (
           future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) }
         } else {
           try {
-            val recipeImage = recipeService.saveImage(imageDetails.recipeId, resourceFile.get.ref.file)
+            val recipeImage = recipeService.saveImage(recipeId, resourceFile.get.ref.file)
             recipeImage.map(i => Created(Json.obj("ok" -> true, "recipeImage" -> Json.toJson(i))))
           }
           catch {
@@ -50,8 +49,5 @@ class ImageController @Inject() (
         }
       })
   }
-
-  def imageForm = SecuredAction { implicit request =>
-    Ok(views.html.imageform())
-  }
+  
 }
