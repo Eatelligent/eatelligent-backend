@@ -18,7 +18,8 @@ require.config({
     'bloodhound': '../bower_components/typeahead.js/dist/bloodhound',
     'bootstrap': '../bower_components/bootstrap/dist/js/bootstrap',
     'summernote': '../bower_components/summernote/dist/summernote',
-    'typeahead': '../bower_components/typeahead.js/dist/typeahead.jquery'
+    'typeahead': '../bower_components/typeahead.js/dist/typeahead.jquery',
+    'dropzone': '../bower_components/dropzone/downloads/dropzone-amd-module'
   },
 
   waitSeconds: 30,

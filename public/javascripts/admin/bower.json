@@ -21,6 +21,7 @@
     "typeahead.js": "~0.10.5",
     "backbone.stickit": "~0.8.0",
     "metrics-graphics": "git@github.com:mozilla/metrics-graphics.git",
-    "summernote": "~0.5.10"
+    "summernote": "~0.5.10",
+    "dropzone": "~3.12.0"
   }
 }

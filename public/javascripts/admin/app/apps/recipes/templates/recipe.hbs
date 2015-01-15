@@ -7,14 +7,41 @@
     <button class="btn btn-primary btn-lg pull-right" data-js-edit>Edit recipe</a>
   </div>
 </div>
-<ul class="list-group">
-  <li class="list-group-item">Recipe id: {{id}}</li>
-  <li class="list-group-item">Created: {{time created}}</li>
-  <li class="list-group-item">Modified: {{time created}}</li>
-  <li class="list-group-item">Calories: {{calories}}</li>
-  <li class="list-group-item">Language id: {{language}}</li>
-  <li class="list-group-item">Created By: {{createdBy.firstName}} {{createdBy.lastName}} <pre>{{createdBy.id}}</pre></li>
-</ul>
+
+
+<div class="row">
+  <div class="col-md-4 col-sm-12">
+    {{#if image}}
+      <img src="{{image}}" style="max-width: 300px; max-height: 300px;">
+    {{/if}}
+  </div>
+  <ul class="list-group col-md-8 col-sm-12">
+    <li class="list-group-item">Recipe id: {{id}}</li>
+    <li class="list-group-item">Created: {{time created}}</li>
+    <li class="list-group-item">Modified: {{time created}}</li>
+    <li class="list-group-item">Calories: {{calories}}</li>
+    <li class="list-group-item">Language id: {{language}}</li>
+    <li class="list-group-item">Created By: {{createdBy.firstName}} {{createdBy.lastName}} <pre>{{createdBy.id}}</pre></li>
+  </ul>
+
+</div>
+
+
+<button class="btn btn-primary btn-lg mb4" data-js-imageupload>Imageupload</button>
+
+<div class="hidden">
+  <h4 class="mb1">Imageupload (drop image in the grey box)</h4>
+  <form id="recipe-image-upload" action="/" class="mb3 dropzone">
+    <input type="hidden" name="recipeId" value="{{id}}" />
+
+    <!-- If you want control over the fallback form, just add it here: -->
+    <div class="fallback"> <!-- This div will be removed if the fallback is not necessary -->
+      <input type="file" name="image" />
+      etc...
+    </div>
+  </form>
+</div>
+
 
 <h4 class="mb1">Description</h4>
 <p>{{ html description}}</p>

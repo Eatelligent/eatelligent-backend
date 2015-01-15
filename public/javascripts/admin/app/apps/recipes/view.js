@@ -6,6 +6,7 @@ define(function(require) {
   var recipeTemplate = require('hbs!./templates/recipe');
   var recipeIngredientTemplate = require('hbs!./templates/recipe_ingredient');
   var recipeItemTemplate = require('hbs!./templates/recipe_item');
+  var Dropzone = require('dropzone');
 
   var RecipeIngredientEmpty = Marionette.ItemView.extend({
     tagName: 'tr',
@@ -31,7 +32,24 @@ define(function(require) {
     },
 
     triggers: {
-      'click [data-js-edit]': 'edit:clicked'
+      'click [data-js-edit]': 'edit:clicked',
+      'click [data-js-imageupload]': 'imageupload:clicked'
+    },
+
+    onImageuploadClicked: function() {
+      $('[data-js-imageupload]').hide();
+      $('.hidden').removeClass('hidden');
+    },
+
+    onShow: function() {
+      new Dropzone('#recipe-image-upload', {
+        url: '/',
+        paramName: 'image',
+        maxFiles: 1,
+        success: function() {
+          window.location.reload();
+        }
+      });
     }
   });
 

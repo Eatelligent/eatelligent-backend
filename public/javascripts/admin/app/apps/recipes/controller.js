@@ -39,7 +39,7 @@ define(function(require) {
       view.on('edit:clicked', function() {
         channel.command('module:new:recipe', {model: model});       
       });
-      
+
       this.region.show(view);
     }
   });
