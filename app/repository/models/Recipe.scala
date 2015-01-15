@@ -7,7 +7,7 @@ case class Recipe(
                    name: String,
                    image: Option[String],
                    description: Option[String],
-                   language: Int,
+                   language: Long,
                    calories: Option[Double],
                    procedure: Option[String],
                    spicy: Option[Int],

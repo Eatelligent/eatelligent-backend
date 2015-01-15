@@ -51,10 +51,12 @@ class RecipeDAOSlick @Inject() (
 
   }
 
-  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean): Future[List[TinyRecipe]] = {
+  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long):
+  Future[List[TinyRecipe]] = {
     DB withSession { implicit session =>
       Future.successful {
           slickRecipes
+            .filter(_.language === language)
             .filter(_.name.toLowerCase like "%" + q.toLowerCase + "%")
             .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
             .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }

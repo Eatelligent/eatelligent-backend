@@ -159,7 +159,7 @@ trait JsonFormats {
       (JsPath \ "name").read(minLength[String](1)) and
       (JsPath \ "image").readNullable[String] and
       (JsPath \ "description").readNullable[String] and
-      (JsPath \ "language").read[Int] and
+      (JsPath \ "language").read[Long] and
       (JsPath \ "calories").readNullable[Double] and
       (JsPath \ "procedure").readNullable[String] and
       (JsPath \ "spicy").readNullable[Int] and
@@ -178,7 +178,7 @@ trait JsonFormats {
       (JsPath \ "name").write[String] and
       (JsPath \ "image").write[Option[String]] and
       (JsPath \ "description").write[Option[String]] and
-      (JsPath \ "language").write[Int] and
+      (JsPath \ "language").write[Long] and
       (JsPath \ "calories").write[Option[Double]] and
       (JsPath \ "procedure").write[Option[String]] and
       (JsPath \ "spicy").write[Option[Int]] and

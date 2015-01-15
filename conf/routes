@@ -38,7 +38,7 @@ GET            /admin                                  @controllers.ApplicationC
 
 GET            /api/recipes/$id<[0-9]+>                @controllers.RecipeController.getRecipe(id: Long)
 
-GET            /api/recipes                            @controllers.RecipeController.listRecipes(q : String ?= "",offset: Integer        ?= 0,        limit:        Integer        ?= 20,        published:        Boolean ?= true,        deleted:        Boolean?=false)
+GET            /api/recipes                            @controllers.RecipeController.listRecipes(q : String ?= "",offset: Integer        ?= 0,        limit:        Integer        ?= 20,        published:        Boolean ?= true,        deleted:        Boolean?=false, language: Long ?= 1)
 
 POST           /api/recipes                            @controllers.RecipeController.saveRecipe
 PUT            /api/recipes/:id                        @controllers.RecipeController.updateRecipe(id: Long)

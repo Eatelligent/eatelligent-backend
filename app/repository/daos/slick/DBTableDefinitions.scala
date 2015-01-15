@@ -58,7 +58,7 @@ object DBTableDefinitions {
                            name: String,
                            image: Option[String],
                            description: Option[String],
-                           language: Int,
+                           language: Long,
                            calories: Option[Double],
                            procedure: Option[String],
                            spicy: Option[Int],
@@ -75,7 +75,7 @@ object DBTableDefinitions {
     def name = column[String]("name")
     def image = column[Option[String]]("image")
     def description = column[Option[String]]("description")
-    def language = column[Int]("language")
+    def language = column[Long]("language")
     def calories = column[Option[Double]]("calories")
     def procedure = column[Option[String]]("procedure")
     def spicy = column[Option[Int]]("spicy")
