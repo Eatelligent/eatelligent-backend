@@ -3,7 +3,7 @@ package controllers
 import com.google.inject.Inject
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import com.mohiva.play.silhouette.core.{Silhouette, Environment}
-import myUtils.JsonFormats
+import play.api.mvc.BodyParsers
 import repository.daos.FavoritesDAO
 import repository.models.User
 import play.api.libs.concurrent.Execution.Implicits._
@@ -22,9 +22,19 @@ class FavoritesController @Inject() (
     favorites.map(f => Ok(Json.obj("ok" -> true, "favorites" -> Json.toJson(f))))
   }
 
-  def addToFavorite(recipeId: Long) = SecuredAction.async { implicit request =>
-    val fav = favoritesDAO.addToFavorites(request.identity.userID.get, recipeId)
-    fav.map(f => Ok(Json.obj("ok" -> true, "favorites" -> Json.toJson(f))))
+  def addToFavorite = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    val recipeIdRes = (request.body \ "recipeId").validate[Long]
+      recipeIdRes.fold(
+        errors => {
+          Future.successful {
+            BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
+          }
+        },
+        recipeId => {
+          val fav = favoritesDAO.addToFavorites(request.identity.userID.get, recipeId)
+          fav.map(f => Ok(Json.obj("ok" -> true, "favorites" -> Json.toJson(f))))
+        }
+      )
   }
 
   def removeFromFavorite(recipeId: Long) = SecuredAction.async { implicit request =>

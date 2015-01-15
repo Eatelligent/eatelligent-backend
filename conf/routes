@@ -61,7 +61,7 @@ GET            /api/stats/users                        @controllers.StatsControl
 GET            /api/stats/ratings                      @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
 
 GET            /api/recipes/favorites                  @controllers.FavoritesController.listFavorites
-POST           /api/recipes/favorites/:recipeId        @controllers.FavoritesController.addToFavorite(recipeId: Long)
+POST           /api/recipes/favorites                  @controllers.FavoritesController.addToFavorite
 DELETE         /api/recipes/favorites/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 # Map static resources from the /public folder to the /assets URL path
