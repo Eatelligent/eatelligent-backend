@@ -12,6 +12,7 @@ POST           /authenticate/credentials               @controllers.CredentialsA
 POST           /signUp                                 @controllers.SignUpController.signUp
 
 OPTIONS        /api/authenticate                       @controllers.ApplicationController.options
+OPTIONS        /api/users                            @controllers.ApplicationController.options
 
 GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
