@@ -40,7 +40,7 @@ class RecipeController @Inject() (
     )
   }
 
-  def updateRecipe = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  def updateRecipe(recipeId: Long) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     val recipeResult = request.body.validate[Recipe]
     recipeResult.fold(
       errors => {
@@ -49,7 +49,7 @@ class RecipeController @Inject() (
         }
       },
       recipe => {
-        val newRecipe = recipeService.update(recipe, request.identity)
+        val newRecipe = recipeService.update(recipe.copy(id = Some(recipeId)), request.identity)
         newRecipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
       }
     )

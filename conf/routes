@@ -41,7 +41,7 @@ GET            /api/recipes/$id<[0-9]+>                @controllers.RecipeContro
 GET            /api/recipes                            @controllers.RecipeController.listRecipes(q : String ?= "",offset: Integer        ?= 0,        limit:        Integer        ?= 20,        published:        Boolean ?= true,        deleted:        Boolean?=false)
 
 POST           /api/recipes                            @controllers.RecipeController.saveRecipe
-PUT            /api/recipes                            @controllers.RecipeController.updateRecipe
+PUT            /api/recipes/:id                        @controllers.RecipeController.updateRecipe(id: Long)
 DELETE         /api/recipes/:id                        @controllers.RecipeController.deleteRecipe(id: Long)
 
 POST           /api/recipes/:recipeId                  @controllers.ImageController.saveRecipeImage(recipeId: Long)
