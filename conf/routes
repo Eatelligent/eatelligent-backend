@@ -12,12 +12,13 @@ POST           /authenticate/credentials               @controllers.CredentialsA
 POST           /signUp                                 @controllers.SignUpController.signUp
 
 OPTIONS        /api/authenticate                       @controllers.ApplicationController.options
-OPTIONS        /api/users                            @controllers.ApplicationController.options
+OPTIONS        /api/users                              @controllers.ApplicationController.options
 
 GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
 GET            /api/users/:id                          @controllers.UserController.getUser(id: Long)
 GET            /api/user                               @controllers.UserController.getCurrentUser
+PUT            /api/user                               @controllers.UserController.updateUser
 
 POST           /api/users                              @controllers.SignUpController.signUpJson
 
@@ -59,9 +60,9 @@ GET            /api/stats                              @controllers.StatsControl
 GET            /api/stats/users                        @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
 GET            /api/stats/ratings                      @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
 
-GET            /api/recipes/favorites                  @controllers.FavoritesController.listFavorites
-POST           /api/recipes/favorites                  @controllers.FavoritesController.addToFavorite
-DELETE         /api/recipes/favorites/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
+GET            /api/favorites/recipes                  @controllers.FavoritesController.listFavorites
+POST           /api/favorites/recipes                  @controllers.FavoritesController.addToFavorite
+DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET            /assets/*file                           controllers.Assets.at(path="/public", file)

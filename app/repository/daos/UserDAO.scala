@@ -1,7 +1,7 @@
 package models.daos
 
 import com.mohiva.play.silhouette.core.LoginInfo
-import repository.models.{TinyUser, User}
+import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import java.util.UUID
 
@@ -33,6 +33,8 @@ trait UserDAO {
    * @return The saved user.
    */
   def save(user: User): Future[User]
+
+  def update(user: UserUpdate, id: Long): Future[Option[User]]
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]]
 

@@ -98,6 +98,24 @@ trait JsonFormats {
       (JsPath \ "metricSystem").write[Option[Boolean]]
     )(unlift(User.unapply))
 
+  implicit val userUpdateRead: Reads[UserUpdate] = (
+    (JsPath \ "id").readNullable[Long] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
+      (JsPath \ "email").readNullable[String] and
+      (JsPath \ "image").readNullable[String] and
+      (JsPath \ "role").readNullable[String] and
+      (JsPath \ "created").readNullable[LocalDateTime] and
+      (JsPath \ "recipeLanguage").readNullable[Long] and
+      (JsPath \ "appLanguage").readNullable[Long] and
+      (JsPath \ "city").readNullable[String] and
+      (JsPath \ "country").readNullable[String] and
+      (JsPath \ "sex").readNullable[String] and
+      (JsPath \ "yearBorn").readNullable[Int] and
+      (JsPath \ "enrolled").readNullable[Boolean] and
+      (JsPath \ "metricSystem").readNullable[Boolean]
+    )(UserUpdate.apply _)
+
   implicit val tinyUserRead: Reads[TinyUser] = (
     (JsPath \ "id").read[Long] and
       (JsPath \ "firstName").readNullable[String] and

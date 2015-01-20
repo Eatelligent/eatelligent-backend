@@ -5,7 +5,8 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
-import repository.models.{TinyUser, User}
+import repository.Exceptions.NoSuchUserException
+import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import java.util.UUID
 import play.Logger
@@ -69,7 +70,7 @@ class UserDAOSlick extends UserDAO {
    * @param userID The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def find(userID: Long) = {
+  def find(userID: Long): Future[Option[User]] = {
     DB withSession { implicit session =>
       Future.successful {
         slickUsers.filter(
@@ -105,6 +106,43 @@ class UserDAOSlick extends UserDAO {
           case None => None
         }
       }
+    }
+  }
+
+  def update(user: UserUpdate, id: Long): Future[Option[User]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        slickUsers.filter(_.id === id).firstOption match {
+          case Some(u) =>
+            slickUsers.filter(_.id === id).update(
+              DBUser(
+                Some(id),
+                user.firstName,
+                user.lastName,
+                user.email,
+                user.image,
+                u.role,
+                u.created,
+                user.recipeLanguage,
+                user.appLanguage,
+                user.city,
+                user.country,
+                user.sex,
+                user.yearBorn,
+                user.enrolled match {
+                  case Some(e) => e
+                  case None => false
+                },
+                user.metricSystem match {
+                  case Some(m) => m
+                  case None => true
+                }
+              )
+            )
+          case None => throw new NoSuchUserException(id)
+        }
+      }
+      find(id)
     }
   }
 

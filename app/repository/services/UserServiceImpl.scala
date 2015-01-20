@@ -7,7 +7,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.services.AuthInfo
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
-import repository.models.{TinyUser, User}
+import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import models.daos.UserDAO
 
@@ -77,4 +77,6 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
         ))
     }
   }
+
+  def update(user: UserUpdate, id: Long): Future[Option[User]] = userDAO.update(user, id)
 }

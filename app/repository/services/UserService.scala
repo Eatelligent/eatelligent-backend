@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.core.services.{AuthInfo, IdentityService}
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
-import repository.models.{TinyUser, User}
+import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 
 /**
@@ -29,6 +29,8 @@ trait UserService extends IdentityService[User] {
    * @return The user for whom the profile was saved.
    */
   def save[A <: AuthInfo](profile: CommonSocialProfile[A]): Future[User]
+
+  def update(user: UserUpdate, id: Long): Future[Option[User]]
 
   def findUserByUID(uid: Long): Future[Option[User]]
 
