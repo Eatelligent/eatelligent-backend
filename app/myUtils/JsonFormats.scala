@@ -68,7 +68,7 @@ trait JsonFormats {
       (JsPath \ "email").readNullable[String] and
       (JsPath \ "image").readNullable[String] and
       (JsPath \ "role").readNullable[String] and
-      (JsPath \ "created").readNullable[LocalDateTime] and
+      (JsPath \ "created").readNullable[String].map(x => None) and
       (JsPath \ "recipeLanguage").readNullable[Long] and
       (JsPath \ "appLanguage").readNullable[Long] and
       (JsPath \ "city").readNullable[String] and
@@ -105,7 +105,7 @@ trait JsonFormats {
       (JsPath \ "email").readNullable[String] and
       (JsPath \ "image").readNullable[String] and
       (JsPath \ "role").readNullable[String] and
-      (JsPath \ "created").readNullable[LocalDateTime] and
+      (JsPath \ "created").readNullable[String].map(x => None) and
       (JsPath \ "recipeLanguage").readNullable[Long] and
       (JsPath \ "appLanguage").readNullable[Long] and
       (JsPath \ "city").readNullable[String] and
@@ -149,7 +149,7 @@ trait JsonFormats {
     (JsPath \ "userId").readNullable[Long] and
       (JsPath \ "recipeId").read[Long] and
       (JsPath \ "rating").read[Double] and
-      (JsPath \ "created").readNullable[LocalDateTime]
+      (JsPath \ "created").readNullable[String].map(x => Some(new LocalDateTime()))
     )(UserStarRateRecipe.apply _)
 
   implicit val userStarRateRecipeWrite: Writes[UserStarRateRecipe] = (
