@@ -183,9 +183,31 @@ class RecipeDAOSlick @Inject() (
               slickIngredientsInRecipe.filter(_.recipeId === recipeFound.id).delete
               slickTagsForRecipe.filter(_.recipeId === recipeFound.id).delete
               slickRecipes.filter(_.id === recipeFound.id).update(
-                DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r.procedure, r
-                  .spicy,
-                  r.time, recipeFound.created, new LocalDateTime(), r.published, r.deleted, user.userID.get))
+                DBRecipe(
+                  r.id,
+                  r.name,
+                  r.image,
+                  r.description,
+                  r.language,
+                  Some(0),
+                  r.procedure,
+                  r.spicy,
+                  r.time,
+                  recipeFound.created,
+                  new LocalDateTime(),
+                  r.published match {
+                    case Some(p) =>
+                      if (recipeFound.published.isDefined) recipeFound.published
+                      else Some(new LocalDateTime())
+                    case None => None
+                  },
+                  r.deleted match {
+                    case Some(d) =>
+                      if (recipeFound.deleted.isDefined) recipeFound.deleted
+                      else Some(new LocalDateTime)
+                    case None => None
+                  },
+                  user.userID.get))
               r.ingredients.distinct.foreach {
                 i =>
                   val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))

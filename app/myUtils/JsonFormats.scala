@@ -190,10 +190,20 @@ trait JsonFormats {
       (JsPath \ "procedure").readNullable[String] and
       (JsPath \ "spicy").readNullable[Int] and
       (JsPath \ "time").readNullable[Int] and
-      (JsPath \ "created").readNullable[LocalDateTime] and
-      (JsPath \ "modified").readNullable[LocalDateTime] and
-      (JsPath \ "published").readNullable[LocalDateTime] and
-      (JsPath \ "deleted").readNullable[LocalDateTime] and
+      (JsPath \ "created").readNullable[String].map(x => None) and
+      (JsPath \ "modified").readNullable[String].map(x => None) and
+      (JsPath \ "published").readNullable[Boolean].map {
+        case Some(p) =>
+          if (p) Some(new LocalDateTime)
+          else None
+        case None => None
+      } and
+      (JsPath \ "deleted").readNullable[Boolean].map {
+        case Some(d) =>
+          if(d) Some(new LocalDateTime)
+          else None
+        case None => None
+      } and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").read[Seq[String]] and
       (JsPath \ "createdBy").readNullable[TinyUser]
