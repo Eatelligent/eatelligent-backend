@@ -11,8 +11,7 @@ GET            /authenticate/:provider                 @controllers.SocialAuthCo
 POST           /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
 POST           /signUp                                 @controllers.SignUpController.signUp
 
-OPTIONS        /api/authenticate                       @controllers.ApplicationController.options
-OPTIONS        /api/users                              @controllers.ApplicationController.options
+OPTIONS        /api/*wholepath                         @controllers.ApplicationController.optionsall(wholepath)
 
 GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 

@@ -65,6 +65,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
     Ok(views.html.admin(isDevelopment))
   }
 
+  def optionsall(path: String) = UserAwareAction { implicit request =>
+    NoContent
+  }
+
   def options = UserAwareAction { implicit request =>
     NoContent
   }
