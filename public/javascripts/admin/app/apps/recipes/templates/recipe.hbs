@@ -4,6 +4,9 @@
     <h1 class="mb3">{{name}}</h1>
   </div>
   <div class="col-md-4 col-sm-4">
+    {{#unless published}}
+      <button class="btn btn-success btn-lg pull-left" data-js-publish>Publish recipe</a>
+    {{/unless}}
     <button class="btn btn-primary btn-lg pull-right" data-js-edit>Edit recipe</a>
   </div>
 </div>

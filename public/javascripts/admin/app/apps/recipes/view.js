@@ -33,7 +33,15 @@ define(function(require) {
 
     triggers: {
       'click [data-js-edit]': 'edit:clicked',
+      'click [data-js-publish]': 'publish:clicked',
       'click [data-js-imageupload]': 'imageupload:clicked'
+    },
+
+    onPublishClicked: function() {
+      this.model.set('publish', true);
+      this.model.save({success: function() {
+        $('[data-js-publish]').hide();
+      }});
     },
 
     onImageuploadClicked: function() {
@@ -43,7 +51,7 @@ define(function(require) {
 
     onShow: function() {
       new Dropzone('#recipe-image-upload', {
-        url: '/',
+        url: 'api/recipes/'+this.model.get('id'),
         paramName: 'image',
         maxFiles: 1,
         success: function() {
@@ -65,7 +73,24 @@ define(function(require) {
   var ListView = Marionette.CompositeView.extend({
     template: template,
     childView: RecipeItem,
-    childViewContainer: '[data-js-recipes]'
+    childViewContainer: '[data-js-recipes]',
+    triggers: {
+      'click [data-js-show-published]': 'show:published'
+    },
+
+    onShowPublished: function() {
+      if(this.collection.url === '/api/recipes') {
+        this.collection.url = '/api/recipes?published=false&deleted=false';
+        $('[data-js-show-published]', this.$el).html('Show published');
+        $('.header-status', this.$el).html('(unpublished)');
+      } else {
+        this.collection.url = '/api/recipes';
+        $('[data-js-show-published]', this.$el).html('Show unpublished');
+        $('.header-status', this.$el).html('(published)');
+      }
+
+      this.collection.fetch({reset: true});
+    }
   });
 
   return {
