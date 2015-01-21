@@ -1,6 +1,7 @@
 package repository.daos.slick
 
 import org.joda.time.{DateTime, LocalDateTime}
+import repository.Exceptions.NoSuchRecipeException
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._
@@ -14,13 +15,19 @@ class RatingDAOSlick extends RatingDAO {
 
   def saveUserStarRateRecipe(rating: UserStarRateRecipe): Future[Option[UserStarRateRecipe]] = {
     DB withSession { implicit session =>
+      val recipeExists = DB withSession { implicit session =>
+        slickRecipes.filter(_.id === rating.recipeId).length.run > 0
+      }
+      if (!recipeExists)
+        throw new NoSuchRecipeException("No recipe with id: " + rating.recipeId + " in the databse.")
       slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
-        case Some(x) => slickUserStarRateRecipes.update(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
+        case Some(x) => slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId)
+          .update(DBUserStarRateRecipe(rating.userId.get, rating.recipeId, rating
           .stars, new LocalDateTime(), new DateTime().getMillis))
-        case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId, rating.recipeId, rating
+        case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId.get, rating.recipeId, rating
           .stars, new LocalDateTime(), new DateTime().getMillis))
       }
-      findUserStarRateRecipe(rating.userId, rating.recipeId)
+      findUserStarRateRecipe(rating.userId.get, rating.recipeId)
     }
   }
 
@@ -28,7 +35,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
-          case Some(x) => Some(UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created)))
+          case Some(x) => Some(UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created)))
           case None => None
         }
       }
@@ -39,7 +46,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(_.recipeId === recipeId).list map {
-          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created))
+          x => UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created))
         }
       }
     }
@@ -49,7 +56,7 @@ class RatingDAOSlick extends RatingDAO {
     DB withSession { implicit session =>
       Future.successful {
         slickUserStarRateRecipes.filter(_.userId === userId).list map {
-          x => UserStarRateRecipe(x.userId, x.recipeId, x.stars, Some(x.created))
+          x => UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created))
         }
       }
     }

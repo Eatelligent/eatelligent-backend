@@ -37,7 +37,7 @@ class RecipeRatingController @Inject() (
         }
       },
       rating => {
-        val newRating = ratingDAO.saveUserStarRateRecipe(rating)
+        val newRating = ratingDAO.saveUserStarRateRecipe(rating.copy(userId = request.identity.userID))
         newRating.map(r => Created(Json.obj("ok" -> true, "rating" -> r)))
       }
     )

@@ -146,14 +146,14 @@ trait JsonFormats {
     )(Language.apply _)
 
   implicit val userStarRateRecipeRead: Reads[UserStarRateRecipe] = (
-    (JsPath \ "userId").read[Long] and
+    (JsPath \ "userId").readNullable[Long] and
       (JsPath \ "recipeId").read[Long] and
       (JsPath \ "rating").read[Double] and
       (JsPath \ "created").readNullable[LocalDateTime]
     )(UserStarRateRecipe.apply _)
 
   implicit val userStarRateRecipeWrite: Writes[UserStarRateRecipe] = (
-    (JsPath \ "userId").write[Long] and
+    (JsPath \ "userId").write[Option[Long]] and
       (JsPath \ "recipeId").write[Long] and
       (JsPath \ "rating").write[Double] and
       (JsPath \ "created").write[Option[LocalDateTime]]
