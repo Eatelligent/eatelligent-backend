@@ -40,6 +40,15 @@ define(function(require) {
         channel.command('module:new:recipe', {model: model});       
       });
 
+      view.on('delete:clicked', function() {
+        console.log(arguments);
+        if(confirm('Are you sure you want to delete this recipe?')) {
+          model.destroy({success: function() {
+            Backbone.history.navigate('recipes', {trigger: true});
+          }});
+        }
+      });
+
       this.region.show(view);
     }
   });

@@ -1,11 +1,14 @@
 
 <div class="row">
-  <div class="col-md-8 col-sm-8">
+  <div class="col-md-7 col-sm-7">
     <h1 class="mb3">{{name}}</h1>
   </div>
-  <div class="col-md-4 col-sm-4">
+  <div class="col-md-5 col-sm-5">
     {{#unless published}}
       <button class="btn btn-success btn-lg pull-left" data-js-publish>Publish recipe</a>
+    {{/unless}}
+    {{#unless deleted}}
+      <button class="btn btn-danger btn-lg" style="margin-left:25px" data-js-delete>Delete recipe</a>
     {{/unless}}
     <button class="btn btn-primary btn-lg pull-right" data-js-edit>Edit recipe</a>
   </div>
@@ -21,7 +24,9 @@
   <ul class="list-group col-md-8 col-sm-12">
     <li class="list-group-item">Recipe id: {{id}}</li>
     <li class="list-group-item">Created: {{time created}}</li>
-    <li class="list-group-item">Modified: {{time created}}</li>
+    <li class="list-group-item">Modified: {{time modified}}</li>
+    {{#if published}}<li class="list-group-item">Published: {{time published}}</li>{{/if}}
+    {{#if deleted}}<li class="list-group-item">Deleted: {{time deleted}}</li>{{/if}}
     <li class="list-group-item">Calories: {{calories}}</li>
     <li class="list-group-item">Language id: {{language}}</li>
     <li class="list-group-item">Created By: {{createdBy.firstName}} {{createdBy.lastName}} <pre>{{createdBy.id}}</pre></li>
@@ -64,7 +69,6 @@
       <th>Id</th>
       <th>Name</th>
       <th>Amount</th>
-      <th></th>
     </tr>
   </thead>
   <tbody data-js-ingredients></tbody>

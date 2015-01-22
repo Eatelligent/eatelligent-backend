@@ -5,7 +5,7 @@ define(function(require) {
   var moment = require('moment');
 
   Handlebars.registerHelper('time', function(unix) {
-    var str = moment(unix).format('DD. MMM YYYY');
+    var str = moment(unix).format('DD. MMM YYYY HH:mm');
     return new Handlebars.SafeString(str);
   });
 

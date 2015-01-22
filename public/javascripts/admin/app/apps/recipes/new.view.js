@@ -251,10 +251,10 @@ define(function(require) {
 
       if(this.model.get('ingredients')) {
         var ingredients = this.model.get('ingredients').map(function(ing) {
-          return {name: ing.name, image: ing.image, amount: ing.amount};
+          return {name: ing.name, image: ing.image, amount: ing.amount, unit: ing.unit};
         });
-        console.log(ingredients);
         this.collection = new Backbone.Collection(ingredients);
+        console.log(this.collection);
       } else {
         this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
       }
@@ -280,6 +280,8 @@ define(function(require) {
       'click button': 'save:clicked'
     },
     onSaveClicked: function() {
+      this.model.set('published', !!this.model.get('published'));
+      console.log('hej');
       this.model.save();
     }
   });
@@ -315,7 +317,9 @@ define(function(require) {
       });
 
       this.listenTo(this.model, 'sync', function() {
-        Backbone.history.navigate('recipes/'+this.model.get('recipe').id, {trigger: true});
+        console.log(this.model);
+        // Backbone.history.navigate('recipes/'+this.model.get('recipe').id, {trigger: true});
+        window.history.back();
       });
     },
 
@@ -334,6 +338,10 @@ define(function(require) {
     },
 
     onShow: function() {
+      if(!this.model.isNew()) {
+        $('h1', this.$el).html('Edit recipe');
+      }
+
       this.name.show(new NameView({model: this.model}));
       this.tags.show(new TagsView({model: this.model}));
       this.time.show(new TimeView({model: this.model}));

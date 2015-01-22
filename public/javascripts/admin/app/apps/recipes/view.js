@@ -15,10 +15,7 @@ define(function(require) {
 
   var RecipeIngredient = Marionette.ItemView.extend({
     tagName: 'tr',
-    template: recipeIngredientTemplate,
-    triggers: {
-      'click [data-js-delete]': 'destroy'
-    }
+    template: recipeIngredientTemplate
   });
 
   var RecipeView = Marionette.CompositeView.extend({
@@ -29,19 +26,21 @@ define(function(require) {
 
     initialize: function() {
       this.collection = new Backbone.Collection(this.model.get('ingredients'));
+      this.listenTo(this.model, 'sync', function() {
+        this.render();
+      });
     },
 
     triggers: {
       'click [data-js-edit]': 'edit:clicked',
       'click [data-js-publish]': 'publish:clicked',
-      'click [data-js-imageupload]': 'imageupload:clicked'
+      'click [data-js-imageupload]': 'imageupload:clicked',
+      'click [data-js-delete]': 'delete:clicked'
     },
 
     onPublishClicked: function() {
-      this.model.set('publish', true);
-      this.model.save({success: function() {
-        $('[data-js-publish]').hide();
-      }});
+      this.model.set('published', true);
+      this.model.save();
     },
 
     onImageuploadClicked: function() {
