@@ -9,7 +9,8 @@ trait RecipeDAO {
 
   def find(id: Long): Future[Option[Recipe]]
 
-  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long):
+  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long,
+           tag: Option[String]):
   Future[Seq[TinyRecipe]]
 
   def save(recipe: Recipe, user: User): Future[Option[Recipe]]

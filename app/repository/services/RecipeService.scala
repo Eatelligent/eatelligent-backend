@@ -13,7 +13,7 @@ trait RecipeService {
 
   def find(id: Long): Future[Option[Recipe]]
 
-  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long):
+  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long, tag: Option[String]):
   Future[Seq[TinyRecipe]]
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]]

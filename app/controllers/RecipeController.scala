@@ -19,9 +19,10 @@ class RecipeController @Inject() (
   implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
-  def listRecipes(q: String, offset: Integer , limit: Integer, published: Boolean, deleted: Boolean, language: Long) =
+  def listRecipes(q: String, offset: Integer , limit: Integer, published: Boolean, deleted: Boolean, language: Long,
+                  tag: Option[String]) =
     SecuredAction(WithRole("admin")).async { implicit request =>
-    val recipes = recipeService.find(q, offset, limit, published, deleted, language)
+    val recipes = recipeService.find(q, offset, limit, published, deleted, language, tag)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }
 

@@ -51,19 +51,36 @@ class RecipeDAOSlick @Inject() (
 
   }
 
-  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long):
+  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long,
+           tag: Option[String]):
   Future[List[TinyRecipe]] = {
     DB withSession { implicit session =>
       Future.successful {
-          slickRecipes
-            .filter(_.language === language)
-            .filter(_.name.toLowerCase like "%" + q.toLowerCase + "%")
-            .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
-            .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
-            .drop(offset).take (limit)
-            .list.map (
-              x => TinyRecipe(x.id.get, x.name, x.image)
-          )
+        tag match {
+          case Some(tagName) =>
+            val join = for {
+              (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
+                .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase && r._1.language === language
+            } yield (r._1.id, r._1.name, r._1.image, r._1.language, r._1.published, r._1.deleted)
+            join
+              .filter(_._4 === language)
+              .filter{ r => if (published) r._5.nonEmpty else r._5.isEmpty }
+              .filter{ r => if (deleted) r._6.nonEmpty else r._6.isEmpty }
+              .drop(offset)
+              .take(limit)
+              .list
+              .map(x => TinyRecipe(x._1.get, x._2, x._3))
+          case None =>
+            slickRecipes
+              .filter(_.language === language)
+              .filter(_.name.toLowerCase like "%" + q.toLowerCase + "%")
+              .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
+              .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
+              .drop(offset).take (limit)
+              .list.map (
+                x => TinyRecipe(x.id.get, x.name, x.image)
+            )
+        }
       }
     }
   }
