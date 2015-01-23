@@ -18,5 +18,7 @@ case class Recipe(
                    deleted: Option[LocalDateTime],
                    ingredients: Seq[IngredientForRecipe],
                    tags: Seq[String],
+                   currentUserRating: Option[Double],
+                   averageRating: Option[Double],
                    createdBy: Option[TinyUser]
                    )

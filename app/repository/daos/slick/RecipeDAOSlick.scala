@@ -14,40 +14,63 @@ import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
 import repository.Exceptions.{NoSuchUnitException, NoSuchRecipeException}
-import repository.daos.RecipeDAO
+import repository.daos.{RatingDAO, RecipeDAO}
 import repository.models._
 import scala.concurrent._
 import scala.util.{Try, Failure, Success}
 import play.api.libs.concurrent.Execution.Implicits._
 
 class RecipeDAOSlick @Inject() (
-  val userDAO: UserDAO
+  val userDAO: UserDAO,
+  val ratingDAO: RatingDAO
                                  ) extends RecipeDAO {
   import play.api.Play.current
 
 
-  def find(id: Long): Future[Option[Recipe]] = {
+  def find(id: Long, userId: Long): Future[Option[Recipe]] = {
     DB withSession { implicit session =>
         slickRecipes.filter(_.id === id)
           .firstOption match {
-            case Some(recipe) => transformRecipe(recipe).map(x => Some(x))
+            case Some(recipe) => transformRecipe(recipe, userId).map(x => Some(x))
             case None => Future { None }
       }
     }
   }
 
-  def transformRecipe(r: DBRecipe): Future[Recipe] = {
+  def transformRecipe(r: DBRecipe, userId: Long): Future[Recipe] = {
 
       val futures = for {
         iF <- findIngredientsForRecipe(r.id.get)
         tF <- findTagsForRecipe(r.id.get)
         uF <- userDAO.find(r.createdById)
-      } yield (iF, tF, uF)
+        rF <- ratingDAO.findUserStarRateRecipe(userId, r.id.get)
+        avgF <- ratingDAO.getAverageRatingForRecipe(r.id.get)
+      } yield (iF, tF, uF, rF, avgF)
 
       val user = futures map (_._3.get)
-      futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r.procedure,
-        r.spicy, r.time, Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2,
-        Some(TinyUser(x._3.get.userID.get, x._3.get.firstName, x._3.get.lastName))))
+      futures.map(x =>
+        Recipe(
+          r.id,
+          r.name,
+          r.image,
+          r.description,
+          r.language,
+          r.calories,
+          r.procedure,
+          r.spicy,
+          r.time,
+          Some(r.created),
+          Some(r.modified),
+          r.published,
+          r.deleted,
+          x._1,
+          x._2,
+          x._4 match {
+            case Some(rating) => Some(rating.stars)
+            case None => None
+          },
+          x._5,
+          Some(TinyUser(x._3.get.userID.get, x._3.get.firstName, x._3.get.lastName))))
 
   }
 
@@ -141,21 +164,43 @@ class RecipeDAOSlick @Inject() (
     }
   }
 
-  def transformRecipes(rawRecipes: List[DBRecipe]): Future[List[Recipe]] = {
+  def transformRecipes(rawRecipes: List[DBRecipe], userId: Long): Future[List[Recipe]] = {
 
     val res = rawRecipes.map{
 
       r =>
         val futures = for {
-          iF <- findIngredientsForRecipe(r.id.last)
-          tF <- findTagsForRecipe(r.id.last)
+          iF <- findIngredientsForRecipe(r.id.get)
+          tF <- findTagsForRecipe(r.id.get)
           uF <- userDAO.find(r.createdById)
-        } yield (iF, tF, uF)
+          rF <- ratingDAO.findUserStarRateRecipe(userId, r.id.get)
+          avgF <- ratingDAO.getAverageRatingForRecipe(r.id.get)
+        } yield (iF, tF, uF, rF, avgF)
 
 
-        futures map(x => Recipe(r.id, r.name, r.image, r.description, r.language, r.calories, r
-          .procedure, r.spicy, r.time,
-          Some(r.created), Some(r.modified), r.published, r.deleted, x._1, x._2, Some(TinyUser(x._3.get
+        futures map(x =>
+          Recipe(
+            r.id,
+            r.name,
+            r.image,
+            r.description,
+            r.language,
+            r.calories,
+            r.procedure,
+            r.spicy,
+            r.time,
+            Some(r.created),
+            Some(r.modified),
+            r.published,
+            r.deleted,
+            x._1,
+            x._2,
+            x._4 match {
+              case Some(rating) => Some(rating.stars)
+              case None => None
+            },
+            x._5,
+            Some(TinyUser(x._3.get
             .userID.get, x._3
             .get
             .firstName, x._3.get.lastName))))
@@ -186,7 +231,7 @@ class RecipeDAOSlick @Inject() (
   def save(r: Recipe, user: User): Future[Option[Recipe]] = {
     DB withSession { implicit session =>
       val rid: Long = insert(r, user)
-      find(rid)
+      find(rid, user.userID.get)
     }
   }
 
@@ -242,7 +287,7 @@ class RecipeDAOSlick @Inject() (
         case None => throw NoSuchRecipeException(r.id)
       }
     }
-    find(r.id.get)
+    find(r.id.get, user.userID.get)
   }
 
   def getUnitId(name: String): Long = {
@@ -274,8 +319,6 @@ class RecipeDAOSlick @Inject() (
     }
     id
   }
-
-
 
   def saveIngredient(i: Ingredient): Ingredient = {
     DB withSession { implicit session =>
@@ -337,7 +380,7 @@ class RecipeDAOSlick @Inject() (
   }
 
 
-  def deleteRecipe(id: Long): Future[Option[Recipe]] = {
+  def deleteRecipe(id: Long, userId: Long): Future[Option[Recipe]] = {
     DB withTransaction { implicit session =>
       slickRecipes.filter(_.id === id).firstOption match {
         case Some(r) =>
@@ -348,7 +391,7 @@ class RecipeDAOSlick @Inject() (
         case None => throw new NoSuchRecipeException(id)
       }
     }
-    find(id)
+    find(id, userId)
   }
 
 

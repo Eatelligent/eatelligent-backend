@@ -7,7 +7,7 @@ import scala.concurrent.Future
 
 trait RecipeDAO {
 
-  def find(id: Long): Future[Option[Recipe]]
+  def find(id: Long, userId: Long): Future[Option[Recipe]]
 
   def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long,
            tag: Option[String]):
@@ -21,6 +21,6 @@ trait RecipeDAO {
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]]
 
-  def deleteRecipe(id: Long): Future[Option[Recipe]]
+  def deleteRecipe(id: Long, userId: Long): Future[Option[Recipe]]
 
 }

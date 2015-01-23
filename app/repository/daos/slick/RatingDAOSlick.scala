@@ -8,6 +8,7 @@ import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.Play.current
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 
 import scala.concurrent.Future
 
@@ -58,6 +59,16 @@ class RatingDAOSlick extends RatingDAO {
         slickUserStarRateRecipes.filter(_.userId === userId).list map {
           x => UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created))
         }
+      }
+    }
+  }
+
+  def getAverageRatingForRecipe(recipeId: Long): Future[Option[Double]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        Q.queryNA[Option[Double]]("SELECT avg(rating) AS avg_rating " +
+          "FROM user_star_rate_recipe " +
+          "WHERE recipe_id = '" + recipeId + "';").first
       }
     }
   }

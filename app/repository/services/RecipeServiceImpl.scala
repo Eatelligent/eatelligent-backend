@@ -15,7 +15,7 @@ class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
     recipe.id match {
       case Some(id) =>
-        recipeDAO.find(id).flatMap {
+        recipeDAO.find(id, user.userID.get).flatMap {
           case Some(r) =>
             recipeDAO.save(recipe.copy(
               name = recipe.name
@@ -29,7 +29,7 @@ class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
   def update(r: Recipe, user: User): Future[Option[Recipe]] = recipeDAO.update(r, user)
 
-  def find(id: Long): Future[Option[Recipe]] = recipeDAO.find(id)
+  def find(id: Long, userId: Long): Future[Option[Recipe]] = recipeDAO.find(id, userId)
 
   def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long, tag: Option[String]):
   Future[Seq[TinyRecipe]] =
@@ -39,5 +39,5 @@ class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]] = recipeDAO.findRecipesInTag(tagName)
 
-  def deleteRecipe(id: Long): Future[Option[Recipe]] = recipeDAO.deleteRecipe(id)
+  def deleteRecipe(id: Long, userId: Long): Future[Option[Recipe]] = recipeDAO.deleteRecipe(id, userId)
 }

@@ -57,7 +57,7 @@ class RecipeController @Inject() (
   }
 
   def getRecipe(id: Long) = SecuredAction.async { implicit request =>
-    val recipe = recipeService.find(id)
+    val recipe = recipeService.find(id, request.identity.userID.get)
     recipe.map {
       case Some(r) => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r)))
       case None => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No recipe with id: " + id + " found.")))
@@ -71,12 +71,12 @@ class RecipeController @Inject() (
 
   def deleteRecipe(id: Long) = SecuredAction(
     IsAuthor(
-      Await.result(recipeService.find(id), Duration(1, "seconds")) match {
+      Await.result(recipeService.find(id, -1), Duration(1, "seconds")) match {
         case Some(r) => r.createdBy.get.id
         case None => -1
       }
     )).async { implicit request =>
-    val recipe = recipeService.deleteRecipe(id)
+    val recipe = recipeService.deleteRecipe(id, request.identity.userID.get)
     recipe.map(r => Ok(Json.obj("ok" -> true, "recipe" -> Json.toJson(r))))
   }
 

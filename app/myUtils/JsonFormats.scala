@@ -206,6 +206,8 @@ trait JsonFormats {
       } and
       (JsPath \ "ingredients").read[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").read[Seq[String]] and
+      (JsPath \ "currentUserRating").readNullable[Double].map(_ => None) and
+      (JsPath \ "averageRating").readNullable[Double].map(_ => None) and
       (JsPath \ "createdBy").readNullable[TinyUser]
     )(Recipe.apply _)
 
@@ -225,6 +227,8 @@ trait JsonFormats {
       (JsPath \ "deleted").write[Option[LocalDateTime]] and
       (JsPath \ "ingredients").write[Seq[IngredientForRecipe]] and
       (JsPath \ "tags").write[Seq[String]] and
+      (JsPath \ "currentUserRating").write[Option[Double]] and
+      (JsPath \ "averageRating").write[Option[Double]] and
       (JsPath \ "createdBy").write[Option[TinyUser]]
     )(unlift(Recipe.unapply))
 

@@ -11,7 +11,7 @@ trait RecipeService {
 
   def update(r: Recipe, user: User): Future[Option[Recipe]]
 
-  def find(id: Long): Future[Option[Recipe]]
+  def find(id: Long, userId: Long): Future[Option[Recipe]]
 
   def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long, tag: Option[String]):
   Future[Seq[TinyRecipe]]
@@ -20,6 +20,6 @@ trait RecipeService {
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]]
 
-  def deleteRecipe(id: Long): Future[Option[Recipe]]
+  def deleteRecipe(id: Long, userId: Long): Future[Option[Recipe]]
 
 }

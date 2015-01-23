@@ -14,4 +14,8 @@ trait RatingDAO {
 
   def findStarRatingsForUser(userId: Long): Future[Seq[UserStarRateRecipe]]
 
+  def findUserStarRateRecipe(userId: Long, recipeId: Long): Future[Option[UserStarRateRecipe]]
+
+  def getAverageRatingForRecipe(recipeId: Long): Future[Option[Double]]
+
 }
