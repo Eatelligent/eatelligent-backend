@@ -31,9 +31,9 @@ class RecipeServiceImpl @Inject() (recipeDAO: RecipeDAO) extends RecipeService {
 
   def find(id: Long, userId: Long): Future[Option[Recipe]] = recipeDAO.find(id, userId)
 
-  def find(query: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long, tag: Option[String]):
-  Future[Seq[TinyRecipe]] =
-    recipeDAO.find(query, offset, limit, published, deleted, language, tag)
+  def find(q: Option[String], offset: Integer, limit: Integer, published: Option[Boolean], deleted: Option[Boolean],
+           language: Option[Long], tag: Option[String]): Future[List[TinyRecipe]] =
+    recipeDAO.find(q, offset, limit, published, deleted, language, tag)
 
   def saveImage(id: Long, image: File): Future[Option[RecipeImage]] = recipeDAO.saveImage(id, image)
 

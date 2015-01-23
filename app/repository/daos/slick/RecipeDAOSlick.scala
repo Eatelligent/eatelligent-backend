@@ -74,32 +74,59 @@ class RecipeDAOSlick @Inject() (
 
   }
 
-  def find(q: String, offset: Integer, limit: Integer, published: Boolean, deleted: Boolean, language: Long,
-           tag: Option[String]):
-  Future[List[TinyRecipe]] = {
+  def find(q: Option[String], offset: Integer, limit: Integer, published: Option[Boolean], deleted: Option[Boolean],
+           language: Option[Long], tag: Option[String]): Future[List[TinyRecipe]] = {
     DB withSession { implicit session =>
       Future.successful {
         tag match {
           case Some(tagName) =>
             val join = for {
               (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
-                .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase && r._1.language === language
+                .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase
             } yield (r._1.id, r._1.name, r._1.image, r._1.language, r._1.published, r._1.deleted)
-            join
-              .filter(_._4 === language)
-              .filter{ r => if (published) r._5.nonEmpty else r._5.isEmpty }
-              .filter{ r => if (deleted) r._6.nonEmpty else r._6.isEmpty }
+
+            val lFiltered = language match {
+              case Some(l) => join.filter(_._4 === l)
+              case None => join
+            }
+            val pFiltered = published match {
+              case Some(p) => lFiltered.filter{ r => if (p) r._5.nonEmpty else r._5.isEmpty }
+              case None => lFiltered
+            }
+            val dFiltered = deleted match {
+              case Some(d) => pFiltered.filter{ r => if (d) r._6.nonEmpty else r._6.isEmpty }
+              case None => pFiltered
+            }
+            val nFiltered = q match {
+              case Some(query) => dFiltered.filter(r => r._2.toLowerCase like "%" + query.toLowerCase + "%")
+              case None => dFiltered
+            }
+            nFiltered
               .drop(offset)
               .take(limit)
               .list
               .map(x => TinyRecipe(x._1.get, x._2, x._3))
           case None =>
             slickRecipes
-              .filter(_.language === language)
-              .filter(_.name.toLowerCase like "%" + q.toLowerCase + "%")
-              .filter{ r => if (published) r.published.nonEmpty else r.published.isEmpty }
-              .filter{ r => if (deleted) r.deleted.nonEmpty else r.deleted.isEmpty }
-              .drop(offset).take (limit)
+            val lFiltered = language match {
+              case Some(l) => slickRecipes.filter(_.language === l)
+              case None => slickRecipes
+            }
+            val pFiltered = published match {
+              case Some(p) => lFiltered.filter{ r => if (p) r.published.nonEmpty else r.published.isEmpty }
+              case None => lFiltered
+            }
+            val dFiltered = deleted match {
+              case Some(d) => pFiltered.filter{ r => if (d) r.deleted.nonEmpty else r.deleted.isEmpty }
+              case None => pFiltered
+            }
+            val nFiltered = q match {
+              case Some(query) => dFiltered.filter(r => r.name.toLowerCase like "%" + query.toLowerCase + "%")
+              case None => dFiltered
+            }
+            nFiltered
+              .drop(offset)
+              .take(limit)
               .list.map (
                 x => TinyRecipe(x.id.get, x.name, x.image)
             )
