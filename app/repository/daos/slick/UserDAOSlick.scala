@@ -1,6 +1,6 @@
 package models.daos.slick
 
-import org.joda.time.{LocalDateTime, DateTime}
+import org.joda.time.LocalDateTime
 import play.api.db.slick._
 import play.api.db.slick.Config.driver.simple._
 import models.daos.slick.DBTableDefinitions._
@@ -8,9 +8,10 @@ import com.mohiva.play.silhouette.core.LoginInfo
 import repository.Exceptions.NoSuchUserException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
-import java.util.UUID
 import play.Logger
 import models.daos.UserDAO
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 /**
  * Give access to the user object using Slick
@@ -109,6 +110,45 @@ class UserDAOSlick extends UserDAO {
     }
   }
 
+  def find(email: String): Future[Option[User]] = {
+    DB withSession { implicit session =>
+      Future.successful {
+        slickUsers.filter(
+          _.email === email
+        ).firstOption match {
+          case Some(user) =>
+            slickUserLoginInfos.filter(_.userID === user.userID).firstOption match {
+              case Some(info) =>
+                slickLoginInfos.filter(_.id === info.loginInfoId).firstOption match {
+                  case Some(loginInfo) =>
+                    Some(User(
+                      user.userID,
+                      LoginInfo(loginInfo.providerID, loginInfo.providerKey),
+                      user.firstName,
+                      user.lastName,
+                      user.email,
+                      user.image,
+                      user.role,
+                      Some(user.created),
+                      user.recipeLanguage,
+                      user.appLanguage,
+                      user.city,
+                      user.country,
+                      user.sex,
+                      user.yearBorn,
+                      Some(user.enrolled),
+                      Some(user.metricSystem)
+                    ))
+                  case None => None
+                }
+              case None => None
+            }
+          case None => None
+        }
+      }
+    }
+  }
+
   def update(user: UserUpdate, id: Long): Future[Option[User]] = {
     DB withSession { implicit session =>
       Future.successful {
@@ -152,7 +192,7 @@ class UserDAOSlick extends UserDAO {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = {
+  def save(user: User): Future[User] = {
     DB withSession { implicit session =>
       Future.successful {
         val dbUser =
@@ -200,8 +240,8 @@ class UserDAOSlick extends UserDAO {
           case None =>
             slickUserLoginInfos += DBUserLoginInfo(id, dbLoginInfo.id.get)
         }
-        user // We do not change the user => return it
       }
+      find(user.email.get) map (u => u.get)// We do not change the user => return it
     }
   }
 

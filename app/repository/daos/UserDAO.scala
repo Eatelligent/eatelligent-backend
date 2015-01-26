@@ -26,6 +26,8 @@ trait UserDAO {
    */
   def find(userID: Long): Future[Option[User]]
 
+  def find(email: String): Future[Option[User]]
+
   /**
    * Saves a user.
    *

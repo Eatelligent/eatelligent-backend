@@ -1,15 +1,16 @@
 package models.services
 
-import java.util.UUID
 import javax.inject.Inject
-import org.joda.time.{LocalDateTime, DateTime}
+import org.joda.time.LocalDateTime
 import play.api.libs.concurrent.Execution.Implicits._
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.services.AuthInfo
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
+import repository.Exceptions.DuplicateException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import models.daos.UserDAO
+
 
 /**
  * Handles actions to users.
@@ -36,7 +37,12 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = userDAO.save(user)
+  def save(user: User) = {
+    userDAO.find(user.email.get).flatMap {
+      case Some(u) => throw new DuplicateException("User already exists.")
+      case None => userDAO.save(user)
+    }
+  }
 
   /**
    * Saves the social profile for a user.
