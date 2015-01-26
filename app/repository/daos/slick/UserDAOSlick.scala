@@ -180,7 +180,7 @@ class UserDAOSlick extends UserDAO {
               case None => true
             }
           )
-        val id: Long = slickUsers.filter(_.id === dbUser.userID).firstOption match {
+        val id: Long = slickUsers.filter(_.email === dbUser.email).firstOption match {
           case Some(userFound) => slickUsers.filter(_.id === dbUser.userID).update(dbUser)
             userFound.userID.get
           case None => insertUser(dbUser)
