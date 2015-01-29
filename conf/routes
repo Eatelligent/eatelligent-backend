@@ -16,6 +16,9 @@ OPTIONS        /api/*wholepath                         @controllers.ApplicationC
 
 GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
+
+GET            /api/recommendation/recipes             @controllers.AIController.ai
+
 GET            /api/users/:id                          @controllers.UserController.getUser(id: Long)
 GET            /api/user                               @controllers.UserController.getCurrentUser
 PUT            /api/user                               @controllers.UserController.updateUser
@@ -65,7 +68,6 @@ POST           /api/favorites/recipes                  @controllers.FavoritesCon
 DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 
-GET            /api/recommendation/recipes             @controllers.AIController.ai
 
 
 # Map static resources from the /public folder to the /assets URL path
