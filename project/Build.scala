@@ -30,7 +30,7 @@ object Build extends Build {
     "org.webjars" % "bootstrap" % "3.1.1",
     "org.webjars" % "jquery" % "1.11.0",
     "com.mohiva" %% "play-silhouette" % "1.0",
-    "default" %% "mealchooser-recommendation" % "1.0"
+    "org.grouplens.lenskit" % "lenskit-all" % "2.1-M4" withSources() withJavadoc()
   )
 
   lazy val main = Project(id = "mealchooser-backend", base = file(".")).enablePlugins(play.PlayScala).settings(
