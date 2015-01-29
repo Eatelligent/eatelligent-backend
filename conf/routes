@@ -8,7 +8,7 @@ GET            /signIn                                 @controllers.ApplicationC
 GET            /signUp                                 @controllers.ApplicationController.signUp
 GET            /signOut                                @controllers.ApplicationController.signOut
 GET            /api/authenticate/:provider             @controllers.SocialAuthController.authenticate(provider)
-GET            /authenticate/:provider             @controllers.SocialAuthController.authenticate(provider)
+GET            /authenticate/:provider                 @controllers.SocialAuthController.authenticate(provider)
 POST           /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
 POST           /signUp                                 @controllers.SignUpController.signUp
 
@@ -63,6 +63,9 @@ GET            /api/stats/ratings                      @controllers.StatsControl
 GET            /api/favorites/recipes                  @controllers.FavoritesController.listFavorites
 POST           /api/favorites/recipes                  @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
+
+
+GET            /api/recommendation/recipes              @controllers.AIController.ai
 
 # Map static resources from the /public folder to the /assets URL path
 GET            /assets/*file                           controllers.Assets.at(path="/public", file)

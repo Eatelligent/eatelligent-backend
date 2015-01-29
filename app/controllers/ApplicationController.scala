@@ -1,6 +1,7 @@
 package controllers
 
-import play.api.Play
+import play.api.libs.json.{JsError, Json}
+import play.api.{Logger, Play}
 import play.api.Play.current
 import play.api.mvc._
 import com.mohiva.play.silhouette.core.{LogoutEvent, Environment, Silhouette}
@@ -12,6 +13,13 @@ import forms._
 
 class ApplicationController @Inject() (implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
+
+  def callback = Action.async(BodyParsers.parse.json) { implicit request =>
+    Logger.info(request.body.toString())
+    Future.successful {
+      Ok(Json.obj("ok" -> false, "message" -> "pelle"))
+    }
+  }
 
   /**
    * Handles the index action.

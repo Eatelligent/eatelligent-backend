@@ -29,14 +29,16 @@ object Build extends Build {
     "org.webjars" %% "webjars-play" % "2.3.0",
     "org.webjars" % "bootstrap" % "3.1.1",
     "org.webjars" % "jquery" % "1.11.0",
-    "com.mohiva" %% "play-silhouette" % "1.0"
+    "com.mohiva" %% "play-silhouette" % "1.0",
+    "default" %% "mealchooser-recommendation" % "1.0"
   )
 
-  lazy val main = Project(id = "play-slick-pg", base = file(".")).enablePlugins(play.PlayScala).settings(
+  lazy val main = Project(id = "mealchooser-backend", base = file(".")).enablePlugins(play.PlayScala).settings(
     libraryDependencies ++= appDependencies,
     resolvers += Resolver.mavenLocal,
     resolvers += Resolver.sonatypeRepo("snapshots"),
     resolvers += Resolver.file("Local Ivy", file(Path.userHome + "/.ivy2/local"))(Resolver.ivyStylePatterns),
+    scalaVersion := "2.10.2",
     scalacOptions ++= Seq("-deprecation", "-feature",
       "-language:implicitConversions",
       "-language:reflectiveCalls",

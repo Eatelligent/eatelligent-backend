@@ -248,4 +248,9 @@ trait JsonFormats {
     (JsPath \ "userId").write[Long] and
       (JsPath \ "recipeId").write[Long]
     )(unlift(Favorite.unapply))
+
+  implicit val recommendationWrites: Writes[Recommendation] = (
+    (JsPath \ "predictedRating").write[Double] and
+      (JsPath \ "recipe").write[Recipe]
+    )(unlift(Recommendation.unapply))
 }
