@@ -107,7 +107,6 @@ class RecipeDAOSlick @Inject() (
               .list
               .map(x => TinyRecipe(x._1.get, x._2, x._3))
           case None =>
-            slickRecipes
             val lFiltered = language match {
               case Some(l) => slickRecipes.filter(_.language === l)
               case None => slickRecipes
