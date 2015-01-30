@@ -10,6 +10,8 @@ import repository.models.{User, RecipeTag}
 import repository.services.TagService
 import play.api.libs.concurrent.Execution.Implicits._
 
+import scala.concurrent.Future
+
 class TagsController @Inject() (
   val tagService: TagService,
   implicit val env: Environment[User, CachedCookieAuthenticator])
@@ -17,7 +19,8 @@ class TagsController @Inject() (
 
   def listTags = SecuredAction.async { implicit request =>
     val tags = tagService.getAll
-    tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
+//    tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
+    Future.successful(Ok(Json.obj("ok" -> true, "tags" -> "pelle")))
   }
 
 
