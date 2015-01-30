@@ -14,6 +14,10 @@ import forms._
 class ApplicationController @Inject() (implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
 
+  def stressTestVerification = Action.async { implicit request =>
+    Future.successful(Ok(views.html.loader()))
+  }
+
   def callback = Action.async(BodyParsers.parse.json) { implicit request =>
     Logger.info(request.body.toString())
     Future.successful {

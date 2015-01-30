@@ -67,7 +67,7 @@ GET            /api/favorites/recipes                  @controllers.FavoritesCon
 POST           /api/favorites/recipes                  @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
-
+GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/ @controllers.ApplicationController.stressTestVerification
 
 
 # Map static resources from the /public folder to the /assets URL path
