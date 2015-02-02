@@ -37,53 +37,6 @@ class SignUpController @Inject() (
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
 
-  /**
-   * Registers a new user.
-   *
-   * @return The result to display.
-   */
-  def signUp = Action.async { implicit request =>
-    SignUpForm.form.bindFromRequest.fold (
-      form => Future.successful(BadRequest(views.html.signUp(form))),
-      data => {
-        val loginInfo = LoginInfo(CredentialsProvider.Credentials, data.email)
-        val authInfo = passwordHasher.hash(data.password)
-        val user = User(
-          userID = None,
-          loginInfo = loginInfo,
-          firstName = Some(data.firstName),
-          lastName = Some(data.lastName),
-          email = Some(data.email),
-          image = None,
-          role = Some("user"),
-          created = None,
-          recipeLanguage = None,
-          appLanguage = None,
-          city = None,
-          country = None,
-          sex = None,
-          yearBorn = None,
-          enrolled = None,
-          metricSystem = None
-        )
-        for {
-          avatar <- avatarService.retrieveURL(data.email)
-          user <- userService.save(user.copy(image = avatar))
-          authInfo <- authInfoService.save(loginInfo, authInfo)
-          maybeAuthenticator <- env.authenticatorService.create(user)
-        } yield {
-          maybeAuthenticator match {
-            case Some(authenticator) =>
-              env.eventBus.publish(SignUpEvent(user, request, request2lang))
-              env.eventBus.publish(LoginEvent(user, request, request2lang))
-              env.authenticatorService.send(authenticator, Redirect(routes.ApplicationController.index))
-            case None => throw new AuthenticationException("Couldn't create an authenticator")
-          }
-        }
-      }
-    )
-  }
-
   def signUpJson = Action.async(BodyParsers.parse.json) { implicit request =>
     request.body.validate[UserSignUp].fold (
       errors => Future.successful(BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))),

@@ -4,13 +4,9 @@
 
 # Home page
 GET            /                                       @controllers.ApplicationController.index
-GET            /signIn                                 @controllers.ApplicationController.signIn
-GET            /signUp                                 @controllers.ApplicationController.signUp
 GET            /signOut                                @controllers.ApplicationController.signOut
 GET            /api/authenticate/:provider             @controllers.SocialAuthController.authenticate(provider)
 GET            /authenticate/:provider                 @controllers.SocialAuthController.authenticate(provider)
-POST           /authenticate/credentials               @controllers.CredentialsAuthController.authenticate
-POST           /signUp                                 @controllers.SignUpController.signUp
 
 OPTIONS        /api/*wholepath                         @controllers.ApplicationController.optionsall(wholepath)
 
@@ -31,14 +27,12 @@ GET            /api/ingredients                        @controllers.IngredientCo
 
 GET            /api/ingredients/:id                    @controllers.IngredientController.getIngredient(id: Long)
 
-#POST    /api/ingredients                 @controllers.IngredientController.saveIngredient
 
 GET            /api/languages                          @controllers.LanguageController.listLanguages
 GET            /api/languages/:id                      @controllers.LanguageController.getLanguage(id: Long)
 
 POST           /api/languages                          @controllers.LanguageController.saveLanguage
 
-GET            /recipe_form                            @controllers.ApplicationController.recipeForm
 GET            /admin                                  @controllers.ApplicationController.adminPanel
 
 GET            /api/recipes/$id<[0-9]+>                @controllers.RecipeController.getRecipe(id: Long)
@@ -67,8 +61,10 @@ GET            /api/favorites/recipes                  @controllers.FavoritesCon
 POST           /api/favorites/recipes                  @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
+
+# Used for verify that we own the server for an stress testing plugin.
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/ @controllers.ApplicationController.stressTestVerification
-GET     /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt             controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")
+GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt             controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")
 
 # Map static resources from the /public folder to the /assets URL path
 GET            /assets/*file                           controllers.Assets.at(path="/public", file)

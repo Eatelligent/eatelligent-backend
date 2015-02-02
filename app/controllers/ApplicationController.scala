@@ -25,37 +25,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
     }
   }
 
-  /**
-   * Handles the index action.
-   *
-   * @return The result to display.
-   */
   def index = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.index(request.identity)))
-  }
-
-  /**
-   * Handles the Sign In action.
-   *
-   * @return The result to display.
-   */
-  def signIn = UserAwareAction.async { implicit request =>
-    request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
-      case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
-    }
-  }
-
-  /**
-   * Handles the Sign Up action.
-   *
-   * @return The result to display.
-   */
-  def signUp = UserAwareAction.async { implicit request =>
-    request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
-      case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
-    }
+    Future.successful(Redirect(routes.UserController.getCurrentUser()))
   }
 
   /**
@@ -66,10 +37,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
     Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))
-  }
-
-  def recipeForm = Action { implicit request =>
-    Ok(views.html.recipe_form())
   }
 
   def adminPanel = UserAwareAction { implicit request =>
