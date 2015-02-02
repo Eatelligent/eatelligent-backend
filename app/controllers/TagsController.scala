@@ -19,8 +19,7 @@ class TagsController @Inject() (
 
   def listTags = SecuredAction.async { implicit request =>
     val tags = tagService.getAll
-//    tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
-    Future.successful(Ok(Json.obj("ok" -> true, "tags" -> "pelle")))
+    tags.map(ts => Ok(Json.obj("ok" -> true, "tags" -> Json.toJson(ts))))
   }
 
 
