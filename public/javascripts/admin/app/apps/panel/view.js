@@ -46,7 +46,7 @@ define(function(require) {
         baselines: baseline,
         target: '.data-js-last-ratings',
         x_accessor: 'date',
-        y_accessor: 'value'
+        y_accessor: 'number'
       });
     }
   });
@@ -56,16 +56,11 @@ define(function(require) {
     className: 'col-md-6 text-center',
 
     onShow: function() {
-      var data = [];
-      for (var i = 0; i < 30; i++) {
-        data.push({
-          date: moment().subtract(i, 'days').format('YYYY-MM-DD'),
-          value: _.random(30-i, (30-i)+10)
-        });
-      }
-      data = convert_dates(data, 'date');
+      var data = this.collection.toJSON();
+
+      data = convert_dates(data, 'date', '%Y-%m-%dT%H:%M:%S.%L');
       var baseline = [{value:d3.mean(data, function(d) {
-        return d.value;
+        return d.number;
       }), label:'Average last 30 days'}];
 
       data_graphic({
@@ -77,7 +72,7 @@ define(function(require) {
         show_years: false,
         target: '.data-js-last-users',
         x_accessor: 'date',
-        y_accessor: 'value'
+        y_accessor: 'number'
       });
     }
   });

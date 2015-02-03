@@ -69,7 +69,7 @@ define(function(require) {
       var val = parseInt($(e.target).attr('value'));
       this.model.set('time', val);
     },
-    
+
     getTimes: function(n) {
       var minutes = function(i) {
         var min = 10;
@@ -102,7 +102,7 @@ define(function(require) {
       }
     }
   });
-  
+
   var LanguageView = Marionette.CompositeView.extend({
     template: languageTemplate,
     className: 'col-md-12 recipe-parameter',
