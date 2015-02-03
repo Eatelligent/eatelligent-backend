@@ -50,6 +50,18 @@ VALUES
   ('lasagneplater', (SELECT id FROM unit WHERE name = 'piece')),
   ('kjøttdeig', (SELECT id FROM unit WHERE name = 'gram'));
 
+INSERT INTO ingredient_tag(name)
+VALUES
+  ('Spicy'),
+  ('NotVegan'),
+  ('NotVegetarian'),
+  ('Gluten'),
+  ('Laktose'),
+  ('Spice'),
+  ('MainIngredient'),
+  ('Greens'),
+  ('Fruit');
+
 INSERT INTO recipe(name, language, created, modified, created_by)
 VALUES
   ('lasser', (SELECT id FROM language WHERE name = 'Norwegian'), NOW(), NOW(), (SELECT id FROM users WHERE first_name = 'garr')),

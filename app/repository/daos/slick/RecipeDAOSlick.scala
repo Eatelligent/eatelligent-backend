@@ -298,7 +298,7 @@ class RecipeDAOSlick @Inject() (
                   user.userID.get))
               r.ingredients.distinct.foreach {
                 i =>
-                  val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
+                  val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image, Seq()))
                   slickIngredientsInRecipe.insert(DBIngredientInRecipe(recipeFound.id.get, ingr.id.get, getUnitId(i
                     .unit), i
                     .amount))
@@ -333,7 +333,7 @@ class RecipeDAOSlick @Inject() (
         r.time, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.get))
       r.ingredients.distinct.foreach {
         i =>
-          val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image))
+          val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image, Seq()))
           slickIngredientsInRecipe.insert(DBIngredientInRecipe(rid, ingr.id.get, getUnitId(i.unit), i.amount))
       }
       r.tags.distinct.foreach {
@@ -351,10 +351,10 @@ class RecipeDAOSlick @Inject() (
       val ingredients = findIngredients(i.name)
       if (ingredients.isEmpty) {
         val iid = insertIngredient(DBIngredient(None, i.name, i.image))
-        Ingredient(Some(iid), i.name, i.image)
+        Ingredient(Some(iid), i.name, i.image, Seq())
       }
       else {
-        Ingredient(ingredients.head.id, i.name, ingredients.head.image)
+        Ingredient(ingredients.head.id, i.name, ingredients.head.image, Seq())
       }
     }
   }
@@ -362,7 +362,7 @@ class RecipeDAOSlick @Inject() (
   def findIngredients(name: String): Seq[Ingredient] = {
     DB withSession { implicit session =>
       Option(slickIngredients.filter(_.name.toLowerCase === name.toLowerCase).list) match {
-        case Some(ingredients) => ingredients.map(i => Ingredient(i.id, i.name, i.image))
+        case Some(ingredients) => ingredients.map(i => Ingredient(i.id, i.name, i.image, Seq()))
         case None => List()
       }
     }

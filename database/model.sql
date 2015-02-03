@@ -140,6 +140,19 @@ CREATE TABLE recipe_in_tag (
 CREATE UNIQUE INDEX recipe_in_tag_idx
 ON recipe_in_tag(recipe_id, tag_id);
 
+CREATE TABLE ingredient_tag (
+	id serial8 primary key,
+	name text NOT NULL UNIQUE
+);
+
+CREATE TABLE ingredient_in_tag (
+	ingredient_id int8 references ingredient(id) ON DELETE CASCADE,
+	tag_id int8 references ingredient_tag(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX ingredient_in_tag_idx
+ON ingredient_in_tag(ingredient_id, tag_id);
+
 CREATE TABLE ingredient_in_recipe (
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	ingredient_id int8 references ingredient(id) ON DELETE CASCADE,

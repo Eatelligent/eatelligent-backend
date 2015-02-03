@@ -333,6 +333,28 @@ object DBTableDefinitions {
       .unapply)
   }
 
+  case class DBIngredientTag(
+                            id: Option[Long],
+                            name: String
+                              )
+
+  class IngredientTags(tag: Tag) extends Table[DBIngredientTag](tag, "ingredient_tag") {
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
+    def name = column[String]("name")
+    def * = (id, name) <> (DBIngredientTag.tupled, DBIngredientTag.unapply)
+  }
+
+  case class DBIngredientInTag(
+                              ingredientId: Long,
+                              tagId: Long
+                                )
+
+  class IngredientsInTags(tag: Tag) extends Table[DBIngredientInTag](tag, "ingredient_in_tag") {
+    def ingredientId = column[Long]("ingredient_id")
+    def tagId = column[Long]("tag_id")
+    def * = (ingredientId, tagId) <> (DBIngredientInTag.tupled, DBIngredientInTag.unapply)
+  }
+
 
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
@@ -351,6 +373,8 @@ object DBTableDefinitions {
   val slickUserYesNoRateIngredient = TableQuery[UserYesNoRateIngredients]
   val slickUnits = TableQuery[Units]
   val slickFavorites = TableQuery[Favorites]
+  val slickIngredientTags = TableQuery[IngredientTags]
+  val slickIngredientInTags = TableQuery[IngredientsInTags]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {
@@ -371,6 +395,10 @@ object DBTableDefinitions {
 
   def insertUser(user: DBUser)(implicit session: Session): Long = {
     (slickUsers returning slickUsers.map(_.id) += user).toList.head
+  }
+
+  def insertIngredientTag(tag: DBIngredientTag)(implicit session: Session): Long = {
+    (slickIngredientTags returning slickIngredientTags.map(_.id) += tag).get
   }
 
 }

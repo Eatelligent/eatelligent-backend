@@ -32,6 +32,20 @@ trait JsonFormats {
     )
   )
 
+  implicit val ingredientSchemaRead: Reads[Ingredient] = (
+    (JsPath \ "id").readNullable[Long] and
+      (JsPath \ "name").read[String] and
+      (JsPath \ "image").readNullable[JsValue] and
+      (JsPath \ "tags").read[Seq[String]]
+    )(Ingredient.apply _)
+
+  implicit val ingredientSchemaWrites: Writes[Ingredient] = (
+    (JsPath \ "id").write[Option[Long]] and
+      (JsPath \ "name").write[String] and
+      (JsPath \ "image").write[Option[JsValue]] and
+      (JsPath \ "tags").write[Seq[String]]
+    )(unlift(Ingredient.unapply))
+
   implicit val dateStatsWrites: Writes[DateStats] = (
     (JsPath \ "date").write[LocalDateTime] and
       (JsPath \ "number").write[Int]

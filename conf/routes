@@ -24,6 +24,8 @@ POST           /api/users                              @controllers.SignUpContro
 POST           /api/authenticate                       @controllers.CredentialsAuthController.authenticateJson
 
 GET            /api/ingredients                        @controllers.IngredientController.listIngredients
+POST            /api/ingredients                        @controllers.IngredientController.saveIngredient
+PUT             /api/ingredients/:id                    @controllers.IngredientController.updateIngredient(id: Long)
 
 GET            /api/ingredients/:id                    @controllers.IngredientController.getIngredient(id: Long)
 

@@ -1,18 +1,14 @@
-import com.mohiva.play.silhouette.core.Logger
 import myUtils.CorsFilter
-import play.api.i18n.{Messages, Lang}
+import play.api.i18n.Lang
 import play.api.libs.json.Json
-import play.api._
-import play.api.mvc._
 import play.api.mvc.Results._
-import play.api.{Application, Logger, GlobalSettings}
-import play.api.mvc.{WithFilters, Filter, Result, RequestHeader}
-import com.mohiva.play.silhouette.core.{Logger, SecuredSettings}
-import repository.Exceptions.{NoSuchUserException, NoSuchFavoriteFoundException, DuplicateException, NoSuchRecipeException}
+import play.api.{Application, GlobalSettings}
+import play.api.mvc.{WithFilters, Result, RequestHeader}
+import com.mohiva.play.silhouette.core.SecuredSettings
+import repository.Exceptions._
 import utils.di.SilhouetteModule
 import scala.concurrent.Future
 import com.google.inject.{Guice, Injector}
-import controllers.routes
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -37,6 +33,7 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
         case e: IllegalArgumentException => BadRequest(Json.obj("ok" -> false, "message" -> Json
           .toJson(ex.getMessage)))
         case e: NoSuchRecipeException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
+        case e: NoSuchIngredientException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
         case e: DuplicateException => Conflict(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
         case e: NoSuchFavoriteFoundException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex
           .getMessage)))
