@@ -78,12 +78,13 @@ define(function(require) {
     },
 
     onShowPublished: function() {
-      if(this.collection.url === '/api/recipes') {
+      console.log(arguments);
+      if(this.collection.url === '/api/recipes?published=true&deleted=false') {
         this.collection.url = '/api/recipes?published=false&deleted=false';
         $('[data-js-show-published]', this.$el).html('Show published');
         $('.header-status', this.$el).html('(unpublished)');
       } else {
-        this.collection.url = '/api/recipes';
+        this.collection.url = '/api/recipes?published=true&deleted=false';
         $('[data-js-show-published]', this.$el).html('Show unpublished');
         $('.header-status', this.$el).html('(published)');
       }
