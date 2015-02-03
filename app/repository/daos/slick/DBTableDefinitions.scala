@@ -1,42 +1,10 @@
 package models.daos.slick
 
-import org.joda.time.{LocalDateTime, Duration, DateTime}
+import org.joda.time.LocalDateTime
 import play.api.libs.json.{Json, JsValue}
-//import play.api.data.format.Formats
-//import play.api.data.format.Formatter
-import play.api.data.FormError
 import myUtils.MyPostgresDriver.simple._
-import com.vividsolutions.jts.io.{WKTReader, WKTWriter}
 object DBTableDefinitions {
 
-//  implicit def date2dateTime = MappedColumnType.base[DateTime, Timestamp](
-//    dateTime => new Timestamp(dateTime.getMillis),
-//    date => new DateTime(date))
-
-//  def jsonFormat: Formatter[JsValue] = new Formatter[JsValue] {
-//    override val format = Some(("format.json", Nil))
-//
-//    def bind(key: String, data: Map[String, String]) =
-//      parsing(Json.parse(_), "error.json", Nil)(key, data)
-//    def unbind(key: String, value: JsValue) = Map(key -> Json.stringify(value))
-//  }
-//
-//  def durationFormat: Formatter[Duration] = new Formatter[Duration] {
-//    override val format = Some(("format.duration", Nil))
-//
-//    def bind(key: String, data: Map[String, String]) =
-//      parsing(Duration.parse(_), "error.duration", Nil)(key, data)
-//    def unbind(key: String, value: Duration) = Map(key -> value.toString)
-//  }
-//
-//  private def parsing[T](parse: String => T, errMsg: String, errArgs: Seq[Any])(
-//    key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
-//    Formats.stringFormat.bind(key, data).right.flatMap { s =>
-//      scala.util.control.Exception.allCatch[T]
-//        .either(parse(s))
-//        .left.map(e => Seq(FormError(key, errMsg, errArgs)))
-//    }
-//  }
 
   case class DBLanguage(
                        id: Option[Long] = None,

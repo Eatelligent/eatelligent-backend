@@ -1,7 +1,7 @@
 package repository.daos.slick
 
 import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
+import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import repository.daos.LanguageDAO
 import repository.models.Language

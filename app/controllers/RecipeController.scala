@@ -22,7 +22,7 @@ class RecipeController @Inject() (
   def listRecipes(q: Option[String], offset: Integer , limit: Integer, published: Option[Boolean], deleted:
   Option[Boolean], language: Option[Long],
                   tag: Option[String]) =
-    SecuredAction(WithRole("admin")).async { implicit request =>
+    SecuredAction.async { implicit request =>
     val recipes = recipeService.find(q, offset, limit, published, deleted, language, tag)
     recipes.map(r => Ok(Json.obj("ok" -> true, "recipes" -> Json.toJson(r))))
   }

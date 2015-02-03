@@ -2,7 +2,7 @@ package models.daos.slick
 
 import org.joda.time.LocalDateTime
 import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
+import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
 import repository.Exceptions.NoSuchUserException

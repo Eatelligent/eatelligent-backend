@@ -5,7 +5,7 @@ import repository.Exceptions.NoSuchRecipeException
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._
-import play.api.db.slick.Config.driver.simple._
+import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
 import play.api.Play.current
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
