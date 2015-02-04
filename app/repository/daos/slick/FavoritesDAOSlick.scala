@@ -1,7 +1,7 @@
 package repository.daos.slick
 
 import org.postgresql.util.PSQLException
-import repository.Exceptions.{NoSuchRecipeException, DuplicateException, NoSuchFavoriteFoundException}
+import repository.exceptions.{NoSuchRecipeException, DuplicateException, NoSuchFavoriteFoundException}
 import repository.daos.FavoritesDAO
 import repository.models.Favorite
 import com.google.inject.Inject

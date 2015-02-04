@@ -11,7 +11,7 @@ import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
-import repository.Exceptions.{NoSuchUnitException, NoSuchRecipeException}
+import repository.exceptions.{NoSuchUnitException, NoSuchRecipeException}
 import repository.daos.{RatingDAO, RecipeDAO}
 import repository.models._
 import scala.concurrent._

@@ -1,4 +1,4 @@
-package repository.Exceptions
+package repository.exceptions
 
 case class NoSuchUnitException(message: String) extends Exception(message) {
   def this(name: Long) = this("No unit with name: " + name + " was found.")

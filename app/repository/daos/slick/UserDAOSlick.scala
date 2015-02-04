@@ -5,7 +5,7 @@ import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
-import repository.Exceptions.NoSuchUserException
+import repository.exceptions.NoSuchUserException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import play.Logger

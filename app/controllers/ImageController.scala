@@ -3,7 +3,7 @@ package controllers
 import com.google.inject.Inject
 import myUtils.JsonFormats
 import play.api.libs.json.Json
-import repository.Exceptions.NoSuchRecipeException
+import repository.exceptions.NoSuchRecipeException
 import repository.models.{User, Image}
 import repository.services.RecipeService
 

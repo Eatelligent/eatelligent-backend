@@ -1,4 +1,4 @@
-package repository.Exceptions
+package repository.exceptions
 
 case class NoSuchRecipeException(message: String) extends  Exception(message) {
   def this(id: Long) = this("No recipe with id: " + id + " was found.")

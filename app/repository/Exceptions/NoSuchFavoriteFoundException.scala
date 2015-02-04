@@ -1,4 +1,4 @@
-package repository.Exceptions
+package repository.exceptions
 
 case class NoSuchFavoriteFoundException(message: String) extends  Exception(message) {
   def this(userId: Long, recipeId: Long) = this("User " + userId + " has not recipe " + recipeId + " in his " +

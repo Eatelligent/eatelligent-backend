@@ -1,7 +1,7 @@
 package repository.daos.slick
 
 import org.joda.time.{DateTime, LocalDateTime}
-import repository.Exceptions.NoSuchRecipeException
+import repository.exceptions.NoSuchRecipeException
 import repository.daos.RatingDAO
 import repository.models.{UserYesNoRateIngredient, UserYesNoRateRecipe, UserStarRateRecipe}
 import play.api.db.slick._

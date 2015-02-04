@@ -6,7 +6,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.services.AuthInfo
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
-import repository.Exceptions.DuplicateException
+import repository.exceptions.DuplicateException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import repository.daos.UserDAO

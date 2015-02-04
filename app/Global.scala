@@ -5,7 +5,7 @@ import play.api.mvc.Results._
 import play.api.{Application, GlobalSettings}
 import play.api.mvc.{WithFilters, Result, RequestHeader}
 import com.mohiva.play.silhouette.core.SecuredSettings
-import repository.Exceptions._
+import repository.exceptions._
 import myUtils.di.SilhouetteModule
 import scala.concurrent.Future
 import com.google.inject.{Guice, Injector}

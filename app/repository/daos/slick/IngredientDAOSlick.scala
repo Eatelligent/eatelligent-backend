@@ -1,6 +1,6 @@
 package repository.daos.slick
 
-import repository.Exceptions.{NoSuchIngredientException, DuplicateException}
+import repository.exceptions.{NoSuchIngredientException, DuplicateException}
 import repository.daos.IngredientDAO
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
