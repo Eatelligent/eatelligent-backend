@@ -27,8 +27,8 @@ class UserDAOSlick extends UserDAO {
    * @return The found user or None if no user for the given login info could be found.
    */
   def find(loginInfo: LoginInfo) = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickLoginInfos.filter(
           x => x.providerID === loginInfo.providerID && x.providerKey === loginInfo.providerKey
         ).firstOption match {
@@ -72,8 +72,8 @@ class UserDAOSlick extends UserDAO {
    * @return The found user or None if no user for the given ID could be found.
    */
   def find(userID: Long): Future[Option[User]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUsers.filter(
           _.id === userID
         ).firstOption match {
@@ -111,8 +111,8 @@ class UserDAOSlick extends UserDAO {
   }
 
   def find(email: String): Future[Option[User]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUsers.filter(
           _.email === email
         ).firstOption match {
@@ -150,8 +150,8 @@ class UserDAOSlick extends UserDAO {
   }
 
   def update(user: UserUpdate, id: Long): Future[Option[User]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUsers.filter(_.id === id).firstOption match {
           case Some(u) =>
             slickUsers.filter(_.id === id).update(
@@ -182,8 +182,8 @@ class UserDAOSlick extends UserDAO {
           case None => throw new NoSuchUserException(id)
         }
       }
-      find(id)
     }
+    find(id)
   }
 
   /**
@@ -193,8 +193,8 @@ class UserDAOSlick extends UserDAO {
    * @return The saved user.
    */
   def save(user: User): Future[User] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val dbUser =
           DBUser(user.userID,
             user.firstName,
@@ -241,13 +241,13 @@ class UserDAOSlick extends UserDAO {
             slickUserLoginInfos += DBUserLoginInfo(id, dbLoginInfo.id.get)
         }
       }
-      find(user.email.get) map (u => u.get)// We do not change the user => return it
     }
+    find(user.email.get) map (u => u.get)// We do not change the user => return it
   }
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUsers.drop(offset).take(limit).list map {
           u => TinyUser(u.userID.get, u.firstName, u.lastName)
         }

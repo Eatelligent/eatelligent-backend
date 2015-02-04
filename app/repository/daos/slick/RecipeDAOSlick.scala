@@ -1,14 +1,12 @@
 package repository.daos.slick
 
 import java.io.File
-import java.util.UUID
 
 import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
 import models.daos.UserDAO
 import org.joda.time.LocalDateTime
-import play.api.Logger
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
@@ -76,8 +74,8 @@ class RecipeDAOSlick @Inject() (
 
   def find(q: Option[String], offset: Integer, limit: Integer, published: Option[Boolean], deleted: Option[Boolean],
            language: Option[Long], tag: Option[String]): Future[List[TinyRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         tag match {
           case Some(tagName) =>
             val join = for {
@@ -135,8 +133,8 @@ class RecipeDAOSlick @Inject() (
   }
 
   def findIngredientsForRecipe(recipeId: Long) : Future[Seq[IngredientForRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val join = for {
           ((iir, i), u) <- slickIngredientsInRecipe innerJoin slickIngredients on (_.ingredientId === _.id) innerJoin
             slickUnits on (_._1.unitId === _.id) if iir.recipeId === recipeId
@@ -151,8 +149,8 @@ class RecipeDAOSlick @Inject() (
   }
 
   def findTagsForRecipe(recipeId: Long): Future[Seq[String]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val join = for {
           (tfr, t) <- slickTagsForRecipe innerJoin slickTags on (_.tagId === _.id) if tfr.recipeId === recipeId
         } yield (t.id, t.name)
@@ -168,9 +166,8 @@ class RecipeDAOSlick @Inject() (
 
 
   def findRecipesInTag(tagName: String): Future[Seq[TinyRecipe]] = {
-    // select * from recipe as r join recipe_in_tag on r.id = recipe_id join tags as t on t.id = tag_id WHERE t.name = 'norsk';
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val join = for {
           (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
             .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase

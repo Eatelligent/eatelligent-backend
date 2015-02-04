@@ -12,8 +12,8 @@ class LanguageDAOSlick extends LanguageDAO {
   import play.api.Play.current
 
   def find(id: Long): Future[Option[Language]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickLanguages.filter (
           _.id === id
         ).firstOption match {
@@ -33,8 +33,8 @@ class LanguageDAOSlick extends LanguageDAO {
   }
 
   def getAll: Future[Seq[Language]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickLanguages.list.map(l => Language(l.id, l.name, l.locale))
       }
     }

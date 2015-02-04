@@ -33,8 +33,8 @@ class RatingDAOSlick extends RatingDAO {
   }
 
   def findUserStarRateRecipe(userId: Long, recipeId: Long): Future[Option[UserStarRateRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUserStarRateRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
           case Some(x) => Some(UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created)))
           case None => None
@@ -44,8 +44,8 @@ class RatingDAOSlick extends RatingDAO {
   }
 
   def findStarRatingsForRecipe(recipeId: Long): Future[Seq[UserStarRateRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUserStarRateRecipes.filter(_.recipeId === recipeId).list map {
           x => UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created))
         }
@@ -54,8 +54,8 @@ class RatingDAOSlick extends RatingDAO {
   }
 
   def findStarRatingsForUser(userId: Long): Future[Seq[UserStarRateRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickUserStarRateRecipes.filter(_.userId === userId).list map {
           x => UserStarRateRecipe(Some(x.userId), x.recipeId, x.stars, Some(x.created))
         }
@@ -64,8 +64,8 @@ class RatingDAOSlick extends RatingDAO {
   }
 
   def getAverageRatingForRecipe(recipeId: Long): Future[Option[Double]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         Q.queryNA[Option[Double]]("SELECT avg(rating) AS avg_rating " +
           "FROM user_star_rate_recipe " +
           "WHERE recipe_id = '" + recipeId + "';").first

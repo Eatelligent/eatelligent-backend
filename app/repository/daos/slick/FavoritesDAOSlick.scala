@@ -16,8 +16,8 @@ class FavoritesDAOSlick @Inject() extends FavoritesDAO {
 
 
   def addToFavorites(userId: Long, recipeId: Long): Future[Favorite] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         try {
           slickRecipes.filter(_.id === recipeId).firstOption match {
             case Some(r) => slickFavorites.insert(DBFavorites(userId, recipeId))
@@ -33,8 +33,8 @@ class FavoritesDAOSlick @Inject() extends FavoritesDAO {
   }
 
   def getFavoritesForUser(userId: Long): Future[Seq[TinyRecipe]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val join = for {
           (f, r) <- slickFavorites innerJoin slickRecipes on (_.recipeId === _.id) if f.userId === userId
         } yield(f.recipeId, r.name, r.image)
@@ -46,8 +46,8 @@ class FavoritesDAOSlick @Inject() extends FavoritesDAO {
   }
 
   def removeFromFavorites(userId: Long, recipeId: Long) = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickFavorites.filter(f => f.recipeId === recipeId && f.userId === userId).firstOption match {
           case Some(fav) =>
             slickFavorites.filter(f => f.recipeId === recipeId && f.userId === userId).delete

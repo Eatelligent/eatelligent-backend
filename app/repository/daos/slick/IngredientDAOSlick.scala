@@ -13,16 +13,16 @@ class IngredientDAOSlick extends IngredientDAO {
   import play.api.Play.current
 
   def getAll: Future[Seq[Ingredient]] = {
-    DB withSession { implicit session =>
-      Future.successful{
+    Future.successful{
+      DB withSession { implicit session =>
         slickIngredients.list.map(i => Ingredient(i.id, i.name, i.image, Seq()))
       }
     }
   }
 
   def find(id: Long): Future[Option[Ingredient]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickIngredients.filter(
           i => i.id === id
         ).firstOption match {
@@ -36,8 +36,8 @@ class IngredientDAOSlick extends IngredientDAO {
   }
 
   def find(name: String): Future[Option[Ingredient]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickIngredients.filter(
           _.name.toLowerCase like "%" + name.toLowerCase + "%"
         ).firstOption match {

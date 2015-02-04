@@ -13,8 +13,8 @@ class TagDAOSlick extends TagDAO {
 
 
   def find(id: Long): Future[Option[RecipeTag]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickTags.filter(
           t => t.id === id
         ).firstOption match {
@@ -26,8 +26,8 @@ class TagDAOSlick extends TagDAO {
   }
 
   def save(tag: RecipeTag): Future[RecipeTag] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         val dbTag = DBTag(tag.id, tag.name)
         slickTags.filter(_.id === dbTag.id).firstOption match {
           case Some(i) => slickTags.filter(_.id === dbTag.id).update(dbTag)
@@ -39,8 +39,8 @@ class TagDAOSlick extends TagDAO {
   }
 
   def getAll: Future[Seq[RecipeTag]] = {
-    DB withSession { implicit session =>
-      Future.successful {
+    Future.successful {
+      DB withSession { implicit session =>
         slickTags.list.map(t => RecipeTag(t.id, t.name))
       }
     }
