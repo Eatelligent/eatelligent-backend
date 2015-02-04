@@ -19,6 +19,9 @@ DROP TABLE IF EXISTS passwordinfo CASCADE;
 DROP TABLE IF EXISTS userlogininfo CASCADE;
 DROP TABLE IF EXISTS logininfo;
 DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS ingredient_in_tag;
+DROP TABLE IF EXISTS ingredient_tag;
+
 
 CREATE TABLE language (
 	id serial8 primary key,

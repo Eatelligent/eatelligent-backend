@@ -30,20 +30,20 @@ class ImageController @Inject() (
 
   def saveRecipeImage(recipeId: Long) = SecuredAction.async { implicit request =>
     directUploadForm.bindFromRequest.fold(
-      formWithErrors => future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) },
+      formWithErrors => Future.successful { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) },
       imageDetails => {
         val body = request.body.asMultipartFormData
         val resourceFile = body.get.file("image")
         if (resourceFile.isEmpty) {
           val formWithErrors = directUploadForm.withError(FormError("image", "Must supply image"))
-          future { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) }
+          Future.successful { BadRequest(Json.obj("ok" -> false, "message" -> formWithErrors.errorsAsJson)) }
         } else {
           try {
             val recipeImage = recipeService.saveImage(recipeId, resourceFile.get.ref.file)
             recipeImage.map(i => Created(Json.obj("ok" -> true, "recipeImage" -> Json.toJson(i))))
           }
           catch {
-            case e: NoSuchRecipeException => Future(BadRequest(Json.obj("ok" -> false, "message" -> e.getMessage)))
+            case e: NoSuchRecipeException => Future.successful(BadRequest(Json.obj("ok" -> false, "message" -> e.getMessage)))
           }
         }
       })
