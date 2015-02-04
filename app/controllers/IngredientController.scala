@@ -23,6 +23,13 @@ class IngredientController @Inject() (
     ingredients.map(i => Ok(Json.obj("ok" -> true, "ingredients" -> i)))
   }
 
+  def getIngredientTags = SecuredAction.async { implicit request =>
+    val tags = ingredientDAO.getAllIngredientTags
+    tags.map(t => Ok(Json.obj("ok" -> true, "ingredient_tags" -> t)))
+  }
+
+  getIngredientTags
+
   def saveIngredient = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     val ingredientResult = request.body.validate[Ingredient]
 

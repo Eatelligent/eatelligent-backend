@@ -27,8 +27,8 @@ GET            /api/ingredients                        @controllers.IngredientCo
 POST            /api/ingredients                        @controllers.IngredientController.saveIngredient
 PUT             /api/ingredients/:id                    @controllers.IngredientController.updateIngredient(id: Long)
 
-GET            /api/ingredients/:id                    @controllers.IngredientController.getIngredient(id: Long)
-
+GET            /api/ingredients/$id<[0-9]+>            @controllers.IngredientController.getIngredient(id: Long)
+GET            /api/ingredients/tags                   @controllers.IngredientController.getIngredientTags
 
 GET            /api/languages                          @controllers.LanguageController.listLanguages
 GET            /api/languages/:id                      @controllers.LanguageController.getLanguage(id: Long)

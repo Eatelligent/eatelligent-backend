@@ -178,6 +178,11 @@ trait JsonFormats {
       (JsPath \ "name").write[String]
     )(unlift(RecipeTag.unapply))
 
+  implicit val ingredientTagWrite: Writes[IngredientTag] =(
+    (JsPath \ "id").write[Option[Long]] and
+      (JsPath \ "name").write[String]
+    )(unlift(IngredientTag.unapply))
+
   implicit val ingredientForRecipeRead: Reads[IngredientForRecipe] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read(minLength[String](1)) and

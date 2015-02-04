@@ -4,7 +4,7 @@ import repository.Exceptions.{NoSuchIngredientException, DuplicateException}
 import repository.daos.IngredientDAO
 import myUtils.MyPostgresDriver.simple._
 import models.daos.slick.DBTableDefinitions._
-import repository.models.Ingredient
+import repository.models.{IngredientTag, Ingredient}
 import play.api.db.slick._
 
 import scala.concurrent.Future
@@ -15,7 +15,7 @@ class IngredientDAOSlick extends IngredientDAO {
   def getAll: Future[Seq[Ingredient]] = {
     Future.successful{
       DB withSession { implicit session =>
-        slickIngredients.list.map(i => Ingredient(i.id, i.name, i.image, Seq()))
+        slickIngredients.list.map(i => Ingredient(i.id, i.name, i.image, findTagsForIngredient(i.id.get)))
       }
     }
   }
@@ -107,6 +107,14 @@ class IngredientDAOSlick extends IngredientDAO {
       }
       else {
         DBIngredientTag(tags.head.id, name)
+      }
+    }
+  }
+
+  def getAllIngredientTags: Future[List[IngredientTag]] = {
+    Future.successful {
+      DB withSession { implicit session =>
+        slickIngredientTags.list.map(i => IngredientTag(i.id, i.name))
       }
     }
   }

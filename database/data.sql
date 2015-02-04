@@ -52,15 +52,21 @@ VALUES
 
 INSERT INTO ingredient_tag(name)
 VALUES
-  ('Spicy'),
-  ('NotVegan'),
-  ('NotVegetarian'),
-  ('Gluten'),
-  ('Laktose'),
+  ('Meat'),
+  ('Fish'),
+  ('Seafood'),
   ('Spice'),
-  ('MainIngredient'),
-  ('Greens'),
-  ('Fruit');
+  ('Spicy'),
+  ('Salty'),
+  ('Flour'),
+  ('Extras'),
+  ('Fruit'),
+  ('Berries'),
+  ('Cheese'),
+  ('Milk product'),
+  ('Pasta'),
+  ('Potatoes'),
+  ('Green');
 
 INSERT INTO recipe(name, language, created, modified, created_by)
 VALUES

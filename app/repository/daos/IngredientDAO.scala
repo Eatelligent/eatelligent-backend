@@ -1,6 +1,6 @@
 package repository.daos
 
-import repository.models.Ingredient
+import repository.models.{IngredientTag, Ingredient}
 
 import scala.concurrent.Future
 
@@ -15,5 +15,7 @@ trait IngredientDAO {
   def getAll: Future[Seq[Ingredient]]
 
   def update(ingredient: Ingredient, ingredientId: Long): Future[Option[Ingredient]]
+
+  def getAllIngredientTags: Future[Seq[IngredientTag]]
 
 }
