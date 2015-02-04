@@ -3,71 +3,69 @@
 # ~~~~
 
 # Home page
-GET            /                                       @controllers.ApplicationController.index
-GET            /signOut                                @controllers.ApplicationController.signOut
-GET            /api/authenticate/:provider             @controllers.SocialAuthController.authenticate(provider)
-GET            /authenticate/:provider                 @controllers.SocialAuthController.authenticate(provider)
+GET            /                                                     @controllers.ApplicationController.index
+GET            /signOut                                              @controllers.ApplicationController.signOut
+GET            /api/authenticate/:provider                           @controllers.SocialAuthController.authenticate(provider)
+GET            /authenticate/:provider                               @controllers.SocialAuthController.authenticate(provider)
 
-OPTIONS        /api/*wholepath                         @controllers.ApplicationController.optionsall(wholepath)
+OPTIONS        /api/*wholepath                                       @controllers.ApplicationController.optionsall(wholepath)
 
-GET            /api/users                              @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
+GET            /api/users                                            @controllers.UserController.listUsers(offset: Integer ?= 0, limit: Integer ?= 20)
 
 
-GET            /api/recommendation/recipes             @controllers.AIController.ai
+GET            /api/recommendation/recipes                           @controllers.AIController.ai
 
-GET            /api/users/:id                          @controllers.UserController.getUser(id: Long)
-GET            /api/user                               @controllers.UserController.getCurrentUser
-PUT            /api/user                               @controllers.UserController.updateUser
+GET            /api/users/:id                                        @controllers.UserController.getUser(id: Long)
+GET            /api/user                                             @controllers.UserController.getCurrentUser
+PUT            /api/user                                             @controllers.UserController.updateUser
 
-POST           /api/users                              @controllers.SignUpController.signUpJson
+POST           /api/users                                            @controllers.SignUpController.signUpJson
 
-POST           /api/authenticate                       @controllers.CredentialsAuthController.authenticateJson
+POST           /api/authenticate                                     @controllers.CredentialsAuthController.authenticateJson
 
-GET            /api/ingredients                        @controllers.IngredientController.listIngredients
-POST            /api/ingredients                        @controllers.IngredientController.saveIngredient
-PUT             /api/ingredients/:id                    @controllers.IngredientController.updateIngredient(id: Long)
+GET            /api/ingredients                                      @controllers.IngredientController.listIngredients
+GET            /api/ingredients/$id<[0-9]+>                          @controllers.IngredientController.getIngredient(id: Long)
+POST           /api/ingredients                                      @controllers.IngredientController.saveIngredient
+PUT            /api/ingredients/$id<[0-9]+>                          @controllers.IngredientController.updateIngredient(id: Long)
 
-GET            /api/ingredients/$id<[0-9]+>            @controllers.IngredientController.getIngredient(id: Long)
-GET            /api/ingredients/tags                   @controllers.IngredientController.getIngredientTags
+GET            /api/ingredients/tags                                 @controllers.IngredientController.getIngredientTags
 
-GET            /api/languages                          @controllers.LanguageController.listLanguages
-GET            /api/languages/:id                      @controllers.LanguageController.getLanguage(id: Long)
+GET            /api/languages                                        @controllers.LanguageController.listLanguages
+GET            /api/languages/:id                                    @controllers.LanguageController.getLanguage(id: Long)
 
-POST           /api/languages                          @controllers.LanguageController.saveLanguage
+POST           /api/languages                                        @controllers.LanguageController.saveLanguage
 
-GET            /admin                                  @controllers.ApplicationController.adminPanel
+GET            /admin                                                @controllers.ApplicationController.adminPanel
 
-GET            /api/recipes/$id<[0-9]+>                @controllers.RecipeController.getRecipe(id: Long)
+GET            /api/recipes/$id<[0-9]+>                              @controllers.RecipeController.getRecipe(id: Long)
 
-GET            /api/recipes                            @controllers.RecipeController.listRecipes(q : Option[String],offset: Integer        ?= 0,        limit:        Integer        ?= 20,        published:        Option[        Boolean],deleted: Option[Boolean], language:        Option[Long],        tag:        Option[String])
+GET            /api/recipes                                          @controllers.RecipeController.listRecipes(q : Option[String],offset: Integer        ?= 0,        limit:        Integer        ?= 20,        published:        Option[        Boolean],deleted: Option[Boolean], language:        Option[Long],        tag:        Option[String])
 
-POST           /api/recipes                            @controllers.RecipeController.saveRecipe
-PUT            /api/recipes/:id                        @controllers.RecipeController.updateRecipe(id: Long)
-DELETE         /api/recipes/:id                        @controllers.RecipeController.deleteRecipe(id: Long)
+POST           /api/recipes                                          @controllers.RecipeController.saveRecipe
+PUT            /api/recipes/$id<[0-9]+>                              @controllers.RecipeController.updateRecipe(id: Long)
+DELETE         /api/recipes/$id<[0-9]+>                              @controllers.RecipeController.deleteRecipe(id: Long)
 
-POST           /api/recipes/:recipeId                  @controllers.ImageController.saveRecipeImage(recipeId: Long)
+POST           /api/recipes/$recipeId<[0-9]+>                        @controllers.ImageController.saveRecipeImage(recipeId: Long)
 
-GET            /api/tags                               @controllers.TagsController.listTags
+GET            /api/recipes/tags                                     @controllers.TagsController.findTags(q: Option[String])
 
-GET            /api/tags/:tagName                      @controllers.RecipeController.getRecipesInTag(tagName: String)
+POST           /api/ratings/recipes                                  @controllers.RecipeRatingController.saveStarRatingRecipe
+GET            /api/ratings/recipes/$recipeId<[0-9]+>                @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
+GET            /api/ratings/users                                    @controllers.RecipeRatingController.listRatingsForUser
 
-POST           /api/ratings/recipes                    @controllers.RecipeRatingController.saveStarRatingRecipe
-GET            /api/ratings/recipes/:recipeId          @controllers.RecipeRatingController.listRatingsForRecipe(recipeId: Long)
-GET            /api/ratings/users                      @controllers.RecipeRatingController.listRatingsForUser
+GET            /api/stats                                            @controllers.StatsController.getTotalStats
+GET            /api/stats/users                                      @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
+GET            /api/stats/ratings                                    @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
 
-GET            /api/stats                              @controllers.StatsController.getTotalStats
-GET            /api/stats/users                        @controllers.StatsController.getUserStats(from: String ?="1970-01-01", to: String ?= "2100-12-31")
-GET            /api/stats/ratings                      @controllers.StatsController.getRatingStats(from:String?="1970-01-01", to: String ?= "2100-12-31")
-
-GET            /api/favorites/recipes                  @controllers.FavoritesController.listFavorites
-POST           /api/favorites/recipes                  @controllers.FavoritesController.addToFavorite
-DELETE         /api/favorites/recipes/:recipeId        @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
+GET            /api/favorites/recipes                                @controllers.FavoritesController.listFavorites
+POST           /api/favorites/recipes                                @controllers.FavoritesController.addToFavorite
+DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 
 # Used for verify that we own the server for an stress testing plugin.
-GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/ @controllers.ApplicationController.stressTestVerification
-GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt             controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")
+GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/           @controllers.ApplicationController.stressTestVerification
+GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt        controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")
 
 # Map static resources from the /public folder to the /assets URL path
-GET            /assets/*file                           controllers.Assets.at(path="/public", file)
-GET            /webjars/*file                          controllers.WebJarAssets.at(file)
+GET            /assets/*file                                         controllers.Assets.at(path="/public", file)
+GET            /webjars/*file                                        controllers.WebJarAssets.at(file)

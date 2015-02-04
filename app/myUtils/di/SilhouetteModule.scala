@@ -32,7 +32,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   def configure() {
     bind[UserService].to[UserServiceImpl]
-    bind[TagService].to[TagServiceImpl]
     bind[RecipeService].to[RecipeServiceImpl]
     bind[LanguageService].to[LanguageServiceImpl]
     bind[UserDAO].to[UserDAOSlick]

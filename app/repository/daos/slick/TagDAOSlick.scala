@@ -25,6 +25,18 @@ class TagDAOSlick extends TagDAO {
     }
   }
 
+  def find(query: String): Future[Seq[RecipeTag]] = {
+    Future.successful {
+      DB withSession { implicit session =>
+        slickTags.filter(
+          t => t.name like "%" + query + "%"
+        )
+        .list
+        .map(t => RecipeTag(t.id, t.name))
+      }
+    }
+  }
+
   def save(tag: RecipeTag): Future[RecipeTag] = {
     Future.successful {
       DB withSession { implicit session =>
