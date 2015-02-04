@@ -2,10 +2,9 @@ package controllers
 
 import com.google.inject.Inject
 import myUtils.JsonFormats
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Writes, Json}
+import play.api.libs.json.Json
 import repository.Exceptions.NoSuchRecipeException
-import repository.models.{RecipeImage, User, Image}
+import repository.models.{User, Image}
 import repository.services.RecipeService
 
 import scala.concurrent._

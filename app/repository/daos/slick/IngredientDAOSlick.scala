@@ -3,7 +3,7 @@ package repository.daos.slick
 import repository.Exceptions.{NoSuchIngredientException, DuplicateException}
 import repository.daos.IngredientDAO
 import myUtils.MyPostgresDriver.simple._
-import models.daos.slick.DBTableDefinitions._
+import repository.daos.slick.DBTableDefinitions._
 import repository.models.{IngredientTag, Ingredient}
 import play.api.db.slick._
 

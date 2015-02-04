@@ -1,8 +1,7 @@
-package utils.di
+package myUtils.di
 
 import play.api.Play
 import play.api.Play.current
-import play.Logger
 import com.google.inject.{ Provides, AbstractModule }
 import net.codingwell.scalaguice.ScalaModule
 import com.mohiva.play.silhouette.core.{EventBus, Environment}
@@ -10,13 +9,10 @@ import com.mohiva.play.silhouette.core.utils._
 import com.mohiva.play.silhouette.core.services._
 import com.mohiva.play.silhouette.core.providers._
 import com.mohiva.play.silhouette.core.providers.oauth2._
-import com.mohiva.play.silhouette.core.providers.oauth1._
 import com.mohiva.play.silhouette.contrib.utils._
 import com.mohiva.play.silhouette.contrib.services._
 import com.mohiva.play.silhouette.contrib.daos.DelegableAuthInfoDAO
-import models.services.{UserService, UserServiceImpl}
-import models.daos._
-import models.daos.slick._
+import repository.services.{UserService, UserServiceImpl}
 import repository.daos._
 import repository.daos.slick._
 import repository.models.User

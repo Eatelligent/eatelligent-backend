@@ -1,9 +1,8 @@
-package models.daos
+package repository.daos
 
 import com.mohiva.play.silhouette.core.LoginInfo
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
-import java.util.UUID
 
 /**
  * Give access to the user object.

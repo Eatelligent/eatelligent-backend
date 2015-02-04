@@ -3,7 +3,7 @@ package repository.daos.slick
 import repository.daos.TagDAO
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
-import models.daos.slick.DBTableDefinitions._
+import repository.daos.slick.DBTableDefinitions._
 import repository.models.RecipeTag
 
 import scala.concurrent.Future

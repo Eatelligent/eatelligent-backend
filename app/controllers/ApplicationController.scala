@@ -1,6 +1,6 @@
 package controllers
 
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.Json
 import play.api.{Logger, Play}
 import play.api.Play.current
 import play.api.mvc._
@@ -9,7 +9,6 @@ import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import repository.models.User
 import scala.concurrent.Future
 import javax.inject.Inject
-import forms._
 
 class ApplicationController @Inject() (implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
@@ -29,11 +28,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
     Future.successful(Redirect(routes.UserController.getCurrentUser()))
   }
 
-  /**
-   * Handles the Sign Out action.
-   *
-   * @return The result to display.
-   */
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
     Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))

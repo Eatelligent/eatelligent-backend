@@ -1,4 +1,4 @@
-package models.daos.slick
+package repository.daos.slick
 
 import org.joda.time.LocalDateTime
 import play.api.libs.json.{Json, JsValue}

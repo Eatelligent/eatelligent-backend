@@ -5,11 +5,11 @@ import java.io.File
 import cloudinary.model.CloudinaryResource
 import com.cloudinary.parameters.UploadParameters
 import com.google.inject.Inject
-import models.daos.UserDAO
+import repository.daos.UserDAO
 import org.joda.time.LocalDateTime
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
-import models.daos.slick.DBTableDefinitions._
+import repository.daos.slick.DBTableDefinitions._
 import play.api.libs.json.JsValue
 import repository.Exceptions.{NoSuchUnitException, NoSuchRecipeException}
 import repository.daos.{RatingDAO, RecipeDAO}

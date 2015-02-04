@@ -1,6 +1,4 @@
-package models.services
-
-import java.util.UUID
+package repository.services
 
 import com.mohiva.play.silhouette.core.services.{AuthInfo, IdentityService}
 import com.mohiva.play.silhouette.core.providers.CommonSocialProfile

@@ -1,10 +1,7 @@
 package controllers
 
-import java.util.UUID
 import javax.inject.Inject
 import myUtils.JsonFormats
-import org.joda.time.DateTime
-import play.api.Logger
 import play.api.libs.json._
 import repository.models.User
 
@@ -16,15 +13,8 @@ import com.mohiva.play.silhouette.core.providers._
 import com.mohiva.play.silhouette.core.services.AuthInfoService
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import models.services.UserService
-import forms.SignInForm
-import play.api.libs.functional.syntax._
+import repository.services.UserService
 
-/**
- * The credentials auth controller.
- *
- * @param env The Silhouette environment.
- */
 class CredentialsAuthController @Inject() (
                                             implicit val env: Environment[User, CachedCookieAuthenticator],
                                             val userService: UserService,

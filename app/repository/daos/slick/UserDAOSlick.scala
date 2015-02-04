@@ -1,15 +1,15 @@
-package models.daos.slick
+package repository.daos.slick
 
 import org.joda.time.LocalDateTime
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
-import models.daos.slick.DBTableDefinitions._
+import repository.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
 import repository.Exceptions.NoSuchUserException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 import play.Logger
-import models.daos.UserDAO
+import repository.daos.UserDAO
 import scala.concurrent.ExecutionContext.Implicits.global
 
 

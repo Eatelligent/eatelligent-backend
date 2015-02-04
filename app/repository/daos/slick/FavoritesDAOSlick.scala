@@ -7,7 +7,7 @@ import repository.models.Favorite
 import com.google.inject.Inject
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
-import models.daos.slick.DBTableDefinitions._
+import repository.daos.slick.DBTableDefinitions._
 import repository.models._
 import scala.concurrent._
 import play.api.Play.current

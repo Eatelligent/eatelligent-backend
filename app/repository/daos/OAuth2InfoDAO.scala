@@ -1,4 +1,4 @@
-package models.daos
+package repository.daos
 
 import com.mohiva.play.silhouette.core.LoginInfo
 import com.mohiva.play.silhouette.core.providers.OAuth2Info

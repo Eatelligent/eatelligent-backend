@@ -6,10 +6,8 @@ import com.mohiva.play.silhouette.core.{Silhouette, Environment}
 import myUtils.JsonFormats
 import play.api.libs.json._
 import repository.daos.TagDAO
-import repository.models.{User, RecipeTag}
+import repository.models.User
 import play.api.libs.concurrent.Execution.Implicits._
-
-import scala.concurrent.Future
 
 class TagsController @Inject() (
   val tagDAO: TagDAO,

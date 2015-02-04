@@ -1,4 +1,4 @@
-package models.services
+package repository.services
 
 import javax.inject.Inject
 import org.joda.time.LocalDateTime
@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.core.providers.CommonSocialProfile
 import repository.Exceptions.DuplicateException
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
-import models.daos.UserDAO
+import repository.daos.UserDAO
 
 
 /**

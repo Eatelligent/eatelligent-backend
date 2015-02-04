@@ -1,10 +1,7 @@
 package controllers
 
-import java.util.UUID
 import javax.inject.Inject
 import myUtils.JsonFormats
-import org.joda.time.DateTime
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repository.models.{UserSignUp, User}
 import scala.concurrent.Future
@@ -16,18 +13,8 @@ import com.mohiva.play.silhouette.core.utils.PasswordHasher
 import com.mohiva.play.silhouette.core.services.{AvatarService, AuthInfoService}
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import models.services.UserService
-import forms.SignUpForm
+import repository.services.UserService
 
-/**
- * The sign up controller.
- *
- * @param env The Silhouette environment.
- * @param userService The user service implementation.
- * @param authInfoService The auth info service implementation.
- * @param avatarService The avatar service implementation.
- * @param passwordHasher The password hasher implementation.
- */
 class SignUpController @Inject() (
   implicit val env: Environment[User, CachedCookieAuthenticator],
   val userService: UserService,
