@@ -115,22 +115,15 @@ define(function(require) {
       }
     })
   });
-  
+
   var DescriptionView = Marionette.ItemView.extend({
     template: descriptionTemplate,
     className: 'col-md-12 recipe-parameter',
+    bindings: {
+      '[data-js-description]': 'description'
+    },
 
-    onShow: function() {
-      var self = this;
-
-      $('[data-js-description]', this.$el).summernote({
-        onChange: function() {
-          var description = $('[data-js-description]', self.$el).code();
-          self.model.set('description', description);
-        },
-        height: 150
-      });
-    }
+    onRender: function() { this.stickit(); }
   });
 
   var ProcedureView = Marionette.ItemView.extend({
@@ -148,17 +141,17 @@ define(function(require) {
       });
     }
   });
-  
+
   var StrengthView = Marionette.ItemView.extend({
     template: strengthTemplate,
     className: 'col-md-12 recipe-parameter',
 
     serializeData: function() {
-      return { 
+      return {
         levels: [1, 2, 3]
       };
     },
-  
+
     events: {
       'click [data-js-strength]': 'updateModel'
     },
@@ -235,7 +228,7 @@ define(function(require) {
       this.stickit();
     }
   });
-  
+
   var IngredientView = Marionette.CompositeView.extend({
     template: ingredientTemplate,
     className: 'col-md-12 recipe-parameter',
@@ -259,7 +252,7 @@ define(function(require) {
         this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
       }
       var model = this.model.set('ingredients', this.collection);
-      this.collection.on('all', function() { 
+      this.collection.on('all', function() {
         model.trigger('change');
       });
     },
@@ -289,14 +282,14 @@ define(function(require) {
   var Layout = Marionette.LayoutView.extend({
     template: template,
     regions: {
-      name: '[data-js-name]', 
-      tags: '[data-js-tags]', 
-      time: '[data-js-time]', 
-      language: '[data-js-language]', 
-      description: '[data-js-description]', 
-      procedure: '[data-js-procedure]', 
-      strength: '[data-js-strength]', 
-      ingredients: '[data-js-ingredients]', 
+      name: '[data-js-name]',
+      tags: '[data-js-tags]',
+      time: '[data-js-time]',
+      language: '[data-js-language]',
+      description: '[data-js-description]',
+      procedure: '[data-js-procedure]',
+      strength: '[data-js-strength]',
+      ingredients: '[data-js-ingredients]',
       result: '[data-js-result]'
     },
 
@@ -311,7 +304,7 @@ define(function(require) {
         this.model = channel.request('model:new:recipe');
         this.model.set('language', this.languagesCollection.where({name: 'NO-no'})[0].get('id'));
       }
-      
+
       this.listenTo(this.model, 'change', function() {
         this.onShowJson();
       });

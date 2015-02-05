@@ -25,16 +25,10 @@ define(function(require) {
     className: 'col-md-6 text-center',
 
     onShow: function() {
-      var data = [];
-      for (var i = 0; i < 30; i++) {
-        data.push({
-          date: moment().subtract(i, 'days').format('YYYY-MM-DD'),
-          value: _.random(30-i, (30-i)+10)
-        });
-      }
-      data = convert_dates(data, 'date');
-      var baseline = [{value:d3.mean(data, function(d) {
-        return d.value;
+      var data = this.collection.toJSON();
+      data = convert_dates(data, 'date', '%Y-%m-%dT%H:%M:%S.%L');
+      var baseline = [{value: d3.mean(data, function(d) {
+        return d.number;
       }), label:'Average last 30 days'}];
 
       data_graphic({
@@ -95,18 +89,14 @@ define(function(require) {
       users: '[data-js-users]',
       stats: '[data-js-stats]'
     },
+    initialize: function(options) {
+      this.usersStats = options.users;
+      this.ratingsStats = options.ratings;
+    },
 
     onShow: function() {
-      var model = new Backbone.Model({
-        num_recipes: 50,
-        num_ingredients: 152,
-        num_users: 25,
-        num_ratings: 100,
-        num_tags: 23,
-        rating_ratio: 100/25
-      });
-      this.rating.show(new RatingView({model: model}));
-      this.users.show(new UserView({model: model}));
+      this.rating.show(new RatingView({collection: this.ratingsStats}));
+      this.users.show(new UserView({collection: this.usersStats}));
       this.stats.show(new StatsView({model: this.model}));
     }
   });

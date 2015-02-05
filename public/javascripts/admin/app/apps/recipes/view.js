@@ -78,7 +78,6 @@ define(function(require) {
     },
 
     onShowPublished: function() {
-      console.log(arguments);
       if(this.collection.url === '/api/recipes?published=true&deleted=false') {
         this.collection.url = '/api/recipes?published=false&deleted=false';
         $('[data-js-show-published]', this.$el).html('Show published');

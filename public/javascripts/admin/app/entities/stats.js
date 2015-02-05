@@ -11,7 +11,7 @@ define(function(require) {
     initialize: function(options) {
       this.type = options.type;
       this.from = moment().subtract(options.days, 'days').format(DATEFORMAT);
-      this.to = moment().format(DATEFORMAT);
+      this.to = moment().add(1, 'day').format(DATEFORMAT);
     },
     url: function() {
       return '/api/stats/'+this.type+'?from=' + this.from + '&to='+this.to;
