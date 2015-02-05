@@ -21,7 +21,7 @@ define(function(require) {
       if (this.q) {
         return '/api/recipes/tags?q='+this.q;
       }
-      return '/api/recipes/tags/';
+      return '/api/recipes/tags';
     },
 
     parse: function(response) {
