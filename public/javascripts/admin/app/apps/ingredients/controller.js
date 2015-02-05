@@ -8,15 +8,14 @@ define(function(require) {
   var Controller = Ctrl.extend({
     initialize: function(options) {
       var ingredients = channel.request('entities:collection:ingredients');
+      var tags = channel.request('entities:collection:ingredient:tags');
 
-      // TODO: show single ingredient
-
-      this.view = this.getView(ingredients);
+      this.view = this.getView(ingredients, tags);
       this.region.show(this.view);
     },
 
-    getView: function(collection) {
-      return new IngredientsView({collection: collection});
+    getView: function(ingredients, tags) {
+      return new IngredientsView({collection: ingredients, tags: tags});
     }
   });
 
