@@ -5,7 +5,7 @@ define(function(require) {
   var channel = require('backbone.radio').channel('app');
 
   var Tags = Backbone.Collection.extend({
-    url: '/api/tags',
+    url: '/api/recipes/tags',
 
     parse: function(response) {
       return response.tags;
@@ -16,9 +16,12 @@ define(function(require) {
     initialize: function(models, options) {
       this.q = options.q;
     },
-    
+
     url: function() {
-      return '/api/tags/'+this.q; 
+      if (this.q) {
+        return '/api/recipes/tags?q='+this.q;
+      }
+      return '/api/recipes/tags/';
     },
 
     parse: function(response) {
