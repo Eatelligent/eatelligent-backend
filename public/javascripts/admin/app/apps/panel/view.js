@@ -3,7 +3,8 @@ define(function(require) {
 
   var Marionette = require('marionette');
   var template = require('hbs!./templates/panel');
-  var statsTemplate =require('hbs!./templates/stats');
+  var statsTemplate = require('hbs!./templates/stats');
+  var endpointsTemplate = require('hbs!./templates/endpoints');
 
   var d3 = require('d3');
   var MetricsGraphics = require('metrics-graphics');
@@ -73,12 +74,23 @@ define(function(require) {
 
   var StatsView = Marionette.ItemView.extend({
     template: statsTemplate,
-    className: 'col-md-6 col-md-offset-3',
+    className: 'col-md-6',
     serializeData: function() {
       return _.extend(this.model.toJSON(), {
         ratingRatio: this.model.get('numRatings') / this.model.get('numUsers') || 0
       });
     }
+  });
+
+  var EndpointView = Marionette.CompositeView.extend({
+    template: endpointsTemplate,
+    className: 'col-md-6',
+    childViewContainer: '[data-js-endpoints]',
+    childView: Marionette.ItemView.extend({
+      tagName: 'tr',
+      className: function() { return this.model.get('stylings') },
+      template: _.template('<td><%- name %></td><td><%- value %></td><td><%- code %></td>')
+    })
   });
 
   var PanelView = Marionette.LayoutView.extend({
@@ -87,17 +99,20 @@ define(function(require) {
     regions: {
       rating: '[data-js-ratings]',
       users: '[data-js-users]',
-      stats: '[data-js-stats]'
+      stats: '[data-js-stats]',
+      endpoints: '[data-js-endpoints]'
     },
     initialize: function(options) {
       this.usersStats = options.users;
       this.ratingsStats = options.ratings;
+      this.endpointCollection = options.endpoints;
     },
 
     onShow: function() {
       this.rating.show(new RatingView({collection: this.ratingsStats}));
       this.users.show(new UserView({collection: this.usersStats}));
       this.stats.show(new StatsView({model: this.model}));
+      this.endpoints.show(new EndpointView({collection: this.endpointCollection}));
     }
   });
 

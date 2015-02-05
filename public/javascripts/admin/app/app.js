@@ -22,6 +22,7 @@ define(function(require) {
   require('entities/ingredients');
   require('entities/tags');
   require('entities/users');
+  require('entities/endpoints');
 
   // Load modules
   require('apps/login/app');
@@ -57,10 +58,10 @@ define(function(require) {
   app.on('before:start', function() {
     $.ajaxPrefilter(function(options, originalOptions, xhr) {
       xhr.fail(function() {
-        if(xhr.status > 400 && xhr.status < 500) {
-          Backbone.history.navigate('login', {trigger: true});
-          channel.command('module:header');
-        } 
+        // if(xhr.status > 400 && xhr.status < 500 && xhr.status !== 404) {
+        //   Backbone.history.navigate('login', {trigger: true});
+        //   channel.command('module:header');
+        // }
 
         if (localStorage.getItem('mealchooserRole') !== 'admin') {
           Backbone.history.navigate('login', {trigger: true});
