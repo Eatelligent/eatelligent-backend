@@ -5,5 +5,3 @@ resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositor
 
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.7")
-
-addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
