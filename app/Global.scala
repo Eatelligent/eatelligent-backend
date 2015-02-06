@@ -7,8 +7,9 @@ import play.api.mvc.{WithFilters, Result, RequestHeader}
 import com.mohiva.play.silhouette.core.SecuredSettings
 import repository.exceptions._
 import myUtils.di.SilhouetteModule
+import repository.services.{MailServiceImpl, MailService}
 import scala.concurrent.Future
-import com.google.inject.{Guice, Injector}
+import com.google.inject.{Inject, Guice, Injector}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -20,6 +21,9 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
    * The Guice dependencies injector.
    */
   var injector: Injector = _
+
+  @Inject
+  val mailService: MailService = new MailServiceImpl
   
   override def onStart(app: Application) = {
     super.onStart(app)
@@ -38,9 +42,23 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
         case e: NoSuchFavoriteFoundException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex
           .getMessage)))
         case e: NoSuchUserException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
-        case _ => InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage))
+        case _ =>
+          mailService.sendMailExceptionMail(ex)
+          InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage))
       }
     }
+  }
+
+  override def onHandlerNotFound(request: RequestHeader) = {
+    Future.successful(
+      NotFound(Json.obj("ok" -> false, "message" -> Json.toJson("No route was found for " + request.uri)))
+    )
+  }
+
+  override def onBadRequest(request: RequestHeader, error: String) = {
+    Future.successful(
+      BadRequest(Json.obj("ok" -> false, "message" -> Json.toJson("Bad Request: " + error)))
+    )
   }
 
   /**

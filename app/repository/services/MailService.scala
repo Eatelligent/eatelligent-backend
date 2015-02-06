@@ -2,6 +2,6 @@ package repository.services
 
 trait MailService {
 
-  def sendMail
+  def sendMailExceptionMail(exception: Throwable)
 
 }

@@ -1,5 +1,6 @@
 package controllers
 
+import myUtils.silhouette.WithRole
 import play.api.libs.json.Json
 import play.api.{Logger, Play}
 import play.api.Play.current
@@ -49,9 +50,12 @@ class ApplicationController @Inject() (
     NoContent
   }
 
-  def sendMail = SecuredAction.async { implicit request =>
-    mailService.sendMail
-    Future.successful(Ok(Json.obj("ok" -> true, "message" -> "Mail sent")))
+  def listRoutes = SecuredAction(WithRole("admin")).async { implicit request =>
+    val myroutes = Play.current.routes map (routes => routes.documentation) getOrElse (Nil)
+    val out: Seq[String] = myroutes map { r =>
+      "%-10s %-50s %s".format(r._1, r._2, r._3)
+    }
+    Future.successful(Ok(Json.obj("ok" -> true, "routes" -> Json.toJson(out))))
   }
 
 }
