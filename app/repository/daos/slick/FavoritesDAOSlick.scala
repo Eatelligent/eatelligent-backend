@@ -37,9 +37,10 @@ class FavoritesDAOSlick @Inject() extends FavoritesDAO {
       DB withSession { implicit session =>
         val join = for {
           (f, r) <- slickFavorites innerJoin slickRecipes on (_.recipeId === _.id) if f.userId === userId
-        } yield(f.recipeId, r.name, r.image)
+        } yield(f.recipeId, r.name, r.image, r.description, r.spicy, r.time, r.difficulty)
         join.buildColl[List].map {
-          case (id, name, image) => TinyRecipe(id, name, image)
+          case (id, name, image, description, spicy, time, difficulty) =>
+            TinyRecipe(id, name, image, description, spicy, time, difficulty)
         }
       }
     }

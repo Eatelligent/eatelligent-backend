@@ -82,7 +82,8 @@ class RecipeDAOSlick @Inject() (
             val join = for {
               (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
                 .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase
-            } yield (r._1.id, r._1.name, r._1.image, r._1.language, r._1.published, r._1.deleted)
+            } yield (r._1.id, r._1.name, r._1.image, r._1.language, r._1.published, r._1.deleted, r._1.description, r
+                ._1.spicy, r._1.time, r._1.difficulty)
 
             val lFiltered = language match {
               case Some(l) => join.filter(_._4 === l)
@@ -104,7 +105,7 @@ class RecipeDAOSlick @Inject() (
               .drop(offset)
               .take(limit)
               .list
-              .map(x => TinyRecipe(x._1.get, x._2, x._3))
+              .map(x => TinyRecipe(x._1.get, x._2, x._3, x._7, x._8, x._9, x._10))
           case None =>
             val lFiltered = language match {
               case Some(l) => slickRecipes.filter(_.language === l)
@@ -126,7 +127,7 @@ class RecipeDAOSlick @Inject() (
               .drop(offset)
               .take(limit)
               .list.map (
-                x => TinyRecipe(x.id.get, x.name, x.image)
+                x => TinyRecipe(x.id.get, x.name, x.image, x.description, x.spicy, x.time, x.difficulty)
             )
         }
       }
@@ -172,8 +173,11 @@ class RecipeDAOSlick @Inject() (
         val join = for {
           (r, t) <- slickRecipes innerJoin slickTagsForRecipe on (_.id === _.recipeId) innerJoin slickTags on (_._2
             .tagId === _.id) if t.name.toLowerCase === tagName.toLowerCase
-        } yield (r._1.id, r._1.name, r._1.image)
-        join.buildColl[List].map(r => TinyRecipe(r._1.get, r._2, r._3))
+        } yield (r._1.id, r._1.name, r._1.image, r._1.description, r._1.spicy, r._1.time, r._1.difficulty)
+        join.buildColl[List].map {
+          case (id, name, image, description, spicy, time, difficulty) =>
+            TinyRecipe(id.get, name, image, description, spicy, time, difficulty)
+        }
       }
     }
   }
@@ -182,7 +186,7 @@ class RecipeDAOSlick @Inject() (
     recipes match {
       case Some(r) => Option(r.map{
         x =>
-          TinyRecipe(x.id.toList.head, x.name, x.image)
+          TinyRecipe(x.id.toList.head, x.name, x.image, x.description, x.spicy, x.time, x.difficulty)
       })
       case None => None
     }

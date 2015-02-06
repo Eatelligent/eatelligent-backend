@@ -253,16 +253,14 @@ trait JsonFormats {
       (JsPath \ "createdBy").write[Option[TinyUser]]
     )(unlift(Recipe.unapply))
 
-  implicit val tinyRecipeRead: Reads[TinyRecipe] = (
-    (JsPath \ "id").read[Long] and
-      (JsPath \ "name").read[String] and
-      (JsPath \ "image").read[Option[String]]
-    )(TinyRecipe.apply _)
-
   implicit val tinyRecipeWrites: Writes[TinyRecipe] = (
     (JsPath \ "id").write[Long] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[String]]
+      (JsPath \ "image").write[Option[String]] and
+      (JsPath \ "description").write[Option[String]] and
+      (JsPath \ "spicy").write[Option[Int]] and
+      (JsPath \ "time").write[Option[Int]] and
+      (JsPath \ "difficulty").write[Option[String]]
     )(unlift(TinyRecipe.unapply))
 
   implicit val favoriteWrites: Writes[Favorite] = (
