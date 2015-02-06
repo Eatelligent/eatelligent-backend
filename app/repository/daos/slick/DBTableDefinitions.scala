@@ -31,6 +31,7 @@ object DBTableDefinitions {
                            procedure: Option[String],
                            spicy: Option[Int],
                            time: Option[Int],
+                           difficulty: Option[String],
                            created: LocalDateTime,
                            modified: LocalDateTime,
                            published: Option[LocalDateTime],
@@ -48,14 +49,15 @@ object DBTableDefinitions {
     def procedure = column[Option[String]]("procedure")
     def spicy = column[Option[Int]]("spicy")
     def time = column[Option[Int]]("time")
+    def difficulty = column[Option[String]]("difficulty")
     def created = column[LocalDateTime]("created")
     def modified = column[LocalDateTime]("modified")
     def published = column[Option[LocalDateTime]]("published")
     def deleted = column[Option[LocalDateTime]]("deleted")
     def createdById = column[Long]("created_by")
 
-    def * = (id, name, image, description, language, calories, procedure, spicy, time, created, modified, published,
-      deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
+    def * = (id, name, image, description, language, calories, procedure, spicy, time, difficulty, created, modified,
+      published, deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
   }
 
   case class DBUnit(

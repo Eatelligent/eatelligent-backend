@@ -12,6 +12,7 @@ case class Recipe(
                    procedure: Option[String],
                    spicy: Option[Int],
                    time: Option[Int],
+                   difficulty: Option[String],
                    created: Option[LocalDateTime],
                    modified: Option[LocalDateTime],
                    published: Option[LocalDateTime],
