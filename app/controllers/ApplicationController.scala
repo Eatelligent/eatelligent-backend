@@ -7,10 +7,13 @@ import play.api.mvc._
 import com.mohiva.play.silhouette.core.{LogoutEvent, Environment, Silhouette}
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import repository.models.User
+import repository.services.MailService
 import scala.concurrent.Future
 import javax.inject.Inject
 
-class ApplicationController @Inject() (implicit val env: Environment[User, CachedCookieAuthenticator])
+class ApplicationController @Inject() (
+                                        val mailService: MailService,
+                                        implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] {
 
   def stressTestVerification = Action.async { implicit request =>
@@ -44,6 +47,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Cache
 
   def options = UserAwareAction { implicit request =>
     NoContent
+  }
+
+  def sendMail = SecuredAction.async { implicit request =>
+    mailService.sendMail
+    Future.successful(Ok(Json.obj("ok" -> true, "message" -> "Mail sent")))
   }
 
 }

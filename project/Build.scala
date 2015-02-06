@@ -12,6 +12,7 @@ object Build extends Build {
   lazy val appDependencies = Seq(
     jdbc,
     cache,
+    "com.typesafe.play" %% "play-mailer" % "2.4.0",
     "com.typesafe.play" %% "play-jdbc" % playVersion,
     "com.typesafe.play" %% "play-json" % playVersion,
     "com.typesafe.play" %% "play-slick" % playSLickVersion,

@@ -62,6 +62,8 @@ POST           /api/favorites/recipes                                @controller
 DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
 
+GET             /sendmail                                            @controllers.ApplicationController.sendMail
+
 # Used for verify that we own the server for an stress testing plugin.
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/           @controllers.ApplicationController.stressTestVerification
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt        controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")
