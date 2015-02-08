@@ -9,7 +9,7 @@ define(function(require) {
   var Controller = Ctrl.extend({
     initialize: function(options) {
       var self = this;
- 
+
       if(options.id) {
         var recipe = channel.request('entities:model:recipe', options.id);
 
@@ -37,11 +37,10 @@ define(function(require) {
       var view = new Views.RecipeView({model: model});
 
       view.on('edit:clicked', function() {
-        channel.command('module:new:recipe', {model: model});       
+        channel.command('module:new:recipe', {model: model});
       });
 
       view.on('delete:clicked', function() {
-        console.log(arguments);
         if(confirm('Are you sure you want to delete this recipe?')) {
           model.destroy({success: function() {
             Backbone.history.navigate('recipes', {trigger: true});

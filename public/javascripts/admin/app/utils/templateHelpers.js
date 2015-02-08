@@ -24,6 +24,6 @@ define(function(require) {
     if(t >= 60) {
       return new Handlebars.SafeString(Math.floor(t/60) + 't, ' + (t - 60*Math.floor(t/60)) + 'm');
     }
-    return new Handlebars.SafeString(t + 'm');
+    return new Handlebars.SafeString((t || 0) + 'm');
   });
 });

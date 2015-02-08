@@ -275,7 +275,6 @@ define(function(require) {
           return {name: ing.name, image: ing.image, amount: ing.amount, unit: ing.unit};
         });
         this.collection = new Backbone.Collection(ingredients);
-        console.log(this.collection);
       } else {
         this.collection = new Backbone.Collection([{amount: 0, unit: 'gram'}]);
       }
@@ -302,7 +301,6 @@ define(function(require) {
     },
     onSaveClicked: function() {
       this.model.set('published', !!this.model.get('published'));
-      console.log('hej');
       this.model.save();
     }
   });
@@ -339,7 +337,6 @@ define(function(require) {
       });
 
       this.listenTo(this.model, 'sync', function() {
-        console.log(this.model);
         // Backbone.history.navigate('recipes/'+this.model.get('recipe').id, {trigger: true});
         window.history.back();
       });
