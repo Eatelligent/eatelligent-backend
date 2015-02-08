@@ -13,6 +13,7 @@ define(function(require) {
   var descriptionTemplate = require('hbs!./templates/new/description');
   var procedureTemplate = require('hbs!./templates/new/procedure');
   var strengthTemplate = require('hbs!./templates/new/strength');
+  var difficultyTemplate = require('hbs!./templates/new/difficulty');
   var ingredientTemplate = require('hbs!./templates/new/ingredients');
   var ingredientItemTemplate = require('hbs!./templates/new/ingredients_item');
 
@@ -167,6 +168,33 @@ define(function(require) {
     }
   });
 
+  var DifficultyView = Marionette.ItemView.extend({
+    template: difficultyTemplate,
+    className: 'col-md-12 recipe-parameter',
+
+    serializeData: function() {
+      return {
+        levels: ['Enkel', 'Middels', 'Vanskelig']
+      }
+    },
+
+    events: {
+      'click [data-js-difficulty]': 'updateModel'
+    },
+
+    updateModel: function(e) {
+      $('[data-js-difficulty]', this.$el).removeClass('btn-primary');
+      $(e.target, this.$el).addClass('btn-primary');
+      var val = $(e.target).attr('value');
+      this.model.set('difficulty', val);
+    },
+
+    onRender: function() {
+      $('[value='+this.model.get('difficulty')+']', this.$el).addClass('btn-primary');
+    }
+
+  });
+
   var _IngredientItem = Marionette.ItemView.extend({
     template: ingredientItemTemplate,
     ui: {
@@ -289,6 +317,7 @@ define(function(require) {
       description: '[data-js-description]',
       procedure: '[data-js-procedure]',
       strength: '[data-js-strength]',
+      difficulty: '[data-js-difficulty]',
       ingredients: '[data-js-ingredients]',
       result: '[data-js-result]'
     },
@@ -342,6 +371,7 @@ define(function(require) {
       this.description.show(new DescriptionView({model: this.model}));
       this.procedure.show(new ProcedureView({model: this.model}));
       this.strength.show(new StrengthView({model: this.model}));
+      this.difficulty.show(new DifficultyView({model: this.model}));
       this.ingredients.show(new IngredientView({model: this.model, ingredients: this.ingredientsCollection}));
     }
   });
