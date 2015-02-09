@@ -33,7 +33,11 @@ class PasswordInfoDAOSlick extends DelegableAuthInfoDAO[PasswordInfo] {
         val infoId = slickLoginInfos.filter(
           x => x.providerID === loginInfo.providerID && x.providerKey === loginInfo.providerKey
         ).first.id.get
-        slickPasswordInfos insert DBPasswordInfo(authInfo.hasher, authInfo.password, authInfo.salt, infoId)
+        val newValue = DBPasswordInfo(authInfo.hasher, authInfo.password, authInfo.salt, infoId)
+        slickPasswordInfos.filter(_.loginInfoId === infoId).firstOption match {
+          case Some(oldInfo) => slickPasswordInfos.filter(_.loginInfoId === infoId).update(newValue)
+          case None => slickPasswordInfos insert newValue
+        }
         authInfo
       }
     }

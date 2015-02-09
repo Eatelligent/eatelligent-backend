@@ -31,6 +31,8 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]] = userDAO.getAll(offset, limit)
 
+  def find(email: String): Future[Option[User]] = userDAO.find(email)
+
   /**
    * Saves a user.
    *

@@ -32,5 +32,7 @@ trait UserService extends IdentityService[User] {
 
   def findUserByUID(uid: Long): Future[Option[User]]
 
+  def find(email: String): Future[Option[User]]
+
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]]
 }

@@ -64,6 +64,12 @@ DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controller
 
 GET             /routes                                              @controllers.ApplicationController.listRoutes
 
+
+POST	/api/reset						  @controllers.CredentialsAuthController.handleForgotPassword
+GET		/api/reset/:token				@controllers.CredentialsAuthController.resetPassword(token: String)
+POST	/api/reset/:token				@controllers.CredentialsAuthController.handleResetPassword(token: String)
+
+
 # Used for verify that we own the server for an stress testing plugin.
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/           @controllers.ApplicationController.stressTestVerification
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt        controllers.Assets.at(path="/public", file="loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae.txt")

@@ -1,9 +1,10 @@
 package controllers
 
 import javax.inject.Inject
+import com.mohiva.play.silhouette.core.utils.PasswordHasher
 import myUtils.JsonFormats
 import play.api.libs.json._
-import repository.models.User
+import repository.models.{TokenUser, User}
 
 import scala.concurrent.Future
 import play.api.mvc.{BodyParsers, Action}
@@ -13,12 +14,15 @@ import com.mohiva.play.silhouette.core.providers._
 import com.mohiva.play.silhouette.core.services.AuthInfoService
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
-import repository.services.UserService
+import repository.services.{TokenUserService, MailService, UserService}
 
 class CredentialsAuthController @Inject() (
                                             implicit val env: Environment[User, CachedCookieAuthenticator],
                                             val userService: UserService,
-                                            val authInfoService: AuthInfoService
+                                            val authInfoService: AuthInfoService,
+                                            val tokenService: TokenUserService,
+                                            val passwordHasher: PasswordHasher,
+                                            val mailService: MailService
                                            )
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
@@ -42,6 +46,92 @@ class CredentialsAuthController @Inject() (
           case None => Future.failed(new AuthenticationException("Couldn't find user"))
         }
       }.recoverWith(exceptionHandler)
+    )
+  }
+
+  /**
+   * Sends an email to the user with a link to reset the password
+   */
+  def handleForgotPassword = Action.async(BodyParsers.parse.json) { implicit request =>
+    val result = (request.body \ "email").validate[String]
+    result.fold (
+      errors =>
+        Future.successful(
+          BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
+        ),
+      email => {
+        val token = TokenUser(email, isSignUp = false)
+        tokenService.create(token)
+        val link = routes.CredentialsAuthController.resetPassword(token.id).absoluteURL()
+        mailService.forgotPassword(email, link)
+        Future.successful(
+          Ok(Json.obj("ok" -> true, "message" -> Json.toJson("Sent mail with link to reset password: " + link)))
+        )
+      }
+    )
+  }
+
+  /**
+   * Confirms the user's link based on the token and shows him a form to reset the password
+   */
+  def resetPassword (tokenId: String) = Action.async { implicit request =>
+    tokenService.retrieve(tokenId).flatMap {
+      case Some(token) if !token.isSignUp && !token.isExpired =>
+        Future.successful(Ok(Json.obj("ok" -> true, "message" -> Json.toJson("tokenId:" + tokenId))))
+      case Some(token) => {
+        tokenService.consume(tokenId)
+        Future.successful(
+          NotFound(Json.obj("ok" -> false, "message" -> "Not found"))
+        )
+      }
+      case None =>
+        Future.successful(
+          NotFound(Json.obj("ok" -> false, "message" -> "Not found"))
+        )
+    }
+  }
+
+  /**
+   * Saves the new password and authenticates the user
+   */
+  def handleResetPassword (tokenId: String) = Action.async(BodyParsers.parse.json) { implicit request =>
+    (request.body \ "password").validate[String]fold(
+      errors => Future.successful(BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))),
+      password => {
+        tokenService.retrieve(tokenId).flatMap {
+          case Some(token) if !token.isSignUp && !token.isExpired => {
+            userService.find(token.email).flatMap {
+              case Some(user) => {
+                val authInfo = passwordHasher.hash(password)
+                authInfoService.save(LoginInfo("credentials", token.email), authInfo)
+                for {
+                 maybeAuthenticator <- env.authenticatorService.create(user)
+                } yield {
+                  maybeAuthenticator match {
+                    case Some (authenticator) =>
+                      env.eventBus.publish (SignUpEvent (user, request, request2lang))
+                      env.eventBus.publish (LoginEvent (user, request, request2lang))
+                      tokenService.consume (tokenId)
+                      env.authenticatorService.send (authenticator, Ok (Json.obj ("ok" -> true, "message" -> Json.toJson (user))))
+                    case None => throw new AuthenticationException ("Couldn't create an authenticator")
+                  }
+                }
+              }
+              case None => Future.failed(new AuthenticationException("Couldn't find user"))
+            }
+          }
+          case Some(token) => {
+            tokenService.consume(tokenId)
+            Future.successful(
+              NotFound(Json.obj("ok" -> false, "message" -> "Token expired"))
+            )
+          }
+          case None =>
+            Future.successful(
+              NotFound(Json.obj("ok" -> false, "message" -> "Token not found."))
+            )
+        }
+      }
     )
   }
 }

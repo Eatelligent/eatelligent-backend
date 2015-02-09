@@ -19,4 +19,15 @@ class MailServiceImpl extends MailService {
     Logger.info("Sent mail with exception")
   }
 
+  def forgotPassword(address: String, link: String) = {
+    val email = Email(
+      "Mealchooser: Reset Password",
+      "Mealchooser <noreply@mealchooser.com>",
+      Seq(address),
+      bodyText = Some("Go here to reset your password: " + link)
+    )
+    MailerPlugin.send(email)
+    Logger.info("Sent mail with reset password link: " + link)
+  }
+
 }
