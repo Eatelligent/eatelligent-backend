@@ -103,6 +103,7 @@ class RecipeDAOSlick @Inject() (
               case None => dFiltered
             }
             nFiltered
+              .sortBy(_._1.desc)
               .drop(offset)
               .take(limit)
               .list
@@ -125,6 +126,7 @@ class RecipeDAOSlick @Inject() (
               case None => dFiltered
             }
             nFiltered
+              .sortBy(_.id.desc)
               .drop(offset)
               .take(limit)
               .list.map (
