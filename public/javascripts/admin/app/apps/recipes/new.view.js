@@ -212,7 +212,7 @@ define(function(require) {
       '[data-js-amount]': {
         observe: 'amount',
         onSet: function(v) {
-          return parseInt(v, 10);
+          return parseFloat(v, 10);
         }
       },
       '[data-js-unit]': 'unit'
