@@ -242,8 +242,8 @@ trait JsonFormats {
       (JsPath \ "procedure").write[Option[String]] and
       (JsPath \ "spicy").write[Option[Int]] and
       (JsPath \ "time").write[Option[Int]] and
-      (JsPath \ "source").write[Option[String]] and
       (JsPath \ "difficulty").write[Option[String]] and
+      (JsPath \ "source").write[Option[String]] and
       (JsPath \ "created").write[Option[LocalDateTime]] and
       (JsPath \ "modified").write[Option[LocalDateTime]] and
       (JsPath \ "published").write[Option[LocalDateTime]] and
