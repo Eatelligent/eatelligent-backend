@@ -210,6 +210,7 @@ trait JsonFormats {
       (JsPath \ "spicy").readNullable[Int] and
       (JsPath \ "time").readNullable[Int] and
       (JsPath \ "difficulty").readNullable[String] and
+      (JsPath \ "source").readNullable[String] and
       (JsPath \ "created").readNullable[String].map(x => None) and
       (JsPath \ "modified").readNullable[String].map(x => None) and
       (JsPath \ "published").readNullable[Boolean].map {
@@ -241,6 +242,7 @@ trait JsonFormats {
       (JsPath \ "procedure").write[Option[String]] and
       (JsPath \ "spicy").write[Option[Int]] and
       (JsPath \ "time").write[Option[Int]] and
+      (JsPath \ "source").write[Option[String]] and
       (JsPath \ "difficulty").write[Option[String]] and
       (JsPath \ "created").write[Option[LocalDateTime]] and
       (JsPath \ "modified").write[Option[LocalDateTime]] and

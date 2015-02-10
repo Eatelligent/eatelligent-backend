@@ -31,6 +31,7 @@ object DBTableDefinitions {
                            procedure: Option[String],
                            spicy: Option[Int],
                            time: Option[Int],
+                           source: Option[String],
                            difficulty: Option[String],
                            created: LocalDateTime,
                            modified: LocalDateTime,
@@ -49,6 +50,7 @@ object DBTableDefinitions {
     def procedure = column[Option[String]]("procedure")
     def spicy = column[Option[Int]]("spicy")
     def time = column[Option[Int]]("time")
+    def source = column[Option[String]]("source")
     def difficulty = column[Option[String]]("difficulty")
     def created = column[LocalDateTime]("created")
     def modified = column[LocalDateTime]("modified")
@@ -56,7 +58,8 @@ object DBTableDefinitions {
     def deleted = column[Option[LocalDateTime]]("deleted")
     def createdById = column[Long]("created_by")
 
-    def * = (id, name, image, description, language, calories, procedure, spicy, time, difficulty, created, modified,
+    def * = (id, name, image, description, language, calories, procedure, spicy, time, difficulty, source, created,
+      modified,
       published, deleted, createdById) <> (DBRecipe.tupled, DBRecipe.unapply)
   }
 

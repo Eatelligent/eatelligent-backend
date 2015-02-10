@@ -13,6 +13,7 @@ case class Recipe(
                    spicy: Option[Int],
                    time: Option[Int],
                    difficulty: Option[String],
+                   source: Option[String],
                    created: Option[LocalDateTime],
                    modified: Option[LocalDateTime],
                    published: Option[LocalDateTime],

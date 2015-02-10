@@ -120,6 +120,7 @@ CREATE TABLE recipe (
 	spicy int CONSTRAINT spicy_check CHECK (spicy > 0 AND spicy < 4),
 	time int CONSTRAINT time_check CHECK (time > 0),
 	difficulty text,
+	source text,
 	created timestamp NOT NULL,
 	modified timestamp NOT NULL,
 	published timestamp,

@@ -40,8 +40,15 @@ VALUES
   ('kilogram'),
   ('teaspoon'),
   ('tablespoon'),
-  ('piece'),
-  ('deciliter');
+  ('pcs'),
+  ('deciliter'),
+  ('bag'),
+  ('can'),
+  ('clove'),
+  ('slice'),
+  ('cup'),
+  ('leafs'),
+  ('pinch');
 
 INSERT INTO ingredient(name, default_unit)
 VALUES

@@ -58,6 +58,7 @@ class RecipeDAOSlick @Inject() (
           r.spicy,
           r.time,
           r.difficulty,
+          r.source,
           Some(r.created),
           Some(r.modified),
           r.published,
@@ -218,6 +219,7 @@ class RecipeDAOSlick @Inject() (
             r.spicy,
             r.time,
             r.difficulty,
+            r.source,
             Some(r.created),
             Some(r.modified),
             r.published,
@@ -285,6 +287,7 @@ class RecipeDAOSlick @Inject() (
                   r.spicy,
                   r.time,
                   r.difficulty,
+                  r.source,
                   recipeFound.created,
                   new LocalDateTime(),
                   r.published match {
@@ -334,7 +337,7 @@ class RecipeDAOSlick @Inject() (
     val id = DB withTransaction { implicit session =>
       val rid = insertRecipe(DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r
         .procedure, r.spicy,
-        r.time, r.difficulty, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.get))
+        r.time, r.source, r.difficulty, new LocalDateTime(), new LocalDateTime(), None, r.deleted, user.userID.get))
       r.ingredients.distinct.foreach {
         i =>
           val ingr = saveIngredient(Ingredient(i.ingredientId, i.name, i.image, Seq()))
@@ -416,7 +419,8 @@ class RecipeDAOSlick @Inject() (
         case Some(r) =>
           slickRecipes.filter(_.id === r.id).update(
             DBRecipe(r.id, r.name, r.image, r.description, r.language, Some(0), r.procedure, r
-              .spicy, r.time, r.difficulty, r.created, new LocalDateTime(), r.published, Some(new LocalDateTime()), r
+              .spicy, r.time, r.source, r.difficulty, r.created, new LocalDateTime(), r.published, Some(new
+                LocalDateTime()), r
                 .createdById))
         case None => throw new NoSuchRecipeException(id)
       }
