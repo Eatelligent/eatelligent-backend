@@ -16,6 +16,7 @@ define(function(require) {
   var difficultyTemplate = require('hbs!./templates/new/difficulty');
   var ingredientTemplate = require('hbs!./templates/new/ingredients');
   var ingredientItemTemplate = require('hbs!./templates/new/ingredients_item');
+  var sourceTemplate = require('hbs!./templates/new/source');
 
   var Bloodhound = require('bloodhound');
   var Typeahead = require('typeahead');
@@ -289,6 +290,19 @@ define(function(require) {
     }
   });
 
+  var SourceView = Marionette.ItemView.extend({
+    template: sourceTemplate,
+    className: 'col-md-12 recipe-parameter',
+
+    bindings: {
+      '[data-js-source-url]': 'source'
+    },
+
+    onRender: function() {
+      this.stickit();
+    }
+  });
+
   var ResultView = Marionette.ItemView.extend({
     template: _.template('<pre class="mb3"><%- json %></pre><button class="btn btn-lg btn-success mb3">Save recipe</button>'),
     serializeData: function() {
@@ -317,6 +331,7 @@ define(function(require) {
       strength: '[data-js-strength]',
       difficulty: '[data-js-difficulty]',
       ingredients: '[data-js-ingredients]',
+      source: '[data-js-source]',
       result: '[data-js-result]'
     },
 
@@ -370,6 +385,7 @@ define(function(require) {
       this.strength.show(new StrengthView({model: this.model}));
       this.difficulty.show(new DifficultyView({model: this.model}));
       this.ingredients.show(new IngredientView({model: this.model, ingredients: this.ingredientsCollection}));
+      this.source.show(new SourceView({model: this.model}));
     }
   });
 
