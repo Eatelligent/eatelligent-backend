@@ -196,6 +196,16 @@ CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
 CREATE UNIQUE INDEX user_yes_no_rate_ingredient_idx
 ON user_yes_no_rate_ingredient(user_id, ingredient_id);
 
+CREATE TABLE user_viewed_recipe(
+	user_id int8 NOT NULL references users(id) ON DELETE CASCADE,
+	recipe_id int8 NOT NULL references recipe(id) ON DELETE CASCADE,
+	duration int8 NOT NULL,
+	last_seen timestamp NOT NULL
+);
+
+CREATE UNIQUE INDEX user_viewed_recipe_idx
+ON user_viewed_recipe(user_id, recipe_id);
+
 CREATE TABLE logininfo (
 	id serial8 primary key,
 	provider_id text,

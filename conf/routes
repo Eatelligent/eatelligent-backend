@@ -61,13 +61,15 @@ GET            /api/favorites/recipes                                @controller
 POST           /api/favorites/recipes                                @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
+POST           /api/recipes/viewed                                   @controllers.UserViewedRecipeController.saveUserViewedRecipe
+GET            /api/recipes/viewed                                   @controllers.UserViewedRecipeController.listUserViewedRecipes(userId: Option[Long])
 
-GET             /routes                                              @controllers.ApplicationController.listRoutes
+GET            /routes                                               @controllers.ApplicationController.listRoutes
 
 
-POST	/api/reset						  @controllers.CredentialsAuthController.handleForgotPassword
-GET		/api/reset/:token				@controllers.CredentialsAuthController.resetPassword(token: String)
-POST	/api/reset/:token				@controllers.CredentialsAuthController.handleResetPassword(token: String)
+POST           /api/reset                                            @controllers.CredentialsAuthController.handleForgotPassword
+GET            /api/reset/:token                                     @controllers.CredentialsAuthController.resetPassword(token: String)
+POST           /api/reset/:token                                     @controllers.CredentialsAuthController.handleResetPassword(token: String)
 
 
 # Used for verify that we own the server for an stress testing plugin.

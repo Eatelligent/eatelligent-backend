@@ -328,6 +328,21 @@ object DBTableDefinitions {
     def * = (ingredientId, tagId) <> (DBIngredientInTag.tupled, DBIngredientInTag.unapply)
   }
 
+  case class DBUserViewedRecipe(
+                               userId: Long,
+                               recipeId: Long,
+                               duration: Long,
+                               lastSeen: LocalDateTime
+                                 )
+
+  class UserViewedRecipes(tag: Tag) extends Table[DBUserViewedRecipe](tag, "user_viewed_recipe") {
+    def userId = column[Long]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def duration = column[Long]("duration")
+    def lastSeen = column[LocalDateTime]("last_seen")
+    def * = (userId, recipeId, duration, lastSeen) <> (DBUserViewedRecipe.tupled, DBUserViewedRecipe.unapply)
+  }
+
 
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
@@ -348,6 +363,7 @@ object DBTableDefinitions {
   val slickFavorites = TableQuery[Favorites]
   val slickIngredientTags = TableQuery[IngredientTags]
   val slickIngredientInTags = TableQuery[IngredientsInTags]
+  val slickUserViewedRecipes = TableQuery[UserViewedRecipes]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {
