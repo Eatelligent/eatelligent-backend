@@ -3,6 +3,7 @@ package controllers
 import javax.inject.Inject
 import com.mohiva.play.silhouette.core.utils.PasswordHasher
 import myUtils.JsonFormats
+import play.api.i18n.Messages
 import play.api.libs.json._
 import repository.models.{TokenUser, User}
 
@@ -15,6 +16,8 @@ import com.mohiva.play.silhouette.core.services.AuthInfoService
 import com.mohiva.play.silhouette.core.exceptions.AuthenticationException
 import com.mohiva.play.silhouette.contrib.services.CachedCookieAuthenticator
 import repository.services.{TokenUserService, MailService, UserService}
+import play.api.data._
+import play.api.data.Forms._
 
 class CredentialsAuthController @Inject() (
                                             implicit val env: Environment[User, CachedCookieAuthenticator],
@@ -71,13 +74,19 @@ class CredentialsAuthController @Inject() (
     )
   }
 
+  val passwordsForm = Form(tuple(
+    "password1" -> nonEmptyText(minLength = 6),
+    "password2" -> nonEmptyText
+  ) verifying(Messages("passwords.not.equal"), passwords => passwords._2 == passwords._1 ))
+
+
   /**
    * Confirms the user's link based on the token and shows him a form to reset the password
    */
   def resetPassword (tokenId: String) = Action.async { implicit request =>
     tokenService.retrieve(tokenId).flatMap {
       case Some(token) if !token.isSignUp && !token.isExpired =>
-        Future.successful(Ok(Json.obj("ok" -> true, "message" -> Json.toJson("tokenId:" + tokenId))))
+        Future.successful(Ok(views.html.resetPassword(tokenId, passwordsForm)))
       case Some(token) => {
         tokenService.consume(tokenId)
         Future.successful(
@@ -94,15 +103,15 @@ class CredentialsAuthController @Inject() (
   /**
    * Saves the new password and authenticates the user
    */
-  def handleResetPassword (tokenId: String) = Action.async(BodyParsers.parse.json) { implicit request =>
-    (request.body \ "password").validate[String]fold(
-      errors => Future.successful(BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))),
-      password => {
+  def handleResetPassword (tokenId: String) = Action.async { implicit request =>
+    passwordsForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(views.html.resetPassword(tokenId, formWithErrors))),
+      passwords => {
         tokenService.retrieve(tokenId).flatMap {
           case Some(token) if !token.isSignUp && !token.isExpired => {
             userService.find(token.email).flatMap {
               case Some(user) => {
-                val authInfo = passwordHasher.hash(password)
+                val authInfo = passwordHasher.hash(passwords._1)
                 authInfoService.save(LoginInfo("credentials", token.email), authInfo)
                 for {
                  maybeAuthenticator <- env.authenticatorService.create(user)
