@@ -61,12 +61,18 @@ GET            /api/favorites/recipes                                @controller
 POST           /api/favorites/recipes                                @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
+# Recipes viewed by user
 POST           /api/recipes/viewed                                   @controllers.UserViewedRecipeController.saveUserViewedRecipe
 GET            /api/recipes/viewed                                   @controllers.UserViewedRecipeController.listUserViewedRecipes(userId: Option[Long])
 
+# Cold start
+GET            /api/coldstart                                        @controllers.ColdStartController.listColdStarts
+POST           /api/coldstart                                        @controllers.ColdStartController.saveColdStartResponse
+
+# All the routes
 GET            /routes                                               @controllers.ApplicationController.listRoutes
 
-
+# Reset Password
 POST           /api/reset                                            @controllers.CredentialsAuthController.handleForgotPassword
 GET            /api/reset/:token                                     @controllers.CredentialsAuthController.resetPassword(token: String)
 POST           /api/reset/:token                                     @controllers.CredentialsAuthController.handleResetPassword(token: String)

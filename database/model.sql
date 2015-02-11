@@ -21,6 +21,8 @@ DROP TABLE IF EXISTS logininfo;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS ingredient_in_tag;
 DROP TABLE IF EXISTS ingredient_tag;
+DROP TABLE IF EXISTS cold_start;
+DROP TABLE IF EXISTS user_cold_start;
 
 
 CREATE TABLE language (
@@ -239,5 +241,21 @@ CREATE TABLE oauth2info (
 	refreshtoken text,
 	login_info_id int8
 );
+
+CREATE TABLE cold_start (
+	id serial8 primary key,
+	image text NOT NULL,
+	identifier text UNIQUE NOT NULL,
+	description text NOT NULL
+);
+
+CREATE TABLE user_cold_start (
+	user_id int8 NOT NULL references users(id) ON DELETE CASCADE,
+	cold_start_id int8 NOT NULL references cold_start(id) ON DELETE CASCADE,
+	answer boolean,
+	answer_time timestamp
+);
+
+
 
 END;

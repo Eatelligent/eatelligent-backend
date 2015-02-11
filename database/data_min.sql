@@ -54,6 +54,19 @@ VALUES
   ('Milk product'),
   ('Pasta'),
   ('Potatoes'),
-  ('Green');
+  ('Green'),
+  ('Chicken'),
+  ('Pork'),
+  ('Beef'),
+  ('Animal product'),
+  ('Composed');
+
+INSERT INTO cold_start(image, identifier, description)
+VALUES
+  ('http://res.cloudinary.com/hnjelkrui/image/upload/v1423661777/meat-hi_copy_bs47gz.jpg', 'meat', 'Do you like meat?'),
+  ('http://res.cloudinary.com/hnjelkrui/image/upload/v1423661876/spicy_bdur6z.jpg', 'spicy', 'Do you like spicy food?'),
+  ('http://res.cloudinary.com/hnjelkrui/image/upload/v1423661797/chef_owzejt.jpg', 'skills', 'Do you view yourself as a good chef?'),
+  ('http://res.cloudinary.com/hnjelkrui/image/upload/v1423661835/fish_q3ga7g.png', 'fish', 'Do you like fish?'),
+  ('http://res.cloudinary.com/hnjelkrui/image/upload/v1423667343/chicken_copy_wthzdg.jpg', 'chicken', 'Do you like chicken?');
 
 END;

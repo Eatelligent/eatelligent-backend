@@ -288,4 +288,25 @@ trait JsonFormats {
       (JsPath \ "duration").write[Long] and
       (JsPath \ "lastSeen").write[Option[LocalDateTime]]
     )(unlift(UserViewedRecipe.unapply))
+
+  implicit val coldStartWrites: Writes[ColdStart] = (
+    (JsPath \ "id").write[Option[Long]] and
+      (JsPath \ "image").write[String] and
+      (JsPath \ "identifier").write[String] and
+      (JsPath \ "description").write[String]
+    )(unlift(ColdStart.unapply))
+
+  implicit val userColdStartReads: Reads[UserColdStart] = (
+    (JsPath \ "userId").readNullable[Long] and
+      (JsPath \ "coldStartId").read[Long] and
+      (JsPath \ "answer").read[Boolean] and
+      (JsPath \ "answerTime").readNullable[LocalDateTime]
+    )(UserColdStart.apply _)
+
+  implicit val userColdStartWrites: Writes[UserColdStart] = (
+    (JsPath \ "userId").write[Option[Long]] and
+      (JsPath \ "coldStartId").write[Long] and
+      (JsPath \ "answer").write[Boolean] and
+      (JsPath \ "answerTime").write[Option[LocalDateTime]]
+    )(unlift(UserColdStart.unapply))
 }

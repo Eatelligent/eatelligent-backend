@@ -343,6 +343,35 @@ object DBTableDefinitions {
     def * = (userId, recipeId, duration, lastSeen) <> (DBUserViewedRecipe.tupled, DBUserViewedRecipe.unapply)
   }
 
+  case class DBColdStart(
+                        id: Option[Long],
+                        image: String,
+                        identifier: String,
+                        description: String
+                          )
+
+  class ColdStarts(tag: Tag) extends Table[DBColdStart](tag, "cold_start") {
+    def id = column[Option[Long]]("id")
+    def image = column[String]("image")
+    def identifier = column[String]("identifier")
+    def description = column[String]("description")
+    def * = (id, image, identifier, description) <> (DBColdStart.tupled, DBColdStart.unapply)
+  }
+
+  case class DBUserColdStart(
+                            userId: Long,
+                            coldStartId: Long,
+                            answer: Boolean,
+                            answerTime: LocalDateTime
+                              )
+
+  class UserColdStarts(tag: Tag) extends Table[DBUserColdStart](tag, "user_cold_start") {
+    def userId = column[Long]("user_id")
+    def coldStartId = column[Long]("cold_start_id")
+    def answer = column[Boolean]("answer")
+    def answerTime = column[LocalDateTime]("answer_time")
+    def * = (userId, coldStartId, answer, answerTime) <> (DBUserColdStart.tupled, DBUserColdStart.unapply)
+  }
 
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
@@ -364,6 +393,8 @@ object DBTableDefinitions {
   val slickIngredientTags = TableQuery[IngredientTags]
   val slickIngredientInTags = TableQuery[IngredientsInTags]
   val slickUserViewedRecipes = TableQuery[UserViewedRecipes]
+  val slickColdStarts = TableQuery[ColdStarts]
+  val slickUserColdStarts = TableQuery[UserColdStarts]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {
