@@ -30,8 +30,8 @@ define(function(require) {
   var Recipes = Backbone.Collection.extend({
     model: Recipe,
 
-    url: '/api/recipes?published=false&deleted=false',
-    
+    url: '/api/recipes?published=false&deleted=false&limit=1000',
+
     parse: function(response) {
       return response.recipes;
     }

@@ -29,7 +29,8 @@
     {{#if deleted}}<li class="list-group-item">Deleted: {{time deleted}}</li>{{/if}}
     <li class="list-group-item">Calories: {{calories}}</li>
     <li class="list-group-item">Language id: {{language}}</li>
-    <li class="list-group-item">Created By: {{createdBy.firstName}} {{createdBy.lastName}} <pre>{{createdBy.id}}</pre></li>
+    <li class="list-group-item">Source: <a href="{{source}}">{{source}}</a></li>
+    <li class="list-group-item">Created By: {{createdBy.firstName}} {{createdBy.lastName}} (id: {{createdBy.id}})</li>
     <li class="list-group-item">Time: {{converttime time}}</li>
     <li class="list-group-item">Difficulty: {{difficulty}}</li>
     <li class="list-group-item">Average rating: {{averageRating}}</li>
