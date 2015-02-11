@@ -11,7 +11,7 @@ class MailServiceImpl extends MailService {
     val email = Email(
       "Mealchooser: Exception",
       "Mealchooser <noreply@mealchooser.com>",
-      Seq("<sigurd.l@gmail.com>, <tandeey@gmail.com>"),
+      Seq("<sigurd.l@gmail.com>", "<tandeey@gmail.com>"),
       bodyText = Some("An unexpected exception has accured: " + exception.getMessage + "\n\nStacktrace:\n" +
         ExceptionUtils.getStackTrace(exception))
     )
