@@ -35,7 +35,10 @@ object Setup {
       irec.recommend(userId, 10)
     } catch {
       case e: RecommenderBuildException => throw new RuntimeException("Recommender build failed", e)
+    } finally {
+      conn.close()
     }
+
   }
 
 }
