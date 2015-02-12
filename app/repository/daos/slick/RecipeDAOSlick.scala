@@ -405,8 +405,7 @@ class RecipeDAOSlick @Inject() (
     }
     if (!recipeExists)
       throw new NoSuchRecipeException("No recipe with id: " + id + " in the databse.")
-    CloudinaryResource.upload(image, UploadParameters().faces(true).colors(true).imageMetadata(true).exif
-      (true)).map {
+    CloudinaryResource.upload(image, UploadParameters()).map {
       cr =>
         val image = RecipeImage(id, cr.url())
         updateImage(image)
