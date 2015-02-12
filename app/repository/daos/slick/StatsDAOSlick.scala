@@ -24,9 +24,7 @@ class StatsDAOSlick extends StatsDAO {
         val numUsers = slickUsers.length.run
         val numStarRatingsRecipe = slickUserStarRateRecipes.length.run
         val numYesNoRatingsRecipe = slickUserYesNoRateRecipes.length.run
-        val numYesNoRatingsIngredient = slickUserYesNoRateIngredient.length.run
-        Stats(numRecipes, numIngredients, numTags, numUsers, numStarRatingsRecipe, numYesNoRatingsRecipe,
-          numYesNoRatingsIngredient)
+        Stats(numRecipes, numIngredients, numTags, numUsers, numStarRatingsRecipe, numYesNoRatingsRecipe)
       }
     }
   }

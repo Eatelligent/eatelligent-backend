@@ -61,6 +61,9 @@ GET            /api/favorites/recipes                                @controller
 POST           /api/favorites/recipes                                @controllers.FavoritesController.addToFavorite
 DELETE         /api/favorites/recipes/$recipeId<[0-9]+>              @controllers.FavoritesController.removeFromFavorite(recipeId:Long)
 
+# Yes / No - rating
+POST           /api/ratings/recipes/binary                           @controllers.UserYesNoRecipeController.saveUserYesNoRecipe
+
 # Recipes viewed by user
 POST           /api/recipes/viewed                                   @controllers.UserViewedRecipeController.saveUserViewedRecipe
 GET            /api/recipes/viewed                                   @controllers.UserViewedRecipeController.listUserViewedRecipes(userId: Option[Long])

@@ -18,8 +18,7 @@ trait JsonFormats {
       (JsPath \ "numTags").write[Int] and
       (JsPath \ "numUsers").write[Int] and
       (JsPath \ "numStarRatingsRecipe").write[Int] and
-      (JsPath \ "numYesNoRatingsRecipe").write[Int] and
-      (JsPath\ "numYesNoRatingsIngredient").write[Int]
+      (JsPath \ "numYesNoRatingsRecipe").write[Int]
     )(unlift(Stats.unapply))
 
   implicit val jodaDateWrites: Writes[LocalDateTime] = new Writes[LocalDateTime]   {
@@ -309,4 +308,21 @@ trait JsonFormats {
       (JsPath \ "answer").write[Boolean] and
       (JsPath \ "answerTime").write[Option[LocalDateTime]]
     )(unlift(UserColdStart.unapply))
+
+  implicit val userYesNoRecipeReads: Reads[UserYesNoRecipe] = (
+    (JsPath \ "userId").readNullable[Long] and
+      (JsPath \ "recipeId").read[Long] and
+      (JsPath \ "rating").read[Boolean].map {
+        case true => 1
+        case false => -1
+      } and
+      (JsPath \ "lastSeen").readNullable[LocalDateTime].map(x => new LocalDateTime())
+    )(UserYesNoRecipe.apply _)
+
+  implicit val userYesNoRecipeWrites: Writes[UserYesNoRecipe] = (
+    (JsPath \ "userId").write[Option[Long]] and
+      (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "rating").write[Int] and
+      (JsPath \ "lastSeen").write[LocalDateTime]
+    )(unlift(UserYesNoRecipe.unapply))
 }

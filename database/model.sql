@@ -1,6 +1,5 @@
 BEGIN;
 
-DROP TABLE IF EXISTS user_yes_no_rate_ingredient CASCADE;
 DROP TABLE IF EXISTS user_yes_no_rate_recipe CASCADE;
 DROP TABLE IF EXISTS user_star_rate_recipe CASCADE;
 DROP TABLE IF EXISTS recipe_in_tag CASCADE;
@@ -181,22 +180,12 @@ ON user_star_rate_recipe (user_id, recipe_id);
 CREATE TABLE user_yes_no_rate_recipe ( /* id references */
 	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
-	rating boolean,
-	created timestamp
+	rating int,
+	last_seen timestamp
 );
 
 CREATE UNIQUE INDEX user_yes_no_rate_recipe_idx
 ON user_yes_no_rate_recipe(user_id, recipe_id);
-
-CREATE TABLE user_yes_no_rate_ingredient ( /* id references */
-	user_id int8,
-	ingredient_id int8,
-	rating boolean,
-	created timestamp
-);
-
-CREATE UNIQUE INDEX user_yes_no_rate_ingredient_idx
-ON user_yes_no_rate_ingredient(user_id, ingredient_id);
 
 CREATE TABLE user_viewed_recipe(
 	user_id int8 NOT NULL references users(id) ON DELETE CASCADE,

@@ -274,36 +274,19 @@ object DBTableDefinitions {
       .unapply)
   }
 
-  case class DBUserYesNoRateRecipe(
+  case class DBUserYesNoRecipe(
                                    userId: Long,
                                    recipeId: Long,
-                                   rating: Boolean,
-                                   created: LocalDateTime
+                                   rating: Int,
+                                   lastSeen: LocalDateTime
                                    )
 
-  class UserYesNoRateRecipes(tag: Tag) extends Table[DBUserYesNoRateRecipe](tag, "user_yes_no_rate_recipe") {
+  class UserYesNoRecipes(tag: Tag) extends Table[DBUserYesNoRecipe](tag, "user_yes_no_rate_recipe") {
     def userId = column[Long]("user_id")
     def recipeId = column[Long]("recipe_id")
-    def rating = column[Boolean]("rating")
-    def created = column[LocalDateTime]("created")
-    def * = (userId, recipeId, rating, created) <> (DBUserYesNoRateRecipe.tupled, DBUserYesNoRateRecipe.unapply)
-  }
-
-  case class DBUserYesNoRateIngredient(
-                                    userId: Long,
-                                    recipeId: Long,
-                                    rating: Boolean,
-                                    created: LocalDateTime
-                                    )
-
-  class UserYesNoRateIngredients(tag: Tag) extends Table[DBUserYesNoRateIngredient](tag,
-    "user_yes_no_rate_ingredient") {
-    def userId = column[Long]("user_id")
-    def ingredientId = column[Long]("ingredient_id")
-    def rating = column[Boolean]("rating")
-    def created = column[LocalDateTime]("created")
-    def * = (userId, ingredientId, rating, created) <> (DBUserYesNoRateIngredient.tupled, DBUserYesNoRateIngredient
-      .unapply)
+    def rating = column[Int]("rating")
+    def created = column[LocalDateTime]("last_seen")
+    def * = (userId, recipeId, rating, created) <> (DBUserYesNoRecipe.tupled, DBUserYesNoRecipe.unapply)
   }
 
   case class DBIngredientTag(
@@ -386,8 +369,7 @@ object DBTableDefinitions {
   val slickIngredientsInRecipe = TableQuery[IngredientsInRecipe]
   val slickLanguages = TableQuery[Languages]
   val slickUserStarRateRecipes = TableQuery[UserStarRateRecipes]
-  val slickUserYesNoRateRecipes = TableQuery[UserYesNoRateRecipes]
-  val slickUserYesNoRateIngredient = TableQuery[UserYesNoRateIngredients]
+  val slickUserYesNoRateRecipes = TableQuery[UserYesNoRecipes]
   val slickUnits = TableQuery[Units]
   val slickFavorites = TableQuery[Favorites]
   val slickIngredientTags = TableQuery[IngredientTags]

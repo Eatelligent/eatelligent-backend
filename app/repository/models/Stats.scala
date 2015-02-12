@@ -6,6 +6,5 @@ case class Stats (
                   numTags: Int,
                   numUsers: Int,
                   numStarRatingsRecipe: Int,
-                  numYesNoRatingsRecipe: Int,
-                  numYesNoRatingsIngredient: Int
+                  numYesNoRatingsRecipe: Int
                    )

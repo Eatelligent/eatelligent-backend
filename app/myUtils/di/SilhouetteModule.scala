@@ -44,6 +44,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAOSlick]
     bind[UserViewedRecipeDAO].to[UserViewedRecipeDAOSlick]
     bind[ColdStartDAO].to[ColdStartDAOSlick]
+    bind[UserYesNoRecipeDAO].to[UserYesNoRecipeDAOSlick]
 
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]
