@@ -6,7 +6,7 @@ import scala.concurrent.Future
 
 trait UserViewedRecipeDAO {
 
-  def save(userId: Long, recipeId: Long, duration: Long): Future[UserViewedRecipe]
+  def save(userId: Long, recipeId: Long, duration: Long): Future[Option[UserViewedRecipe]]
 
   def listAll(): Future[Seq[UserViewedRecipe]]
 

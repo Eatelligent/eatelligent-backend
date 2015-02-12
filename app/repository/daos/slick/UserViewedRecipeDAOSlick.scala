@@ -2,7 +2,7 @@ package repository.daos.slick
 
 import org.joda.time.LocalDateTime
 import repository.daos.UserViewedRecipeDAO
-import repository.models.UserViewedRecipe
+import repository.models.{TinyRecipe, UserViewedRecipe}
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
@@ -12,7 +12,7 @@ import scala.concurrent.Future
 class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
   import play.api.Play.current
 
-  def save(userId: Long, recipeId: Long, duration: Long): Future[UserViewedRecipe] = {
+  def save(userId: Long, recipeId: Long, duration: Long): Future[Option[UserViewedRecipe]] = {
     Future.successful {
       val newInstance = DBUserViewedRecipe(userId, recipeId, duration, new LocalDateTime)
       DB withSession { implicit session =>
@@ -22,16 +22,22 @@ class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
           case None => slickUserViewedRecipes.insert(newInstance)
         }
       }
-      UserViewedRecipe(Some(userId), recipeId, duration, Some(newInstance.lastSeen))
     }
+    find(userId, recipeId)
   }
 
   def listAll(): Future[Seq[UserViewedRecipe]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickUserViewedRecipes
-          .list
-          .map(x => UserViewedRecipe(Some(x.userId), x.recipeId, x.duration, Some(x.lastSeen)))
+        val join = for {
+          (uvr, r) <- slickUserViewedRecipes innerJoin slickRecipes on(_.recipeId === _.id)
+        } yield (uvr, r)
+        join.buildColl[List]
+          .map {
+          case (uvr, r) => UserViewedRecipe(uvr.userId, TinyRecipe(r.id.get, r.name, r.image, r.description, r
+            .spicy, r
+            .time, r.difficulty), uvr.duration, uvr.lastSeen)
+        }
       }
     }
   }
@@ -39,10 +45,18 @@ class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
   def find(userId: Long, recipeId: Long): Future[Option[UserViewedRecipe]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickUserViewedRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
-          case Some(found) => Some(UserViewedRecipe(Some(found.userId), found.recipeId, found.duration, Some(found
-            .lastSeen)))
-          case None => None
+        val join = for {
+          (uvr, r) <- slickUserViewedRecipes innerJoin slickRecipes on(_.recipeId === _.id) if uvr.userId === userId && uvr.recipeId === recipeId
+        } yield (uvr, r)
+        val res = join.firstOption
+          .map {
+          case (uvr, r) => UserViewedRecipe(userId, TinyRecipe(r.id.get, r.name, r.image, r.description, r
+            .spicy, r
+            .time, r.difficulty), uvr.duration, uvr.lastSeen)
+        }
+        res.isEmpty match {
+        case true => None
+        case false => Some(res.head)
         }
       }
     }
@@ -51,9 +65,15 @@ class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
   def findRecipesUserHasViewed(userId: Long): Future[Seq[UserViewedRecipe]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickUserViewedRecipes.filter(_.userId === userId)
-          .list
-          .map(x => UserViewedRecipe(Some(x.userId), x.recipeId, x.duration, Some(x.lastSeen)))
+        val join = for {
+          (uvr, r) <- slickUserViewedRecipes innerJoin slickRecipes on(_.recipeId === _.id) if uvr.userId === userId
+        } yield (uvr, r)
+        join.buildColl[List]
+        .map {
+            case (uvr, r) => UserViewedRecipe(userId, TinyRecipe(r.id.get, r.name, r.image, r.description, r
+              .spicy, r
+              .time, r.difficulty), uvr.duration, uvr.lastSeen)
+          }
       }
     }
   }

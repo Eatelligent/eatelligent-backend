@@ -8,7 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 import myUtils.JsonFormats
 import repository.daos.UserViewedRecipeDAO
-import repository.models.{UserViewedRecipe, User}
+import repository.models.{UserViewedRecipePost, UserViewedRecipe, User}
 
 import scala.concurrent.Future
 
@@ -18,7 +18,7 @@ class UserViewedRecipeController @Inject() (
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats{
 
   def saveUserViewedRecipe = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-    request.body.validate[UserViewedRecipe].fold(
+    request.body.validate[UserViewedRecipePost].fold(
       errors => {
         Future.successful {
           BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
@@ -26,20 +26,14 @@ class UserViewedRecipeController @Inject() (
       },
       json => {
         userViewedRecipesDAO.save(request.identity.userID.get, json.recipeId, json.duration)
-          .map(x => Ok(Json.obj("ok" -> true, "userViewedRecipe" -> Json.toJson(x))))
+          .map(x => Ok(Json.obj("ok" -> true, "viewedRecipe" -> Json.toJson(x))))
       }
     )
   }
 
-  def listUserViewedRecipes(userId: Option[Long]) = SecuredAction.async { implicit request =>
-    userId match {
-      case Some(id) =>
-        userViewedRecipesDAO.findRecipesUserHasViewed(id)
-          .map(x => Ok(Json.obj("ok" -> true, "userViewedRecipe" -> Json.toJson(x))))
-      case None =>
-        userViewedRecipesDAO.listAll()
-          .map(x => Ok(Json.obj("ok" -> true, "userViewedRecipe" -> Json.toJson(x))))
-    }
+  def listUserViewedRecipes = SecuredAction.async { implicit request =>
+    userViewedRecipesDAO.findRecipesUserHasViewed(request.identity.userID.get)
+      .map(x => Ok(Json.obj("ok" -> true, "viewedRecipes" -> Json.toJson(x))))
   }
 
 }

@@ -3,8 +3,13 @@ package repository.models
 import org.joda.time.LocalDateTime
 
 case class UserViewedRecipe(
-                               userId: Option[Long],
-                               recipeId: Long,
+                               userId: Long,
+                               recipe: TinyRecipe,
                                duration: Long,
-                               lastSeen: Option[LocalDateTime]
+                               lastSeen: LocalDateTime
                                )
+
+case class UserViewedRecipePost(
+                             recipeId: Long,
+                             duration: Long
+                             )

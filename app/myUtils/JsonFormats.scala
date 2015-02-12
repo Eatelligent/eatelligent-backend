@@ -274,18 +274,16 @@ trait JsonFormats {
       (JsPath \ "recipe").write[Recipe]
     )(unlift(Recommendation.unapply))
 
-  implicit val userViewedRecipeReads: Reads[UserViewedRecipe] = (
-    (JsPath \ "userId").readNullable[Long] and
+  implicit val userViewedRecipeReads: Reads[UserViewedRecipePost] = (
       (JsPath \ "recipeId").read[Long] and
-      (JsPath \ "duration").read[Long] and
-      (JsPath \ "lastSeen").readNullable[LocalDateTime]
-    )(UserViewedRecipe.apply _)
+      (JsPath \ "duration").read[Long]
+    )(UserViewedRecipePost.apply _)
 
   implicit val userViewedRecipeWrites: Writes[UserViewedRecipe] = (
-    (JsPath \ "userId").write[Option[Long]] and
-      (JsPath \ "recipeId").write[Long] and
+    (JsPath \ "userId").write[Long] and
+      (JsPath \ "recipe").write[TinyRecipe] and
       (JsPath \ "duration").write[Long] and
-      (JsPath \ "lastSeen").write[Option[LocalDateTime]]
+      (JsPath \ "lastSeen").write[LocalDateTime]
     )(unlift(UserViewedRecipe.unapply))
 
   implicit val coldStartWrites: Writes[ColdStart] = (
