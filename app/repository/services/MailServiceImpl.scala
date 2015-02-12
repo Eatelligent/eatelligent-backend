@@ -15,8 +15,7 @@ class MailServiceImpl extends MailService {
       bodyText = Some("An unexpected exception has accured: " + exception.getMessage + "\n\nStacktrace:\n" +
         ExceptionUtils.getStackTrace(exception))
     )
-    MailerPlugin.send(email)
-    Logger.info("Sent mail with exception")
+    sendMail(email)
   }
 
   def forgotPassword(address: String, link: String) = {
@@ -26,8 +25,17 @@ class MailServiceImpl extends MailService {
       Seq(address),
       bodyText = Some("Go here to reset your password: " + link)
     )
-    MailerPlugin.send(email)
-    Logger.info("Sent mail with reset password link: " + link)
+    sendMail(email)
+  }
+
+  def sendMail(email: Email) = {
+    if (play.api.Play.isDev(play.api.Play.current)) {
+      Logger.info("Not sending emails in develop mode.")
+    }
+    else {
+      MailerPlugin.send(email)
+      Logger.info("Sent mail.")
+    }
   }
 
 }
