@@ -14,12 +14,11 @@ class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
 
   def save(userId: Long, recipeId: Long, duration: Long): Future[Option[UserViewedRecipe]] = {
     Future.successful {
-      val newInstance = DBUserViewedRecipe(userId, recipeId, duration, new LocalDateTime)
       DB withSession { implicit session =>
         slickUserViewedRecipes.filter(x => x.userId === userId && x.recipeId === recipeId).firstOption match {
           case Some(oldInstance) => slickUserViewedRecipes.filter(x => x.userId === userId && x.recipeId ===
-            recipeId).update(newInstance)
-          case None => slickUserViewedRecipes.insert(newInstance)
+            recipeId).update(DBUserViewedRecipe(userId, recipeId, duration + oldInstance.duration, new LocalDateTime))
+          case None => slickUserViewedRecipes.insert(DBUserViewedRecipe(userId, recipeId, duration, new LocalDateTime))
         }
       }
     }
