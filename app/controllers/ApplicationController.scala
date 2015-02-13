@@ -34,7 +34,7 @@ class ApplicationController @Inject() (
 
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-    Future.successful(env.authenticatorService.discard(Redirect(routes.ApplicationController.index)))
+    Future.successful(env.authenticatorService.discard(Ok(Json.obj("ok" -> true, "message" -> "logged out."))))
   }
 
   def adminPanel = UserAwareAction { implicit request =>
