@@ -68,7 +68,7 @@ class CredentialsAuthController @Inject() (
         val link = routes.CredentialsAuthController.resetPassword(token.id).absoluteURL()
         mailService.forgotPassword(email, link)
         Future.successful(
-          Ok(Json.obj("ok" -> true, "message" -> Json.toJson("Sent mail with link to reset password: " + link)))
+          Ok(Json.obj("ok" -> true, "message" -> Json.toJson("Sent mail with link to reset password")))
         )
       }
     )
