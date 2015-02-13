@@ -28,8 +28,6 @@ class IngredientController @Inject() (
     tags.map(t => Ok(Json.obj("ok" -> true, "ingredient_tags" -> t)))
   }
 
-  getIngredientTags
-
   def saveIngredient = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     val ingredientResult = request.body.validate[Ingredient]
 

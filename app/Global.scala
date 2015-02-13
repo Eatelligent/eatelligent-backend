@@ -42,6 +42,7 @@ object Global extends WithFilters(new CorsFilter) with GlobalSettings with Secur
         case e: NoSuchFavoriteFoundException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex
           .getMessage)))
         case e: NoSuchUserException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
+        case e: NotFoundException => NotFound(Json.obj("ok" -> false, "message" -> Json.toJson(ex.getMessage)))
         case _ =>
           mailService.sendMailExceptionMail(ex)
           InternalServerError(Json.obj("ok" -> false, "message" -> ex.getMessage))

@@ -77,16 +77,13 @@ object DBTableDefinitions {
 
   case class DBIngredient(
                                id: Option[Long],
-                               name: String,
-                               image: Option[JsValue]
+                               name: String
                                )
 
   class Ingredients(tag: Tag) extends Table[DBIngredient](tag, "ingredient") {
     def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
     def name = column[String]("name")
-    def image = column[Option[JsValue]]("image")
-
-    def * = (id, name, image) <> (DBIngredient.tupled, DBIngredient.unapply)
+    def * = (id, name) <> (DBIngredient.tupled, DBIngredient.unapply)
   }
 
   case class DBIngredientInRecipe(

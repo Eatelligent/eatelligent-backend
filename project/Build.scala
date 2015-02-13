@@ -5,7 +5,7 @@ import PlayKeys._
 
 object Build extends Build {
 
-  val playVersion = "2.3.7"
+  val playVersion = "2.3.8"
   val slickPgVersion = "0.8.1"
   val playSLickVersion = "0.8.1"
 

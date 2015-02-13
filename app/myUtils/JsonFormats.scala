@@ -34,14 +34,12 @@ trait JsonFormats {
   implicit val ingredientSchemaRead: Reads[Ingredient] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read[String] and
-      (JsPath \ "image").readNullable[JsValue] and
       (JsPath \ "tags").read[Seq[String]]
     )(Ingredient.apply _)
 
   implicit val ingredientSchemaWrites: Writes[Ingredient] = (
     (JsPath \ "id").write[Option[Long]] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]] and
       (JsPath \ "tags").write[Seq[String]]
     )(unlift(Ingredient.unapply))
 
@@ -185,7 +183,6 @@ trait JsonFormats {
   implicit val ingredientForRecipeRead: Reads[IngredientForRecipe] = (
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "name").read(minLength[String](1)) and
-      (JsPath \ "image").readNullable[JsValue] and
       (JsPath \ "unit").read[String] and
       (JsPath \ "amount").read[Double]
     )(IngredientForRecipe.apply _)
@@ -193,7 +190,6 @@ trait JsonFormats {
   implicit val ingredientForRecipeWrites: Writes[IngredientForRecipe] = (
     (JsPath \ "id").writeNullable[Long] and
       (JsPath \ "name").write[String] and
-      (JsPath \ "image").write[Option[JsValue]] and
       (JsPath \ "unit").write[String] and
       (JsPath \ "amount").write[Double]
     )(unlift(IngredientForRecipe.unapply))

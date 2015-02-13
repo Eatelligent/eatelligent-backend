@@ -5,17 +5,29 @@ import repository.daos.IngredientDAO
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
 import repository.models.{IngredientTag, Ingredient}
-import play.api.db.slick._
-
+import play.api.db.slick.DB
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import scala.concurrent.Future
+import play.api.Play.current
+
 
 class IngredientDAOSlick extends IngredientDAO {
-  import play.api.Play.current
+
+  implicit val getIngredientResult = GetResult(i => Ingredient(Some(i.nextLong()), i.nextString(), i.nextStringArray()))
 
   def getAll: Future[Seq[Ingredient]] = {
     Future.successful{
       DB withSession { implicit session =>
-        slickIngredients.list.map(i => Ingredient(i.id, i.name, i.image, findTagsForIngredient(i.id.get)))
+        Q.queryNA[Ingredient](
+          "SELECT i.id, i.name, array_agg(it.name) " +
+            "FROM ingredient as i " +
+            "LEFT OUTER JOIN ingredient_in_tag as iit " +
+            "ON (i.id = iit.ingredient_id) " +
+            "LEFT OUTER JOIN ingredient_tag as it " +
+            "ON (iit.tag_id = it.id) " +
+            "GROUP BY i.id, i.name;"
+        )
+        .list
       }
     }
   }
@@ -23,14 +35,16 @@ class IngredientDAOSlick extends IngredientDAO {
   def find(id: Long): Future[Option[Ingredient]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickIngredients.filter(
-          i => i.id === id
-        ).firstOption match {
-          case Some(ingredient) =>
-            val tags = findTagsForIngredient(id)
-            Some(Ingredient(ingredient.id, ingredient.name, ingredient.image, tags))
-          case None => None
-        }
+        Q.queryNA[Ingredient](
+          "SELECT i.id, i.name, array_agg(it.name) " +
+            "FROM ingredient as i " +
+            "LEFT OUTER JOIN ingredient_in_tag as iit " +
+            "ON (i.id = iit.ingredient_id) " +
+            "LEFT OUTER JOIN ingredient_tag as it " +
+            "ON (iit.tag_id = it.id) " +
+            "WHERE i.id = " + id + " " +
+            "GROUP BY i.id, i.name;"
+        ).list.headOption
       }
     }
   }
@@ -38,31 +52,23 @@ class IngredientDAOSlick extends IngredientDAO {
   def find(name: String): Future[Option[Ingredient]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickIngredients.filter(
-          _.name.toLowerCase like "%" + name.toLowerCase + "%"
-        ).firstOption match {
-          case Some(ingredient) =>
-            val tags = findTagsForIngredient(ingredient.id.get)
-            Some(Ingredient(ingredient.id, ingredient.name, ingredient.image, tags))
-          case None => None
-        }
+        Q.queryNA[Ingredient](
+          "SELECT i.id, i.name, array_agg(it.name) " +
+            "FROM ingredient as i " +
+            "LEFT OUTER JOIN ingredient_in_tag as iit " +
+            "ON (i.id = iit.ingredient_id) " +
+            "LEFT OUTER JOIN ingredient_tag as it " +
+            "ON (iit.tag_id = it.id) " +
+            "WHERE i.name like %" + name + "% " +
+            "GROUP BY i.id, i.name;"
+        ).list.headOption
       }
-    }
-  }
-
-  def findTagsForIngredient(ingredientId: Long): Seq[String] = {
-    DB withSession { implicit session =>
-      (for {
-        (tfi, t) <- slickIngredientInTags innerJoin slickIngredientTags on (_.tagId === _.id) if tfi.ingredientId ===
-        ingredientId
-      } yield t.name)
-      .run
     }
   }
 
   def save(ingredient: Ingredient): Future[Option[Ingredient]] = {
     val id = DB withTransaction { implicit session =>
-      val dbIngredient = DBIngredient(None, ingredient.name, ingredient.image)
+      val dbIngredient = DBIngredient(None, ingredient.name)
       val ingredientId: Long = slickIngredients.filter(_.name.toLowerCase === dbIngredient.name.toLowerCase)
         .firstOption
       match {
@@ -81,7 +87,7 @@ class IngredientDAOSlick extends IngredientDAO {
 
   def update(ingredient: Ingredient, ingredientId: Long): Future[Option[Ingredient]] = {
     DB withTransaction  { implicit session =>
-      val dbIngredient = DBIngredient(Some(ingredientId), ingredient.name, ingredient.image)
+      val dbIngredient = DBIngredient(Some(ingredientId), ingredient.name)
       slickIngredients.filter(_.id === ingredientId)
         .firstOption
       match {
