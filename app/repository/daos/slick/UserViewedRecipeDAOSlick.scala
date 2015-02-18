@@ -67,7 +67,7 @@ class UserViewedRecipeDAOSlick extends UserViewedRecipeDAO {
         val join = for {
           (uvr, r) <- slickUserViewedRecipes innerJoin slickRecipes on(_.recipeId === _.id) if uvr.userId === userId
         } yield (uvr, r)
-        join.buildColl[List]
+        join.sortBy(_._1.lastSeen.desc).buildColl[List]
         .map {
             case (uvr, r) => UserViewedRecipe(userId, TinyRecipe(r.id.get, r.name, r.image, r.description, r
               .spicy, r
