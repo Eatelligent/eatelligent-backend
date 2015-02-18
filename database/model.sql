@@ -162,7 +162,7 @@ ON ingredient_in_tag(ingredient_id, tag_id);
 CREATE TABLE ingredient_in_recipe (
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	ingredient_id int8 references ingredient(id) ON DELETE CASCADE,
-	unit_id int8,
+	unit_id int8 references unit(id) ON DELETE CASCADE,
 	amount real
 );
 
