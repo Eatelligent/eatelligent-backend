@@ -49,7 +49,7 @@ trait JsonFormats {
     )(unlift(DateStats.unapply))
 
   implicit val credentialsReads: Reads[Credentials] = (
-    (JsPath \ "email").read[String] and
+    (JsPath \ "email").read[String] map(x => x.toLowerCase) and
       (JsPath \ "password").read[String]
     )(Credentials.apply _)
 
@@ -57,7 +57,7 @@ trait JsonFormats {
     (JsPath \ "id").readNullable[Long] and
       (JsPath \ "firstName").readNullable[String](minLength(2)) and
       (JsPath \ "lastName").readNullable[String](minLength(2)) and
-      (JsPath \ "email").read[String](email) and
+      (JsPath \ "email").read[String](email).map(s => s.toLowerCase) and
       (JsPath \ "password").read[String]
     )(UserSignUp.apply _)
 
