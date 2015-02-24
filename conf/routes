@@ -80,6 +80,8 @@ POST           /api/reset                                            @controller
 GET            /api/reset/:token                                     @controllers.CredentialsAuthController.resetPassword(token: String)
 POST           /api/reset/:token                                     @controllers.CredentialsAuthController.handleResetPassword(token: String)
 
+# Static pages
+GET            /about                                                @controllers.ApplicationController.aboutPage(lang: String ?= "no")
 
 # Used for verify that we own the server for an stress testing plugin.
 GET            /loaderio-7a30f9de1eb57b658bb366f1cbbdf5ae/           @controllers.ApplicationController.stressTestVerification

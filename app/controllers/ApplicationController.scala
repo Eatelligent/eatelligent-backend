@@ -58,4 +58,10 @@ class ApplicationController @Inject() (
     Future.successful(Ok(Json.obj("ok" -> true, "routes" -> Json.toJson(out))))
   }
 
+  def aboutPage(lang: String) = UserAwareAction { implicit request =>
+    lang match {
+      case _ => Ok(views.html.about_no())
+    }
+  }
+
 }
