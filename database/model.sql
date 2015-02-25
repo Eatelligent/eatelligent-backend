@@ -22,6 +22,9 @@ DROP TABLE IF EXISTS ingredient_in_tag;
 DROP TABLE IF EXISTS ingredient_tag;
 DROP TABLE IF EXISTS cold_start;
 DROP TABLE IF EXISTS user_cold_start;
+DROP TABLE IF EXISTS about;
+DROP TABLE IF EXISTS cold_start;
+DROP TABLE IF EXISTS user_viewed_recipe;
 
 
 CREATE TABLE language (
