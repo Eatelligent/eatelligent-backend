@@ -3,6 +3,7 @@ package repository.daos.slick
 import org.joda.time.LocalDateTime
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
+import recommandation.coldstart.UserColdStartModel
 import repository.daos.slick.DBTableDefinitions._
 import com.mohiva.play.silhouette.core.LoginInfo
 import repository.exceptions.NoSuchUserException
@@ -11,6 +12,7 @@ import scala.concurrent.Future
 import play.Logger
 import repository.daos.UserDAO
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 
 
 /**
@@ -252,6 +254,30 @@ class UserDAOSlick extends UserDAO {
           u => TinyUser(u.userID.get, u.firstName, u.lastName)
         }
       }
+    }
+  }
+
+  implicit val getColdstartResults = GetResult(c => UserColdStartModel(c.nextLong(), c.nextBooleanArray()))
+
+  def getAllUserColdStarts(limit: Int): Seq[UserColdStartModel] = {
+    DB withSession { implicit session =>
+      Q.queryNA[UserColdStartModel](
+        "SELECT user_id, array_agg(answer) " +
+        "FROM user_cold_start " +
+          "GROUP BY user_id " +
+          "LIMIT " + limit + ";"
+      ).list
+    }
+  }
+
+  def getUserColdStarts(userId: Long): Option[UserColdStartModel] = {
+    DB withSession { implicit session =>
+      Q.queryNA[UserColdStartModel](
+        "SELECT user_id, array_agg(answer) " +
+          "FROM user_cold_start " +
+          "GROUP BY user_id " +
+          "LIMIT 1;"
+      ).list.headOption
     }
   }
 }

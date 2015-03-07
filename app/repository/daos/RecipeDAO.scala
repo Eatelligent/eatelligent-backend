@@ -22,4 +22,8 @@ trait RecipeDAO {
 
   def deleteRecipe(id: Long, userId: Long): Future[Option[Recipe]]
 
+  def getRandomRecipes(limit: Int): Seq[Long]
+
+  def getRecipesFromIds(ids: Seq[Long]): Future[Seq[TinyRecipe]]
+
 }

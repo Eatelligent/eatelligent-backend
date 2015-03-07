@@ -73,12 +73,20 @@ class RatingDAOSlick extends RatingDAO {
     }
   }
 
+  // TODO remove this
   def saveUserYesNoRateRecipe(rating: UserYesNoRateRecipe): Future[Option[UserYesNoRateRecipe]] = {
     Future.successful(None)
   }
-
+  // TODO remove this
   def saveUserYesNoRateIngredient(rating: UserYesNoRateIngredient): Future[Option[UserYesNoRateIngredient]] = {
     Future.successful(None)
+  }
+
+  def getMaxRecipesRates(userId: Long, limit: Int): Seq[(Long, Double)] = {
+    DB withSession { implicit session =>
+      slickUserStarRateRecipes.filter(_.userId === userId).sortBy(_.rating).take(limit).map(x => (x.recipeId, x
+        .rating)).list
+    }
   }
 
 }

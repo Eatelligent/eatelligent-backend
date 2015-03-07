@@ -238,14 +238,47 @@ CREATE TABLE cold_start (
 	id serial8 primary key,
 	image text NOT NULL,
 	identifier text UNIQUE NOT NULL,
-	description text NOT NULL
+	description text NOT NULL,
+	ingredient_tags hstore,
+	recipe_tags hstore
 );
 
 CREATE TABLE user_cold_start (
 	user_id int8 NOT NULL references users(id) ON DELETE CASCADE,
 	cold_start_id int8 NOT NULL references cold_start(id) ON DELETE CASCADE,
 	answer boolean,
-	answer_time timestamp
+	answer_time timestamp,
+);
+
+
+-- Tables for storing values for a user to different tags
+CREATE TABLE user_ingredient_tag (
+	user_id int8 references users(id) ON DELETE CASCADE,
+	ingredient_tag_id int8 references ingredient_tag(id) ON DELETE CASCADE,
+	value real
+);
+
+CREATE TABLE user_recipe_tag (
+	user_id int8 references users(id) ON DELETE CASCADE,
+	recipe_tag_id int8 references tags(id) ON DELETE CASCADE,
+	value real
+);
+
+CREATE TABLE given_recommendation (
+	user_id int8 references users(id) ON DELETE CASCADE,
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
+	type text,
+	created timestamp,
+	data json
+);
+
+CREATE TABLE measure_rating (
+	user_id int8 references users(id) ON DELETE CASCADE,
+	recipe_id int8 references recipe(id) ON DELETE CASCADE,
+	created timestamp,
+	rating real,
+	source text,
+	data json
 );
 
 

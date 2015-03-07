@@ -9,6 +9,7 @@ import org.joda.time.LocalDateTime
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import repository.models._
+import repository.services._
 
 trait JsonFormats {
 
@@ -265,9 +266,37 @@ trait JsonFormats {
       (JsPath \ "recipeId").write[Long]
     )(unlift(Favorite.unapply))
 
+  implicit val baseWrites: Writes[RecommendationMetadata] =
+    new Writes[RecommendationMetadata]{
+    def writes(o: RecommendationMetadata): JsValue = o match {
+        case s: DummyRec => dummyRecWrites.writes(s)
+        case s: CBRRec => cbrRecWrites.writes(s)
+        case s: CFRec => cfWrites.writes(s)
+    }
+  }
+
+  implicit val cbrRecWrites: Writes[CBRRec] = (
+    (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "from").write[String] and
+      (JsPath \ "simUserId").write[Long] and
+      (JsPath \ "simUserSim").write[Double] and
+      (JsPath \ "simUserRating").write[Double]
+    )(unlift(CBRRec.unapply))
+
+  implicit val cfWrites: Writes[CFRec] = (
+    (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "from").write[String] and
+      (JsPath \ "predictedRating").write[Double]
+    )(unlift(CFRec.unapply))
+
+  implicit val dummyRecWrites: Writes[DummyRec] = (
+    (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "from").write[String]
+    )(unlift(DummyRec.unapply))
+
   implicit val recommendationWrites: Writes[Recommendation] = (
-    (JsPath \ "predictedRating").write[Double] and
-      (JsPath \ "recipe").write[Recipe]
+    (JsPath \ "__meta__").write[RecommendationMetadata] and
+      (JsPath \ "recipe").write[TinyRecipe]
     )(unlift(Recommendation.unapply))
 
   implicit val userViewedRecipeReads: Reads[UserViewedRecipePost] = (

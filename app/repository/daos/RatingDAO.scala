@@ -18,4 +18,6 @@ trait RatingDAO {
 
   def getAverageRatingForRecipe(recipeId: Long): Future[Option[Double]]
 
+  def getMaxRecipesRates(userId: Long, limit: Int): Seq[(Long, Double)]
+
 }

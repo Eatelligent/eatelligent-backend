@@ -15,8 +15,10 @@ import repository.exceptions.{NoSuchUnitException, NoSuchRecipeException}
 import repository.daos.{RatingDAO, RecipeDAO}
 import repository.models._
 import scala.concurrent._
+import scala.slick.jdbc.StaticQuery
 import scala.util.{Try, Failure, Success}
 import play.api.libs.concurrent.Execution.Implicits._
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 
 class RecipeDAOSlick @Inject() (
   val userDAO: UserDAO,
@@ -427,6 +429,39 @@ class RecipeDAOSlick @Inject() (
       }
     }
     find(id, userId)
+  }
+
+  def getRandomRecipes(limit: Int): Seq[Long] = {
+    DB withSession { implicit session =>
+      Q.queryNA[Long](
+        "SELECT id " +
+          "FROM recipe " +
+          "ORDER BY random() " +
+          "LIMIT " + limit + ";").list
+    }
+  }
+
+
+  implicit val getTinyRecipesResult = GetResult(i =>
+    TinyRecipe(
+      id = i.nextLong(),
+      name = i.nextString(),
+      image = i.nextStringOption(),
+      description = i.nextStringOption(),
+      spicy = i.nextIntOption(),
+      time = i.nextIntOption(),
+      difficulty = i.nextStringOption()))
+
+  def getRecipesFromIds(ids: Seq[Long]): Future[Seq[TinyRecipe]] = {
+    Future.successful {
+      DB withSession { implicit session =>
+        Q.queryNA[TinyRecipe](
+          "SELECT id, name, image, description, spicy, time, difficulty " +
+          "FROM recipe " +
+          "WHERE id IN (" + ids.mkString(",") + ");"
+        ).list
+      }
+    }
   }
 
 

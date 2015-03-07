@@ -1,6 +1,7 @@
 package repository.daos
 
 import com.mohiva.play.silhouette.core.LoginInfo
+import recommandation.coldstart.UserColdStartModel
 import repository.models.{UserUpdate, TinyUser, User}
 import scala.concurrent.Future
 
@@ -38,5 +39,9 @@ trait UserDAO {
   def update(user: UserUpdate, id: Long): Future[Option[User]]
 
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]]
+
+  def getAllUserColdStarts(limit: Int): Seq[UserColdStartModel]
+
+  def getUserColdStarts(userId: Long): Option[UserColdStartModel]
 
 }

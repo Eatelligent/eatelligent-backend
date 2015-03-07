@@ -12,6 +12,7 @@ import com.mohiva.play.silhouette.core.providers.oauth2._
 import com.mohiva.play.silhouette.contrib.utils._
 import com.mohiva.play.silhouette.contrib.services._
 import com.mohiva.play.silhouette.contrib.daos.DelegableAuthInfoDAO
+import recommandation.coldstart.{UserColdStartImpl, UserColdStart}
 import repository.services.{UserService, UserServiceImpl}
 import repository.daos._
 import repository.daos.slick._
@@ -45,6 +46,11 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[UserViewedRecipeDAO].to[UserViewedRecipeDAOSlick]
     bind[ColdStartDAO].to[ColdStartDAOSlick]
     bind[UserYesNoRecipeDAO].to[UserYesNoRecipeDAOSlick]
+
+
+    // AI
+    bind[UserColdStart].to[UserColdStartImpl]
+    bind[RecommendationService].to[RecommendationServiceImpl]
 
     bind[CacheLayer].to[PlayCacheLayer]
     bind[HTTPLayer].to[PlayHTTPLayer]

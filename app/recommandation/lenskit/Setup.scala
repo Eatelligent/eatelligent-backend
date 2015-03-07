@@ -1,18 +1,21 @@
 package lenskit
 
-import java.sql.Connection
-import java.util
 import org.grouplens.lenskit.data.sql.JDBCRatingDAO
-import org.grouplens.lenskit.scored.ScoredId
 import org.grouplens.lenskit.{RecommenderBuildException, ItemScorer}
 import org.grouplens.lenskit.baseline.{ItemMeanRatingItemScorer, UserMeanBaseline, UserMeanItemScorer, BaselineScorer}
 import org.grouplens.lenskit.core.{LenskitRecommender, LenskitConfiguration}
 import org.grouplens.lenskit.transform.normalize.{BaselineSubtractingUserVectorNormalizer, UserVectorNormalizer}
+import play.api.db.DB
+import repository.services.CFRec
+import scala.collection.JavaConversions._
+import play.api.Play.current
+
 
 object Setup {
 
-  def run(userId: Long, conn: Connection): util.List[ScoredId] = {
+  def run(userId: Long, limit: Int): Seq[CFRec] = {
 
+    val conn: java.sql.Connection = DB.getConnection()
     val jdbcDAO = JDBCRatingDAO.newBuilder()
       .setTableName("user_star_rate_recipe")
       .setUserColumn("user_id")
@@ -32,7 +35,8 @@ object Setup {
     try {
       val rec = LenskitRecommender.build(config)
       val irec = rec.getItemRecommender
-      irec.recommend(userId, 10)
+      irec.recommend(userId, limit)
+      .map(x => CFRec(x.getId, "CF", x.getScore))
     } catch {
       case e: RecommenderBuildException => throw new RuntimeException("Recommender build failed", e)
     } finally {

@@ -1,6 +1,8 @@
 package repository.models
 
+import repository.services.RecommendationMetadata
+
 case class Recommendation(
-                         predictedRating: Double,
-                         recipe: Recipe
+                         recommendationMetadata: RecommendationMetadata,
+                         recipe: TinyRecipe
                            )
