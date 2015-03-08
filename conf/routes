@@ -14,6 +14,7 @@ GET            /api/users                                            @controller
 
 
 GET            /api/recommendation/recipes                           @controllers.AIController.ai
+GET            /api/recommendation/given                             @controllers.AIController.getAllGivenRecommendations(limit: Int ?= 20, offset: Int ?= 0)
 
 GET            /api/users/:id                                        @controllers.UserController.getUser(id: Long)
 GET            /api/user                                             @controllers.UserController.getCurrentUser

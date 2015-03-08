@@ -258,7 +258,9 @@ object DBTableDefinitions {
     recipeId: Long,
     stars: Double,
     created: LocalDateTime,
-    createdLong: Long
+    createdLong: Long,
+    source: String,
+    data: Option[JsValue]
                                    )
 
   class UserStarRateRecipes(tag: Tag) extends Table[DBUserStarRateRecipe](tag, "user_star_rate_recipe") {
@@ -267,7 +269,10 @@ object DBTableDefinitions {
     def rating = column[Double]("rating")
     def created = column[LocalDateTime]("created")
     def createdLong = column[Long]("created_long")
-    def * = (userId, recipeId, rating, created, createdLong) <> (DBUserStarRateRecipe.tupled, DBUserStarRateRecipe
+    def source = column[String]("source")
+    def data = column[Option[JsValue]]("data")
+    def * = (userId, recipeId, rating, created, createdLong, source, data) <> (DBUserStarRateRecipe.tupled,
+      DBUserStarRateRecipe
       .unapply)
   }
 
@@ -353,6 +358,25 @@ object DBTableDefinitions {
     def * = (userId, coldStartId, answer, answerTime) <> (DBUserColdStart.tupled, DBUserColdStart.unapply)
   }
 
+  case class DBGivenRecommendation(
+                                  id: Option[Long],
+                                  userId: Long,
+                                  recipeId: Long,
+                                  created: LocalDateTime,
+                                  from: String,
+                                  data: Option[JsValue]
+                                    )
+
+  class GivenRecommendations(tag: Tag) extends Table[DBGivenRecommendation](tag, "given_recommendation") {
+    def id = column[Option[Long]]("id", O.PrimaryKey, O.AutoInc)
+    def userId = column[Long]("user_id")
+    def recipeId = column[Long]("recipe_id")
+    def created = column[LocalDateTime]("created")
+    def from = column[String]("type")
+    def data = column[Option[JsValue]]("data")
+    def * = (id, userId, recipeId, created, from, data) <> (DBGivenRecommendation.tupled, DBGivenRecommendation.unapply)
+  }
+
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
   val slickUserLoginInfos = TableQuery[UserLoginInfos]
@@ -374,6 +398,7 @@ object DBTableDefinitions {
   val slickUserViewedRecipes = TableQuery[UserViewedRecipes]
   val slickColdStarts = TableQuery[ColdStarts]
   val slickUserColdStarts = TableQuery[UserColdStarts]
+  val slickGivenRecommendations = TableQuery[GivenRecommendations]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {

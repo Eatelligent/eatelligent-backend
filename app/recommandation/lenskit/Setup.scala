@@ -36,7 +36,7 @@ object Setup {
       val rec = LenskitRecommender.build(config)
       val irec = rec.getItemRecommender
       irec.recommend(userId, limit)
-      .map(x => CFRec(x.getId, "CF", x.getScore))
+      .map(x => CFRec(userId, x.getId, "CF", x.getScore))
     } catch {
       case e: RecommenderBuildException => throw new RuntimeException("Recommender build failed", e)
     } finally {

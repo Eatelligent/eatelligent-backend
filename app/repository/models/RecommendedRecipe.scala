@@ -2,7 +2,7 @@ package repository.models
 
 import repository.services.RecommendationMetadata
 
-case class Recommendation(
+case class RecommendedRecipe(
                          recommendationMetadata: RecommendationMetadata,
                          recipe: TinyRecipe
                            )

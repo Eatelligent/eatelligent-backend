@@ -174,7 +174,9 @@ CREATE TABLE user_star_rate_recipe ( /* id references */
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	rating real CONSTRAINT rating_check CHECK (rating >= 0.0 AND rating <= 5.0),
 	created timestamp,
-	created_long int8
+	created_long int8,
+	source text,
+	data json
 );
 
 CREATE UNIQUE INDEX user_star_rate_recipe_idx 
@@ -265,6 +267,7 @@ CREATE TABLE user_recipe_tag (
 );
 
 CREATE TABLE given_recommendation (
+	id serial8 primary key,
 	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	type text,
@@ -272,14 +275,6 @@ CREATE TABLE given_recommendation (
 	data json
 );
 
-CREATE TABLE measure_rating (
-	user_id int8 references users(id) ON DELETE CASCADE,
-	recipe_id int8 references recipe(id) ON DELETE CASCADE,
-	created timestamp,
-	rating real,
-	source text,
-	data json
-);
 
 
 

@@ -50,6 +50,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     // AI
     bind[UserColdStart].to[UserColdStartImpl]
+    bind[RecommendationDAO].to[RecommendationDAOSlick]
     bind[RecommendationService].to[RecommendationServiceImpl]
 
     bind[CacheLayer].to[PlayCacheLayer]

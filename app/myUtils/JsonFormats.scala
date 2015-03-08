@@ -276,28 +276,32 @@ trait JsonFormats {
   }
 
   implicit val cbrRecWrites: Writes[CBRRec] = (
+    (JsPath \ "userId").write[Long] and
     (JsPath \ "recipeId").write[Long] and
       (JsPath \ "from").write[String] and
       (JsPath \ "simUserId").write[Long] and
-      (JsPath \ "simUserSim").write[Double] and
+      (JsPath \ "simToUser").write[Double] and
       (JsPath \ "simUserRating").write[Double]
     )(unlift(CBRRec.unapply))
 
   implicit val cfWrites: Writes[CFRec] = (
-    (JsPath \ "recipeId").write[Long] and
+    (JsPath \ "userId").write[Long] and
+      (JsPath \ "recipeId").write[Long] and
       (JsPath \ "from").write[String] and
       (JsPath \ "predictedRating").write[Double]
     )(unlift(CFRec.unapply))
 
   implicit val dummyRecWrites: Writes[DummyRec] = (
-    (JsPath \ "recipeId").write[Long] and
-      (JsPath \ "from").write[String]
+    (JsPath \ "userId").write[Long] and
+      (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "from").write[String] and
+      (JsPath \ "data").write[Option[JsValue]]
     )(unlift(DummyRec.unapply))
 
-  implicit val recommendationWrites: Writes[Recommendation] = (
+  implicit val recommendationWrites: Writes[RecommendedRecipe] = (
     (JsPath \ "__meta__").write[RecommendationMetadata] and
       (JsPath \ "recipe").write[TinyRecipe]
-    )(unlift(Recommendation.unapply))
+    )(unlift(RecommendedRecipe.unapply))
 
   implicit val userViewedRecipeReads: Reads[UserViewedRecipePost] = (
       (JsPath \ "recipeId").read[Long] and

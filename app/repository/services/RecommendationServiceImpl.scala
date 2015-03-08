@@ -2,12 +2,14 @@ package repository.services
 
 import com.google.inject.Inject
 import lenskit.Setup
+import play.api.libs.json.{Json, JsValue}
 import recommandation.coldstart.UserColdStart
-import repository.daos.RecipeDAO
+import repository.daos.{RecommendationDAO, RecipeDAO}
 
 class RecommendationServiceImpl @Inject() (
                                           val userColdStart: UserColdStart,
-                                          val recipeDAO: RecipeDAO
+                                          val recipeDAO: RecipeDAO,
+                                          val recommendationDAO: RecommendationDAO
                                             ) extends RecommendationService
 {
 
@@ -22,13 +24,25 @@ class RecommendationServiceImpl @Inject() (
     val fromAgnar: Seq[RecommendationMetadata] = userColdStart.findTheRecipesYouWant(userId, N - fromCF.size, 1, 0.5)
 
     val randomNDuTrenger: Seq[RecommendationMetadata] = recipeDAO.getRandomRecipes(N - (fromCF.size + fromAgnar.length))
-      .map(x => DummyRec(x, "random"))
-    (util.Random.shuffle(fromCF ++ fromAgnar) ++ randomNDuTrenger).distinct
+      .map(x => DummyRec(userId, x, "random", None))
+    val res = (util.Random.shuffle(fromCF ++ fromAgnar) ++ randomNDuTrenger).distinct
+    res.zipWithIndex.foreach { case (x, index) => saveRecommendation(userId, x, index) }
+    res
+  }
+
+  def saveRecommendation(userId: Long, rec: RecommendationMetadata, ranking: Int): Unit = {
+    rec match {
+      case r: CFRec => recommendationDAO.saveGivenRecommendation(userId, r.recipeId, r.from, ranking, Some(r.toJson))
+      case r: CBRRec => recommendationDAO.saveGivenRecommendation(userId, r.recipeId, r.from, ranking, Some(r.toJson))
+      case _ => recommendationDAO.saveGivenRecommendation(userId, rec.recipeId, rec.from, ranking, None)
+    }
+
   }
 }
 
 
 abstract class RecommendationMetadata {
+  def userId: Long
   def recipeId: Long
   def from: String
 
@@ -40,54 +54,41 @@ abstract class RecommendationMetadata {
 }
 
 case class DummyRec(
+                   userId: Long,
                    recipeId: Long,
-                   from: String
+                   from: String,
+                   data: Option[JsValue]
+
                      ) extends RecommendationMetadata
 
 case class CFRec(
+                  userId: Long,
                   recipeId: Long,
                   from: String,
                   prediction: Double
-                  ) extends RecommendationMetadata
+                  ) extends RecommendationMetadata {
+  def toJson: JsValue = {
+    Json.obj(
+      "prediction" -> prediction
+    )
+  }
+}
 
 case class CBRRec(
+                 userId: Long,
                  recipeId: Long,
                  from: String,
-                 userId: Long,
-                 userSim: Double,
+                 simUserId: Long,
+                 simToUser: Double,
                  simUserRating: Double
-                   ) extends RecommendationMetadata
-
-/*
-
-
-N = 10
-
-1: do the CF part
-2: få taki flere oppskrifter
-2.1: scan predicted ratings of cbr
-2.2 twin with cf list
-3 return
+                   ) extends RecommendationMetadata {
+  def toJson: JsValue = {
+    Json.obj(
+      "similarUserId" -> userId,
+      "similarityToUser" -> simToUser,
+      "similarUserRating" -> simUserRating
+    )
+  }
 
 
-  1 cf - 4.5
-  2 agnar - 4.5
-  3 cf - 4.4
-  4 cf - 4.1
-  5 cf - 3.7
-  6 cf - 2.3
-  7
-  8
-  9
-  10
-
-
-
-
-
-
-
-
-
-
- */
+}

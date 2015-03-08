@@ -21,12 +21,26 @@ class RatingDAOSlick extends RatingDAO {
       }
       if (!recipeExists)
         throw new NoSuchRecipeException("No recipe with id: " + rating.recipeId + " in the databse.")
-      slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId).firstOption match {
+
+      // Looking up if this recipe has been recommended
+      val given = slickGivenRecommendations
+        .filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId)
+        .sortBy(_.created.desc).take(1).firstOption
+          match {
+            case Some(g) => (g.from, g.data)
+            case None => ("search", None)
+          }
+
+
+      slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId)
+        .firstOption match {
+        // Update old rating
         case Some(x) => slickUserStarRateRecipes.filter(x => x.userId === rating.userId && x.recipeId === rating.recipeId)
           .update(DBUserStarRateRecipe(rating.userId.get, rating.recipeId, rating
-          .stars, new LocalDateTime(), new DateTime().getMillis))
+          .stars, new LocalDateTime(), new DateTime().getMillis, given._1, given._2))
+        // Insert new rating
         case None => slickUserStarRateRecipes.insert(DBUserStarRateRecipe(rating.userId.get, rating.recipeId, rating
-          .stars, new LocalDateTime(), new DateTime().getMillis))
+          .stars, new LocalDateTime(), new DateTime().getMillis, given._1, given._2))
       }
       findUserStarRateRecipe(rating.userId.get, rating.recipeId)
     }

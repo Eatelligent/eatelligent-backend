@@ -22,9 +22,9 @@ class UserColdStartImpl @Inject()(
         userRankedList.map { case (userId, similarity) =>
           val recipesrated = ratingDAO.getMaxRecipesRates(userId, maxRecipesFromOneUser)
           recipesrated.map{
-             case (recipeId, rating) => CBRRec(recipeId, "cbr", userId, similarity, rating)
+             case (recipeId, rating) => CBRRec(userId, recipeId, "cbr", userId, similarity, rating)
           }
-        }.flatten.sortBy(x => x.userSim * x.simUserRating).take(N)
+        }.flatten.sortBy(x => x.simToUser * x.simUserRating).take(N)
     }
 
   }
