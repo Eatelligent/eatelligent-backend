@@ -271,6 +271,7 @@ CREATE TABLE given_recommendation (
 	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_id int8 references recipe(id) ON DELETE CASCADE,
 	type text,
+	ranking int,
 	created timestamp,
 	data json
 );

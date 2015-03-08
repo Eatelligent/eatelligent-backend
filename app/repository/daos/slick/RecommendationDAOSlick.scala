@@ -15,7 +15,8 @@ class RecommendationDAOSlick extends RecommendationDAO {
   def saveGivenRecommendation(userId: Long, recipeId: Long, from: String, ranking: Int, data: Option[JsValue]) = {
     Future.successful {
       DB withSession { implicit session =>
-        slickGivenRecommendations.insert(DBGivenRecommendation(None, userId, recipeId, new LocalDateTime(), from, data))
+        slickGivenRecommendations.insert(DBGivenRecommendation(None, userId, recipeId, new LocalDateTime(), from,
+          ranking, data))
       }
     }
   }

@@ -364,6 +364,7 @@ object DBTableDefinitions {
                                   recipeId: Long,
                                   created: LocalDateTime,
                                   from: String,
+                                  ranking: Int,
                                   data: Option[JsValue]
                                     )
 
@@ -374,7 +375,9 @@ object DBTableDefinitions {
     def created = column[LocalDateTime]("created")
     def from = column[String]("type")
     def data = column[Option[JsValue]]("data")
-    def * = (id, userId, recipeId, created, from, data) <> (DBGivenRecommendation.tupled, DBGivenRecommendation.unapply)
+    def ranking = column[Int]("ranking")
+    def * = (id, userId, recipeId, created, from, ranking, data) <> (DBGivenRecommendation.tupled, DBGivenRecommendation
+      .unapply)
   }
 
   val slickUsers = TableQuery[Users]
