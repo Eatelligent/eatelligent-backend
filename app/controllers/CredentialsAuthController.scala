@@ -63,13 +63,17 @@ class CredentialsAuthController @Inject() (
           BadRequest(Json.obj("ok" -> false, "message" -> JsError.toFlatJson(errors)))
         ),
       email => {
-        val token = TokenUser(email, isSignUp = false)
-        tokenService.create(token)
-        val link = routes.CredentialsAuthController.resetPassword(token.id).absoluteURL()
-        mailService.forgotPassword(email, link)
-        Future.successful(
-          Ok(Json.obj("ok" -> true, "message" -> Json.toJson("Sent mail with link to reset password " + link)))
-        )
+        userService.find(email).map {
+          u => u.isEmpty match {
+            case true => NotFound(Json.obj("ok" -> false, "message" -> "No user with that email was found."))
+            case false =>
+              val token = TokenUser(email, isSignUp = false)
+              tokenService.create(token)
+              val link = routes.CredentialsAuthController.resetPassword(token.id).absoluteURL()
+              mailService.forgotPassword(email, link)
+              Ok(Json.obj("ok" -> true, "message" -> Json.toJson("Sent mail with link to reset password " + link)))
+          }
+        }
       }
     )
   }
@@ -121,7 +125,7 @@ class CredentialsAuthController @Inject() (
                       env.eventBus.publish (SignUpEvent (user, request, request2lang))
                       env.eventBus.publish (LoginEvent (user, request, request2lang))
                       tokenService.consume (tokenId)
-                      env.authenticatorService.send (authenticator, Ok (Json.obj ("ok" -> true, "message" -> Json.toJson (user))))
+                      env.authenticatorService.send (authenticator, Ok(views.html.resetedPassword()))
                     case None => throw new AuthenticationException ("Couldn't create an authenticator")
                   }
                 }
