@@ -3,6 +3,8 @@ package controllers
 import javax.inject.Inject
 import myUtils.JsonFormats
 import play.api.libs.json._
+import play.api.mvc.Results._
+import repository.exceptions.DuplicateException
 import repository.models.{UserSignUp, User}
 import scala.concurrent.Future
 import play.api.mvc.{BodyParsers, Action}
@@ -48,19 +50,25 @@ class SignUpController @Inject() (
           enrolled = None,
           metricSystem = None
         )
-        for {
-          avatar <- avatarService.retrieveURL(data.email)
-          user <- userService.save(user.copy(image = avatar))
-          authInfo <- authInfoService.save(loginInfo, authInfo)
-          maybeAuthenticator <- env.authenticatorService.create(user)
-        } yield {
-          maybeAuthenticator match {
-            case Some(authenticator) =>
-              env.eventBus.publish(SignUpEvent(user, request, request2lang))
-              env.eventBus.publish(LoginEvent(user, request, request2lang))
-              env.authenticatorService.send(authenticator, Ok(Json.obj("ok" -> true, "message" -> Json.toJson(user))))
-            case None => throw new AuthenticationException("Couldn't create an authenticator")
+        try {
+          for {
+            avatar <- avatarService.retrieveURL(data.email)
+            user <- userService.save(user.copy(image = avatar))
+            authInfo <- authInfoService.save(loginInfo, authInfo)
+            maybeAuthenticator <- env.authenticatorService.create(user)
+          } yield {
+            maybeAuthenticator match {
+              case Some(authenticator) =>
+                env.eventBus.publish(SignUpEvent(user, request, request2lang))
+                env.eventBus.publish(LoginEvent(user, request, request2lang))
+                env.authenticatorService.send(authenticator, Ok(Json.obj("ok" -> true, "message" -> Json.toJson(user))))
+              case None => throw new AuthenticationException("Couldn't create an authenticator")
+            }
           }
+        }
+        catch {
+          case e: DuplicateException => Future(Conflict(Json.obj("ok" -> false, "message" -> Json.toJson(e
+            .getMessage))))
         }
       }
     )
