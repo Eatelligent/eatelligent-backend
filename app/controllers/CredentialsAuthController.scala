@@ -79,8 +79,8 @@ class CredentialsAuthController @Inject() (
   }
 
   val passwordsForm = Form(tuple(
-    "password1" -> nonEmptyText,
-    "password2" -> nonEmptyText
+    "Password" -> nonEmptyText,
+    "Repeat password" -> nonEmptyText
   ) verifying(Messages("passwords.not.equal"), passwords => passwords._2 == passwords._1 ))
 
 
