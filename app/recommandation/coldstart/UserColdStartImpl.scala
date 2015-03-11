@@ -14,19 +14,17 @@ class UserColdStartImpl @Inject()(
     userDAO.getUserColdStarts(userId) match {
       case None => Seq()
       case Some(thisUser) =>
-
-        val allUsers = userDAO.getAllUserColdStarts(100).filter(_.id != userId)
-
-        val userRankedList = allUsers.map(x => (x.id, sim(thisUser, x))).filter(_._2 > minThreshold).sortBy(_._2)
-
-        userRankedList.map { case (userId, similarity) =>
-          val recipesrated = ratingDAO.getMaxRecipesRates(userId, maxRecipesFromOneUser)
-          recipesrated.map{
-             case (recipeId, rating) => CBRRec(userId, recipeId, "cbr", userId, similarity, rating)
+        userDAO.getAllUserColdStarts(100).filter(_.id != userId)
+        .map(x => (x.id, sim(thisUser, x))).filter(_._2 > minThreshold).sortBy(_._2)
+          .map {
+            case (simUserId, similarity) =>
+              ratingDAO.getMaxRecipesRates(simUserId, maxRecipesFromOneUser)
+              .map{
+                 case (recipeId, rating) => CBRRec(userId, recipeId, "cbr", simUserId, similarity, rating)
+              }
           }
-        }.flatten.sortBy(x => x.simToUser * x.simUserRating).take(N)
+          .flatten.sortBy(x => x.simToUser * x.simUserRating).take(N)
     }
-
   }
 
   // TODO: To be in the allusers list you have to at least have 2 recipes rates (already filtered list)
@@ -47,7 +45,9 @@ class UserColdStartImpl @Inject()(
 
 
   def sim(thisUser: UserColdStartModel, otherUser: UserColdStartModel): Double = {
-    val diff = thisUser.response.diff(otherUser.response).length
+    val diff = thisUser.response.zip(otherUser.response).count {
+      case (x, y) => x != y
+    }
 
     if(diff == 0)
       1.0
