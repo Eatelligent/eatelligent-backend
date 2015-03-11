@@ -25,7 +25,9 @@ class RecommendationServiceImpl @Inject() (
 
     val randomNDuTrenger: Seq[RecommendationMetadata] = recipeDAO.getRandomRecipes(N - (fromCF.size + fromAgnar.length))
       .map(x => DummyRec(userId, x, "random", None))
-    val res = (util.Random.shuffle(fromCF ++ fromAgnar) ++ randomNDuTrenger).distinct
+
+    val res = (util.Random.shuffle(List(fromCF, fromAgnar)).flatten ++ randomNDuTrenger).distinct
+
     res.zipWithIndex.foreach { case (x, index) => saveRecommendation(userId, x, index) }
     res
   }
