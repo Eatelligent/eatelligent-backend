@@ -17,16 +17,24 @@ class RecommendationServiceImpl @Inject() (
   def getRecommendations(userId: Long): Seq[RecommendationMetadata] = {
 
     val N = 10
-    val CF = 5
+    val CF = 4
+    val TAGS = 4
+    val RANDOM = 2
+
+    val MIN_TRESHOLD_SCORE_CBR = 0.5
+    val NUM_RECIPES_FROM_EACH_USER = 1
 
     val fromCF: Seq[RecommendationMetadata] = Setup.run(userId, CF)
+    val fromTags = userColdStart.findRecipesBasedOnTags(userId, TAGS)
+    val fromAgnar: Seq[RecommendationMetadata] = userColdStart.findTheRecipesYouWant(userId, N - fromCF.size -
+      fromTags.size - RANDOM, NUM_RECIPES_FROM_EACH_USER, MIN_TRESHOLD_SCORE_CBR)
 
-    val fromAgnar: Seq[RecommendationMetadata] = userColdStart.findTheRecipesYouWant(userId, N - fromCF.size, 1, 0.5)
 
-    val randomNDuTrenger: Seq[RecommendationMetadata] = recipeDAO.getRandomRecipes(N - (fromCF.size + fromAgnar.length))
+    val randomNDuTrenger: Seq[RecommendationMetadata] = recipeDAO.getRandomRecipes(N - (fromCF.size + fromAgnar
+      .length + fromTags.size))
       .map(x => DummyRec(userId, x, "random", None))
 
-    val res = (util.Random.shuffle(List(fromCF, fromAgnar)).flatten ++ randomNDuTrenger).distinct
+    val res = (util.Random.shuffle(List(fromTags, fromCF, fromAgnar)).flatten ++ randomNDuTrenger).distinct
 
     res.zipWithIndex.foreach { case (x, index) => saveRecommendation(userId, x, index) }
     res
@@ -36,6 +44,7 @@ class RecommendationServiceImpl @Inject() (
     rec match {
       case r: CFRec => recommendationDAO.saveGivenRecommendation(userId, r.recipeId, r.from, ranking, Some(r.toJson))
       case r: CBRRec => recommendationDAO.saveGivenRecommendation(userId, r.recipeId, r.from, ranking, Some(r.toJson))
+      case r: TagsRec => recommendationDAO.saveGivenRecommendation(userId, r.recipeId, r.from, ranking, Some(r.toJson))
       case _ => recommendationDAO.saveGivenRecommendation(userId, rec.recipeId, rec.from, ranking, None)
     }
 
@@ -62,6 +71,19 @@ case class DummyRec(
                    data: Option[JsValue]
 
                      ) extends RecommendationMetadata
+
+case class TagsRec(
+                  userId: Long,
+                  recipeId: Long,
+                  from: String,
+                  score: Double
+                  ) extends RecommendationMetadata {
+  def toJson: JsValue = {
+    Json.obj(
+      "score" -> score
+    )
+  }
+}
 
 case class CFRec(
                   userId: Long,

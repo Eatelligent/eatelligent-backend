@@ -1,12 +1,39 @@
 package recommandation.coldstart
 
 import com.google.inject.Inject
-import repository.daos.{UserDAO, RatingDAO}
-import repository.services.CBRRec
+import myUtils.ColdStartConstants
+import repository.daos.{ColdStartDAO, UserTagRelationDAO, UserDAO, RatingDAO}
+import repository.services.{TagsRec, DummyRec, CBRRec}
 
 class UserColdStartImpl @Inject()(
                                    val ratingDAO: RatingDAO,
+                                   val tagRelationDAO: UserTagRelationDAO,
+                                   val coldStartDAO: ColdStartDAO,
                                    val userDAO: UserDAO) extends UserColdStart {
+
+
+
+  def findRecipesBasedOnTags(userId: Long, maxRecipes: Int): Seq[TagsRec] = {
+    val coldStartResponses = coldStartDAO.getColdStartsForUser(userId)
+
+    val skillsResponse = coldStartResponses.find(_.coldStartId == ColdStartConstants.SKILLS).map(_.answer)
+    val spicyResponse = coldStartResponses.find(_.coldStartId == ColdStartConstants.SPICY).map(_.answer)
+
+    val recs = tagRelationDAO.retrieveTopRecipesBasedOnTags(maxRecipes * maxRecipes, userId)
+    .filter(_.score > 0)
+
+    val filteredOnSkill = skillsResponse match {
+      case Some(answer) => if (!answer) recs.filter(x => x.difficulty == "Enkel" && x.time < 45) else recs
+      case None => recs
+    }
+
+    val filteredOnSpicy = spicyResponse match {
+      case Some(answer) => if (!answer) recs.filter(_.spicy == 1) else filteredOnSkill
+      case None => filteredOnSkill
+    }
+
+    filteredOnSpicy.take(maxRecipes).map(x => TagsRec(userId, x.id, "tags", x.score))
+  }
 
   def findTheRecipesYouWant(userId: Long, N: Int,
                             maxRecipesFromOneUser: Int, minThreshold: Double): Seq[CBRRec] = {

@@ -7,7 +7,7 @@ import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.slick.DBTableDefinitions._
 import play.api.Play.current
-import repository.services.{DummyRec, CBRRec, CFRec, RecommendationMetadata}
+import repository.services._
 import scala.concurrent.Future
 
 class RecommendationDAOSlick extends RecommendationDAO {
@@ -40,6 +40,8 @@ class RecommendationDAOSlick extends RecommendationDAO {
               case "cbr" =>
                 val meta = fromJson(x.data.get)
                 CBRRec(x.userId, x.recipeId, x.from, meta._1, meta._2, meta._3)
+              case "tags" =>
+                TagsRec(x.userId, x.recipeId, x.from, (x.data.get \ "score").as[Double])
               case _ =>
                 DummyRec(x.userId, x.recipeId, x.from, x.data)
             }

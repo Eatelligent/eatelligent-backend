@@ -1,6 +1,6 @@
 package recommandation.coldstart
 
-import repository.services.CBRRec
+import repository.services.{TagsRec, CBRRec}
 
 trait UserColdStart {
 
@@ -8,5 +8,7 @@ trait UserColdStart {
 
   def findTheRecipesYouWant(thisuser: Long, N: Int,
                             maxRecipesFromOneUser: Int, minThreshold: Double): Seq[CBRRec]
+
+  def findRecipesBasedOnTags(userId: Long, maxRecipes: Int): Seq[TagsRec]
 
 }

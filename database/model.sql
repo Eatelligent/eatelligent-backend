@@ -257,14 +257,20 @@ CREATE TABLE user_cold_start (
 CREATE TABLE user_ingredient_tag (
 	user_id int8 references users(id) ON DELETE CASCADE,
 	ingredient_tag_id int8 references ingredient_tag(id) ON DELETE CASCADE,
-	value real
+	value real CONSTRAINT value_check CHECK (value >= -5.0 AND value <= 5.0)
 );
+
+CREATE UNIQUE INDEX user_ingredient_tag_idx 
+ON user_ingredient_tag(user_id, recipe_id);
 
 CREATE TABLE user_recipe_tag (
 	user_id int8 references users(id) ON DELETE CASCADE,
 	recipe_tag_id int8 references tags(id) ON DELETE CASCADE,
-	value real
+	value real CONSTRAINT value_check CHECK (value >= -5.0 AND value <= 5.0)
 );
+
+CREATE UNIQUE INDEX user_recipe_tag_idx 
+ON user_recipe_tag(user_id, recipe_id);
 
 CREATE TABLE given_recommendation (
 	id serial8 primary key,

@@ -46,6 +46,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[UserViewedRecipeDAO].to[UserViewedRecipeDAOSlick]
     bind[ColdStartDAO].to[ColdStartDAOSlick]
     bind[UserYesNoRecipeDAO].to[UserYesNoRecipeDAOSlick]
+    bind[UserTagRelationDAO].to[UserTagRelationDAOSlick]
 
 
     // AI

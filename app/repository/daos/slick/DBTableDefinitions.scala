@@ -380,6 +380,32 @@ object DBTableDefinitions {
       .unapply)
   }
 
+  case class DBUserIngredientTagRelation(
+                                        userId: Long,
+                                        ingredientTagId: Long,
+                                        value: Double
+                     )
+
+  class UserIngredientTagRelations(tag: Tag) extends Table[DBUserIngredientTagRelation](tag, "user_ingredient_tag") {
+    def userId = column[Long]("user_id")
+    def ingredientTagId = column[Long]("ingredient_tag_id")
+    def value = column[Double]("value")
+    def * = (userId, ingredientTagId, value) <> (DBUserIngredientTagRelation.tupled, DBUserIngredientTagRelation.unapply)
+  }
+
+  case class DBUserRecipeTagRelation(
+                                          userId: Long,
+                                          recipeTagId: Long,
+                                          value: Double
+                                          )
+
+  class UserRecipeTagRelations(tag: Tag) extends Table[DBUserRecipeTagRelation](tag, "user_recipe_tag") {
+    def userId = column[Long]("user_id")
+    def recipeTagId = column[Long]("recipe_tag_id")
+    def value = column[Double]("value")
+    def * = (userId, recipeTagId, value) <> (DBUserRecipeTagRelation.tupled, DBUserRecipeTagRelation.unapply)
+  }
+  
   val slickUsers = TableQuery[Users]
   val slickLoginInfos = TableQuery[LoginInfos]
   val slickUserLoginInfos = TableQuery[UserLoginInfos]
@@ -402,6 +428,8 @@ object DBTableDefinitions {
   val slickColdStarts = TableQuery[ColdStarts]
   val slickUserColdStarts = TableQuery[UserColdStarts]
   val slickGivenRecommendations = TableQuery[GivenRecommendations]
+  val slickUserIngredientTagRelations = TableQuery[UserIngredientTagRelations]
+  val slickUserRecipeTagRelations = TableQuery[UserRecipeTagRelations]
 
 
   def insertTag(tag: DBTag)(implicit session: Session): Long = {

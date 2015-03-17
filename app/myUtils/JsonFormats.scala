@@ -272,8 +272,16 @@ trait JsonFormats {
         case s: DummyRec => dummyRecWrites.writes(s)
         case s: CBRRec => cbrRecWrites.writes(s)
         case s: CFRec => cfWrites.writes(s)
+        case s: TagsRec => tagsRecWrites.writes(s)
     }
   }
+
+  implicit val tagsRecWrites: Writes[TagsRec] = (
+    (JsPath \ "userId").write[Long] and
+      (JsPath \ "recipeId").write[Long] and
+      (JsPath \ "from").write[String] and
+      (JsPath \ "score").write[Double]
+    )(unlift(TagsRec.unapply))
 
   implicit val cbrRecWrites: Writes[CBRRec] = (
     (JsPath \ "userId").write[Long] and

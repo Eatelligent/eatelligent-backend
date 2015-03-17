@@ -10,4 +10,6 @@ trait ColdStartDAO {
 
   def getColdStarts: Future[Seq[ColdStart]]
 
+  def getColdStartsForUser(userId: Long): Seq[UserColdStart]
+
 }

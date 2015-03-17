@@ -38,6 +38,14 @@ class ColdStartDAOSlick extends ColdStartDAO {
     }
   }
 
+  def getColdStartsForUser(userId: Long): Seq[UserColdStart] = {
+    DB withSession { implicit session =>
+      slickUserColdStarts.filter(_.userId === userId)
+        .list
+        .map(x => UserColdStart(Some(userId), x.coldStartId, x.answer, Some(x.answerTime)))
+    }
+  }
+
   def getColdStarts: Future[Seq[ColdStart]] = {
     Future.successful {
       DB withSession { implicit session =>
