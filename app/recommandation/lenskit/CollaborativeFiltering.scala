@@ -11,7 +11,7 @@ import scala.collection.JavaConversions._
 import play.api.Play.current
 
 
-object Setup {
+object CollaborativeFiltering {
 
   def run(userId: Long, limit: Int): Seq[CFRec] = {
 

@@ -11,4 +11,6 @@ trait RecommendationDAO {
 
   def getAllGivenRecommendations(limit: Int, offset: Int): Future[Seq[RecommendationMetadata]]
 
+  def getAllRecipesToNotShowInRecs(userId: Long): Set[Long]
+
 }

@@ -9,6 +9,8 @@ import repository.daos.slick.DBTableDefinitions._
 import play.api.Play.current
 import repository.services._
 import scala.concurrent.Future
+import scala.slick.jdbc.StaticQuery
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 
 class RecommendationDAOSlick extends RecommendationDAO {
 
@@ -47,6 +49,20 @@ class RecommendationDAOSlick extends RecommendationDAO {
             }
         }
       }
+    }
+  }
+
+  def getAllRecipesToNotShowInRecs(userId: Long): Set[Long] = {
+    DB withSession { implicit session =>
+      Q.queryNA[Long](
+        "SELECT recipe_id " +
+        "FROM user_viewed_recipe " +
+        "WHERE user_id = " + userId + " AND last_seen > NOW() - INTERVAL '7' DAY " +
+        "UNION " +
+        "SELECT recipe_id " +
+        "FROM user_star_rate_recipe " +
+        "WHERE user_id = " + userId + " AND created > NOW() - INTERVAL '14' DAY;"
+      ).list.toSet
     }
   }
 

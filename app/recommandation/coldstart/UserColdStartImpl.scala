@@ -19,7 +19,7 @@ class UserColdStartImpl @Inject()(
     val skillsResponse = coldStartResponses.find(_.coldStartId == ColdStartConstants.SKILLS).map(_.answer)
     val spicyResponse = coldStartResponses.find(_.coldStartId == ColdStartConstants.SPICY).map(_.answer)
 
-    val recs = tagRelationDAO.retrieveTopRecipesBasedOnTags(maxRecipes * maxRecipes, userId)
+    val recs = tagRelationDAO.retrieveTopRecipesBasedOnTags(maxRecipes, userId)
     .filter(_.score > 0)
 
     val filteredOnSkill = skillsResponse match {

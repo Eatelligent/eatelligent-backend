@@ -1,7 +1,7 @@
 package repository.services
 
 import com.google.inject.Inject
-import lenskit.Setup
+import lenskit.CollaborativeFiltering
 import play.api.libs.json.{Json, JsValue}
 import recommandation.coldstart.UserColdStart
 import repository.daos.{RecommendationDAO, RecipeDAO}
@@ -22,12 +22,20 @@ class RecommendationServiceImpl @Inject() (
     val RANDOM = 2
 
     val MIN_TRESHOLD_SCORE_CBR = 0.5
-    val NUM_RECIPES_FROM_EACH_USER = 1
+    val NUM_RECIPES_FROM_EACH_USER = 3
 
-    val fromCF: Seq[RecommendationMetadata] = Setup.run(userId, CF)
+    val notIncludeRecipes = recommendationDAO.getAllRecipesToNotShowInRecs(userId)
+
+    val fromCF: Seq[RecommendationMetadata] = CollaborativeFiltering.run(userId, 100).filter(r => !notIncludeRecipes
+      .contains(r.recipeId)).take(CF)
+
     val fromTags = userColdStart.findRecipesBasedOnTags(userId, TAGS)
-    val fromAgnar: Seq[RecommendationMetadata] = userColdStart.findTheRecipesYouWant(userId, N - fromCF.size -
-      fromTags.size - RANDOM, NUM_RECIPES_FROM_EACH_USER, MIN_TRESHOLD_SCORE_CBR)
+
+    val fromAgnar: Seq[RecommendationMetadata] = userColdStart.findTheRecipesYouWant(userId, 100,
+      NUM_RECIPES_FROM_EACH_USER, MIN_TRESHOLD_SCORE_CBR)
+      .filter(
+        r => !notIncludeRecipes.contains(r.recipeId))
+      .take(N - fromCF.size - fromTags.size - RANDOM)
 
 
     val randomNDuTrenger: Seq[RecommendationMetadata] = recipeDAO.getRandomRecipes(N - (fromCF.size + fromAgnar
