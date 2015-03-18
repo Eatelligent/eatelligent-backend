@@ -125,6 +125,10 @@ class UserTagRelationDAOSlick extends UserTagRelationDAO {
           "SELECT recipe_id " +
           "FROM user_star_rate_recipe " +
           "WHERE user_id = " + userId + " AND created > NOW() - INTERVAL '14' DAY " +
+          "UNION " +
+          "SELECT recipe_id " +
+          "FROM user_yes_no_rate_recipe " +
+          "WHERE user_id = " + userId + " AND last_seen > NOW() - INTERVAL '3' DAY" +
         ");"
       ).list
     }
