@@ -1,5 +1,7 @@
 package myUtils
 
+import java.text.DecimalFormat
+
 import play.api.libs.json.Reads._
 
 import com.mohiva.play.silhouette.core.LoginInfo
@@ -12,6 +14,12 @@ import repository.models._
 import repository.services._
 
 trait JsonFormats {
+
+  val formatter = new DecimalFormat("#.####")
+  implicit val doubleWrite: Writes[Double] =
+    new Writes[Double]{
+      def writes(o: Double): JsValue = Json.toJson(formatter.format(o))
+    }
 
   implicit val statsWrites: Writes[Stats] = (
     (JsPath \ "numRecipes").write[Int] and
