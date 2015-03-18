@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.core.{Silhouette, Environment}
 import myUtils.JsonFormats
 import play.api.libs.json._
 import play.api.mvc._
-import repository.daos.RatingDAO
+import repository.daos.{UserTagRelationDAO, RatingDAO}
 import repository.models._
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -15,6 +15,7 @@ import scala.concurrent.Future
 
 class RecipeRatingController @Inject() (
                                    val ratingDAO: RatingDAO,
+                                       val userTagRelationDAO: UserTagRelationDAO,
                                    implicit val env: Environment[User, CachedCookieAuthenticator])
   extends Silhouette[User, CachedCookieAuthenticator] with JsonFormats {
 
@@ -37,6 +38,15 @@ class RecipeRatingController @Inject() (
         }
       },
       rating => {
+        val userId = request.identity.userID.get
+        val delta = rating.stars match {
+          case 1.0 => -1.0
+          case 2.0 => -0.5
+          case 4.0 => 0.5
+          case 5.0 => 1.0
+          case _ => 0.0
+        }
+        userTagRelationDAO.updateTagValuesForUser(rating.recipeId, userId, delta)
         val newRating = ratingDAO.saveUserStarRateRecipe(rating.copy(userId = request.identity.userID))
         newRating.map(r => Created(Json.obj("ok" -> true, "rating" -> r)))
       }

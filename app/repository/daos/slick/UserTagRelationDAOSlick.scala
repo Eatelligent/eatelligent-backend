@@ -1,5 +1,6 @@
 package repository.daos.slick
 
+import play.api.Logger
 import play.api.db.slick._
 import myUtils.MyPostgresDriver.simple._
 import repository.daos.UserTagRelationDAO
@@ -56,6 +57,30 @@ class UserTagRelationDAOSlick extends UserTagRelationDAO {
     }
   }
 
+  def updateTagValuesForUser(recipeId: Long, userId: Long, delta: Double): Unit = {
+    Future.successful {
+      DB withSession { implicit session =>
+        // Update all ingredient tags for user
+        val ijoin = for {
+          (i, t) <- slickIngredientsInRecipe innerJoin slickIngredientInTags on (_.ingredientId === _.ingredientId) if i.recipeId === recipeId
+        } yield t.tagId
+        ijoin.buildColl[List]
+          .foreach { case tagId =>
+          saveIngredientTagRelation(userId, tagId, delta)
+        }
+
+        // Update all recipe tags for user
+        slickTagsForRecipe.filter(_.recipeId === recipeId)
+          .list
+          .map(_.tagId)
+          .foreach { case tagId =>
+          saveRecipeTagRelation(userId, tagId, delta)
+        }
+      }
+    }
+  }
+
+
   implicit val getRecommendationResult = GetResult(r =>
     RecipeTagRecResult(
       r.nextLong(),
@@ -90,7 +115,17 @@ class UserTagRelationDAOSlick extends UserTagRelationDAO {
             "GROUP BY inner_recipes.id " +
             "ORDER BY score DESC " +
             "LIMIT " + N + ") AS core " +
-        "JOIN recipe ON(core.id = recipe.id);"
+        "JOIN recipe ON(core.id = recipe.id) " +
+        "WHERE core.id " +
+        "NOT IN (" +
+          "SELECT recipe_id " +
+          "FROM user_viewed_recipe " +
+          "WHERE user_id = " + userId + " AND last_seen > NOW() - INTERVAL '7' DAY " +
+          "UNION " +
+          "SELECT recipe_id " +
+          "FROM user_star_rate_recipe " +
+          "WHERE user_id = " + userId + " AND created > NOW() - INTERVAL '14' DAY " +
+        ");"
       ).list
     }
   }

@@ -25,6 +25,8 @@ class UserYesNoRecipeDAOSlick extends UserYesNoRecipeDAO {
     find(userId, recipeId)
   }
 
+
+
   def find(userId: Long, recipeId: Long): Future[Option[UserYesNoRecipe]] = {
     Future.successful {
       DB withSession { implicit session =>
