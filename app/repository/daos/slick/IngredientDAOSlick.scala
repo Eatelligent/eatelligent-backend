@@ -25,7 +25,8 @@ class IngredientDAOSlick extends IngredientDAO {
             "ON (i.id = iit.ingredient_id) " +
             "LEFT OUTER JOIN ingredient_tag as it " +
             "ON (iit.tag_id = it.id) " +
-            "GROUP BY i.id, i.name;"
+            "GROUP BY i.id, i.name " +
+            "ORDER BY i.id DESC;"
         )
         .list
       }
@@ -120,7 +121,7 @@ class IngredientDAOSlick extends IngredientDAO {
   def getAllIngredientTags: Future[List[IngredientTag]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickIngredientTags.list.map(i => IngredientTag(i.id, i.name))
+        slickIngredientTags.sortBy(_.name.asc).list.map(i => IngredientTag(i.id, i.name))
       }
     }
   }

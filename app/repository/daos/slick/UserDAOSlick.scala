@@ -250,7 +250,7 @@ class UserDAOSlick extends UserDAO {
   def getAll(offset: Integer, limit: Integer): Future[Seq[TinyUser]] = {
     Future.successful {
       DB withSession { implicit session =>
-        slickUsers.drop(offset).take(limit).list map {
+        slickUsers.sortBy(_.id.desc).drop(offset).take(limit).list map {
           u => TinyUser(u.userID.get, u.firstName, u.lastName)
         }
       }
