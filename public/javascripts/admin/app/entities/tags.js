@@ -18,10 +18,7 @@ define(function(require) {
     },
 
     url: function() {
-      if (this.q) {
-        return '/api/recipes/tags?q='+this.q;
-      }
-      return '/api/recipes/tags';
+      return '/api/recipes?limit=100&tag='+this.q;
     },
 
     parse: function(response) {
