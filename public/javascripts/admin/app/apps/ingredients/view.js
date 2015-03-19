@@ -74,8 +74,9 @@ define(function(require) {
       });
 
       this.on('childview:add:tag', function(child, name) {
-        var prevtags = this.model.get('tags') || [];
+        var prevtags = (this.model.get('tags') || []).filter(function(x) { x != null });
         prevtags.push(name);
+        this.model.set('tags', prevtags);
         this.model.save();
       })
 
