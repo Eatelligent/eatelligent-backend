@@ -64,8 +64,8 @@ trait JsonFormats {
 
   implicit val signUpRead: Reads[UserSignUp] = (
     (JsPath \ "id").readNullable[Long] and
-      (JsPath \ "firstName").readNullable[String](minLength(2)) and
-      (JsPath \ "lastName").readNullable[String](minLength(2)) and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "email").read[String](email).map(s => s.toLowerCase) and
       (JsPath \ "password").read[String]
     )(UserSignUp.apply _)
