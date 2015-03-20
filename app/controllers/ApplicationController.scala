@@ -43,11 +43,11 @@ class ApplicationController @Inject() (
   }
 
   def optionsall(path: String) = UserAwareAction { implicit request =>
-    NoContent
+    Ok
   }
 
   def options = UserAwareAction { implicit request =>
-    NoContent
+    Ok
   }
 
   def listRoutes = SecuredAction(WithRole("admin")).async { implicit request =>
