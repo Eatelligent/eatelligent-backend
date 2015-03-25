@@ -64,4 +64,8 @@ class ApplicationController @Inject() (
     }
   }
 
+  def resetKnowledgeBase = SecuredAction { implicit request =>
+    Ok
+  }
+
 }

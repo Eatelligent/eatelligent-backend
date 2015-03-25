@@ -81,6 +81,9 @@ POST           /api/reset                                            @controller
 GET            /api/reset/:token                                     @controllers.CredentialsAuthController.resetPassword(token: String)
 POST           /api/reset/:token                                     @controllers.CredentialsAuthController.handleResetPassword(token: String)
 
+# Reset knowledge base for user
+POST          /api/knowledge/_reset                                  @controllers.ApplicationController.resetKnowledgeBase
+
 # Static pages
 GET            /about                                                @controllers.ApplicationController.aboutPage(lang: String ?= "no")
 
